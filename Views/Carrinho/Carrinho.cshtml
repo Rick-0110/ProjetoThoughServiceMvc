@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="IMG/LOGO (2).png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de compras</title>
+    <link rel="stylesheet" href="~/css/carrinho.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+
+
+
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                    
+                    </ul>
+                    <form class="d-flex">
+                        <a class="btn btn-outline-dark" type="submit" href="carrinho.html">
+                            <i class="bi-cart-fill me-1"></i>
+                            
+                            Carrinho
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Container do Carrinho :0-->
+     <section>
+        <div class="carrinho-container">
+            <div class="carrinho-items">
+                <!-- Os itens do carrinho serão inseridos aqui via JavaScript -->
+            </div>
+
+            <div class="carrinho-resumo">
+                <div class="resumo-item">
+                    <span>Subtotal:</span>
+                    <span class="subtotal">R$ 0,00</span>
+                </div>
+                <div class="resumo-item">
+                    <span>Frete:</span>
+                    <span class="frete">R$ 0,00</span>
+                </div>
+                <div class="resumo-total">
+                    <span>Total:</span>
+                    <span class="total">R$ 0,00</span>
+                </div>
+                <div class="carrinho-actions">
+                    <button class="btn-continuar">Continuar Compra</button>
+                    <button class="btn-limpar">Limpar Carrinho</button>
+                </div>
+            </div>
+        </div>
+     </section>
+
+    <footer>
+      <div class="footer-section">
+        <h3>Contato</h3>
+        <p>Email: contato@toughservice.com</p>
+        <p>Telefone: (71) 1234-5678</p>
+    </div>
+    </footer>
+
+    <script src="~/js/carrinho.js"></script>
+</body>
+</html>
