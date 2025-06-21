@@ -1,39 +1,45 @@
+@model ToughService.Models.UsuarioModel
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    bool isLoggedIn = userId.HasValue;
+}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Perfil - Tough Service</title>
-    <link rel="stylesheet" href="~/css/perfil.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="~/img/LOGO (2).png">
+    <link rel="stylesheet" href="~/css/perfil.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="~/img/LOGO (2).png" />
 </head>
 <body>
     <header>
- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-
-
-
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
+                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px" /></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="Index" asp-controller="Home">Home</a></li>
+                        @if (!isLoggedIn)
+                    {
                         <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                    }
+                    else
+                    {
                         <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                         <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Servicos</a></li>
-                        <li class="nav-item dropdown">
-                         
-                        </li>
+                    }
+                        
+                        <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Servicos</a></li>
                     </ul>
                     <form class="d-flex">
                         <a class="btn btn-outline-dark" type="submit" asp-action="Carrinho" asp-controller="Carrinho">
-                            <i class="bi-cart-fill me-1"></i>
-                            
-                            Carrinho
+                            <i class="bi-cart-fill me-1"></i> Carrinho
                             <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
                         </a>
                     </form>
@@ -46,78 +52,51 @@
         <div class="perfil-container">
             <div class="perfil-header">
                 <div class="foto-perfil">
-                    <img src="~/IMG/perfil2.png" alt="Foto do perfil">
+                    <img src="~/IMG/perfil2.png" alt="Foto do perfil" />
                     <button class="btn-alterar-foto">
                         <i class="fas fa-camera"></i>
                     </button>
                 </div>
-                <h1>Seu Nome</h1>
-                <p class="email">seu.email@exemplo.com</p>
+                <h1>@Model.Nome</h1>
+                <p class="email">@Model.Email</p>
             </div>
 
             <div class="perfil-info">
-                <div class="info-card">
-                    <h2>Informações Pessoais</h2>
-                    <div class="info-item">
-                        <label>Nome Completo</label>
-                        <input type="text" value="Seu Nome Completo">
-                    </div>
-                    <div class="info-item">
-                        <label>CPF/CNPJ</label>
-                        <input type="text" value="000.000.000-00">
-                    </div>
-                    <div class="info-item">
-                        <label>Telefone</label>
-                        <input type="text" value="(00) 00000-0000">
-                    </div>
-                    <button class="btn-salvar">Salvar Alterações</button>
-                </div>
+                @if (TempData["Mensagem"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Mensagem"]</div>
+                }
 
-                <div class="info-card">
-                    <h2>Endereço</h2>
-                    <div class="info-item">
-                        <label>CEP</label>
-                        <input type="text" value="00000-000">
-                    </div>
-                    <div class="info-item">
-                        <label>Endereço</label>
-                        <input type="text" value="Rua Exemplo, 123">
-                    </div>
-                    <div class="info-item">
-                        <label>Cidade</label>
-                        <input type="text" value="Sua Cidade">
-                    </div>
-                    <div class="info-item">
-                        <label>Estado</label>
-                        <input type="text" value="Seu Estado">
-                    </div>
-                    <button class="btn-salvar">Salvar Alterações</button>
-                </div>
+                <form asp-action="AtualizarPerfil" asp-controller="Perfil" method="post">
+                    <input type="hidden" asp-for="Id" />
 
-                <div class="info-card">
-                    <h2>Segurança</h2>
-                    <div class="info-item">
-                        <label>Senha Atual</label>
-                        <input type="password" placeholder="Digite sua senha atual">
+                    <div class="info-card">
+                        <h2>Informações Pessoais</h2>
+                        <div class="info-item">
+                            <label for="Nome">Nome Completo</label>
+                            <input asp-for="Nome" id="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="info-item">
+                            <label for="CpfCnpj">CPF/CNPJ</label>
+                            <input asp-for="CpfCnpj" id="CpfCnpj" class="form-control" />
+                            <span asp-validation-for="CpfCnpj" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn-salvar">Salvar Alterações</button>
                     </div>
-                    <div class="info-item">
-                        <label>Nova Senha</label>
-                        <input type="password" placeholder="Digite a nova senha">
-                    </div>
-                    <div class="info-item">
-                        <label>Confirmar Nova Senha</label>
-                        <input type="password" placeholder="Confirme a nova senha">
-                    </div>
-                    <button class="btn-salvar">Alterar Senha</button>
-                </div>
+                </form>
+
+                <!-- Aqui pode continuar outras seções como endereço, segurança, etc. -->
             </div>
 
             <div class="perfil-acoes">
-               
-                <button class="btn-sair">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Sair
-                </button>
+                <form asp-action="Logout" asp-controller="Registro" method="post">
+                    <button type="submit" class="btn-sair">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </main>
@@ -138,5 +117,8 @@
     </footer>
 
     <script src="~/js/perfil.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
 </body>
 </html>

@@ -1,3 +1,10 @@
+
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    bool isLoggedIn = userId.HasValue;
+}
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,9 +34,16 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="Index" asp-controller="Home">Home</a></li>
+                                @if (!isLoggedIn)
+                    {
                         <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                    }
+                    else
+                    {
                         <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                    }
+                        
                          <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Servicos</a></li>
                         <li class="nav-item dropdown">
                         

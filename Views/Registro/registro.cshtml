@@ -1,3 +1,5 @@
+@model ToughService.Models.RegistroModel
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -21,39 +23,53 @@
                 <img src="~/IMG/LOGO (2).png" alt="Tough Service Logo">
             </div>
             <h2>Registrar-se</h2>
-            <form>
+
+            <form asp-action="Registro" method="post">
+                <div class="grupo-entrada">
+                    <i class="fas fa-user"></i>
+                    <input asp-for="Nome" placeholder="Nome" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="grupo-entrada">
+                    <i class="fas fa-id-card"></i>
+                    <input asp-for="CpfCnpj" placeholder="CPF / CNPJ" maxlength="11"/>
+                    <span asp-validation-for="CpfCnpj" class="text-danger"></span>
+                </div>
 
                 <div class="grupo-entrada">
                     <i class="fas fa-envelope"></i>
-                    <input type="text" placeholder="Nome" required>
+                    <input asp-for="Email" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
+
                 <div class="grupo-entrada">
                     <i class="fas fa-lock"></i>
-                    <input type="text" placeholder="CPF / CNPJ" required pattern="\d{11}">
+                    <input asp-for="Senha" placeholder="Senha" type="password" />
+                    <span asp-validation-for="Senha" class="text-danger"></span>
                 </div>
-                <div class="grupo-entrada">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" required >
-                </div>
+
                 <div class="grupo-entrada">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Senha" required>
+                    <input asp-for="ConfirmaSenha" placeholder="Confirme sua senha" type="password" />
+                    <span asp-validation-for="ConfirmaSenha" class="text-danger"></span>
                 </div>
-                <div class="grupo-entrada">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Confirme sua senha" required>
-                </div>
+
                 <button type="submit" class="botao-entrar">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Entrar
+                    <i class="fas fa-user-plus"></i>
+                    Registrar
                 </button>
+
                 <div class="links">
-                    
-                    <a href="#"><a href="login.html">Login</a></a>
+                    Já tem conta? <a asp-action="Login" asp-controller="Registro">Login</a>
                 </div>
             </form>
         </div>
     </div>
+
     <script src="~/js/registro.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
 </body>
 </html>
