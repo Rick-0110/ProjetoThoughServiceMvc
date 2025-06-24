@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Shop Homepage - Start Bootstrap Template</title>
+        <title>Though Service</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
@@ -31,7 +31,8 @@
                 <section class="search-section">
                   <div class="container">
                     <div class="search-container">
-                      <form class="search-form" action="resultados.html" method="GET">
+                      <form class="search-form" asp-action="Buscar" asp-controller="Produto" method="GET">
+
                         <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required>
                         <button class="search-button" type="submit">
                           <i class="bi bi-search search-icon"></i>
@@ -119,6 +120,32 @@
                         </div>
                     </div>
                     <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="IMG/ex1.png" alt="Extintor Industrial Pó Químico 12kg" />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">EXTINTOR INDUSTRIAL PÓ QUIMICO 12KG CLASSE ABC</h5>
+                                    <div class="d-flex justify-content-center small text-warning mb-2">
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                    </div>
+                                    <!-- Product price-->
+                                    R$ 229,90
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="Areadecompra" asp-controller="Areadecompra">Visualizar</a></div>
+                            </div>
+                        </div>
+                    </div>
+                           <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
                             <img class="card-img-top" src="IMG/ex1.png" alt="Extintor Industrial Pó Químico 12kg" />
