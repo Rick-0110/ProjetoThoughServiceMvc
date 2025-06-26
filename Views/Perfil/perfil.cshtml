@@ -1,8 +1,13 @@
 @model ToughService.Models.UsuarioModel
+
 @{
+    // Recupera o Id do usuário logado armazenado na sessão
     var userId = Context.Session.GetInt32("UserId");
+
+    // Verifica se o usuário está logado, ou seja, se existe um Id na sessão
     bool isLoggedIn = userId.HasValue;
 }
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

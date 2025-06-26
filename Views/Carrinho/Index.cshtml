@@ -1,10 +1,20 @@
 @model List<ProjetoThoughServiceMvc.Models.ItemCarrinhoModel>
 
 @{
+    // Recupera o Id do usuário da sessão (se estiver logado)
     var userId = Context.Session.GetInt32("UserId");
+
+    // Verifica se o usuário está logado (userId existe)
     bool isLoggedIn = userId.HasValue;
+
+    // Calcula o subtotal do carrinho, somando o preço vezes a quantidade de cada item
+    // Se o Model for nulo, retorna 0
     var subtotal = (Model?.Sum(i => i.Preco * i.Quantidade)) ?? 0m;
+
+    // Define o valor do frete como zero (pode ser alterado para cálculo real depois)
     var frete = 0m;
+
+    // Calcula o total somando o subtotal mais o frete
     var total = subtotal + frete;
 }
 
@@ -19,19 +29,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <header class="mb-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
             <div class="container px-4 px-lg-5">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <img src="~/IMG/LOGO (2).png" alt="Logo" width="40" class="me-3" />
+                <a class="navbar-brand fw-bold" asp-action="Index" asp-controller="Home">Home</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 align-items-center">
-                        <li><img src="~/IMG/LOGO (2).png" alt="Logo" width="40" /></li>
-                        <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
-
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         @if (!isLoggedIn)
                         {
                             <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
@@ -49,7 +58,7 @@
                             <i class="bi bi-cart-fill me-1"></i>
                             Carrinho
                             <span class="badge bg-dark text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">
-                                @Model?.Count ?? 0
+                                @Model?.Sum(i => i.Quantidade) ?? 0
                             </span>
                         </a>
                     </form>
@@ -58,46 +67,44 @@
         </nav>
     </header>
 
-    <section class="container my-5">
-        <h2>Carrinho de Compras</h2>
-
+    <main class="container">
         @if (Model != null && Model.Any())
         {
-            <div class="row">
-                <div class="col-md-8">
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-7">
                     @foreach (var item in Model)
                     {
-                        <div class="card mb-3">
+                        <div class="card mb-3 shadow-sm">
                             <div class="card-body">
-                                <h5 class="card-title">@item.NomeProduto</h5>
-                                <p class="card-text">Preço: R$ @item.Preco.ToString("F2")</p>
-                                <p class="card-text">Quantidade: @item.Quantidade</p>
-                                <p class="card-text"><strong>Total: R$ @(item.Preco * item.Quantidade).ToString("F2")</strong></p>
+                                <h5 class="card-title fw-bold">@item.NomeProduto</h5>
+                                <p class="card-text mb-1">Preço: R$ @item.Preco.ToString("F2")</p>
+                                <p class="card-text mb-1">Quantidade: @item.Quantidade</p>
+                                <p class="card-text fw-bold text-success">Total: R$ @((item.Preco * item.Quantidade).ToString("F2"))</p>
                             </div>
                         </div>
                     }
                 </div>
 
-                <div class="col-md-4">
-                    <div class="card p-3">
-                        <h4>Resumo do Pedido</h4>
-                        <div class="d-flex justify-content-between">
+                <div class="col-lg-4">
+                    <div class="card p-4 shadow-sm">
+                        <h4 class="mb-3">Resumo do Pedido</h4>
+                        <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
                             <span>R$ @subtotal.ToString("F2")</span>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mb-2">
                             <span>Frete:</span>
                             <span>R$ @frete.ToString("F2")</span>
                         </div>
                         <hr />
-                        <div class="d-flex justify-content-between fw-bold fs-5">
+                        <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
                             <span>Total:</span>
-                            <span>R$ @total.ToString("F2")</span>
+                            <span class="text-success">R$ @total.ToString("F2")</span>
                         </div>
-                        <div class="mt-4 d-flex gap-2">
-                            <a class="btn btn-primary flex-fill" asp-action="Index" asp-controller="Home">Continuar Compra</a>
-                            <form asp-action="Limpar" method="post" class="flex-fill">
-                                <button class="btn btn-danger w-100" type="submit">Limpar Carrinho</button>
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-primary" asp-action="Index" asp-controller="Home">Continuar Comprando</a>
+                            <form asp-action="Limpar" method="post">
+                                <button type="submit" class="btn btn-danger">Limpar Carrinho</button>
                             </form>
                         </div>
                     </div>
@@ -106,15 +113,15 @@
         }
         else
         {
-            <p>O carrinho está vazio.</p>
-            <a class="btn btn-primary" asp-action="Index" asp-controller="Home">Continuar Comprando</a>
+            <div class="text-center mt-5">
+                <p class="fs-5">O carrinho está vazio.</p>
+                <a class="btn btn-primary" asp-action="Index" asp-controller="Home">Voltar à Loja</a>
+            </div>
         }
-    </section>
+    </main>
 
-    <footer class="bg-light py-4 mt-auto">
-        <div class="container text-center">
-            <p>Contato: contato@toughservice.com | Telefone: (71) 1234-5678</p>
-        </div>
+    <footer class="bg-light text-center py-3 mt-4">
+        <p>© 2025 Tough Service. Todos os direitos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

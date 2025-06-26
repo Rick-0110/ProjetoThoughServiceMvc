@@ -1,7 +1,21 @@
 ﻿@{
+    // Tenta obter o Id do usuário que está armazenado na sessão, se ele estiver logado
     var userId = Context.Session.GetInt32("UserId");
+
+    // Verifica se o usuário está logado, ou seja, se o userId tem algum valor
     bool isLoggedIn = userId.HasValue;
 }
+@using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
+
+@{
+    // Pega o carrinho da sessão, ou uma lista vazia se não existir
+    var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+
+    // Conta quantos itens existem no carrinho
+    int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
+}
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,7 +75,8 @@
                     <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
                         <i class="bi-cart-fill me-1"></i>
                         Carrinho
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
+
                     </a>
                 </form>
             </div>

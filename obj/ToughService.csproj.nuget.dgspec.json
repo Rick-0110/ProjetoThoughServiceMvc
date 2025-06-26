@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aluno SENAI.C308-LAB3-036\\Documents\\GitHub\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
+    "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aluno SENAI.C308-LAB3-036\\Documents\\GitHub\\ProjetoThoughServiceMvc\\ToughService.csproj": {
+    "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aluno SENAI.C308-LAB3-036\\Documents\\GitHub\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "projectUniqueName": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj",
         "projectName": "ToughService",
-        "projectPath": "C:\\Users\\Aluno SENAI.C308-LAB3-036\\Documents\\GitHub\\ProjetoThoughServiceMvc\\ToughService.csproj",
-        "packagesPath": "C:\\Users\\Aluno SENAI.C308-LAB3-036\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aluno SENAI.C308-LAB3-036\\Documents\\GitHub\\ProjetoThoughServiceMvc\\obj\\",
+        "projectPath": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Aluno SENAI.C308-LAB3-036\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -83,7 +83,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.408/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.411/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
