@@ -292,3 +292,4 @@ C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc\obj\
 C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.pdb
 C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.genruntimeconfig.cache
 C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc\obj\Debug\net8.0\ref\ToughService.dll
+C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc\bin\Debug\net8.0\Newtonsoft.Json.dll

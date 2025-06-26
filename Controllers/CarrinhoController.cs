@@ -1,28 +1,50 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using ToughService.Models;
+using ProjetoThoughServiceMvc.Models;
+using System.Collections.Generic;
 
-namespace ToughService.Controllers;
-
-public class CarrinhoController : Controller
+namespace ProjetoThoughServiceMvc.Controllers
 {
-    private readonly ILogger<CarrinhoController> _logger;
-
-    public CarrinhoController(ILogger<CarrinhoController> logger)
+    public class CarrinhoController : Controller
     {
-        _logger = logger;
-    }
+        private const string CarrinhoSessionKey = "Carrinho";
 
-    public IActionResult Carrinho()
-    {
-        return View();
-    }
+        public IActionResult Index()
+        {
+            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
+            return View(carrinho);
+        }
 
-  
+        [HttpPost]
+        public IActionResult Adicionar(int id, string nome, decimal preco)
+        {
+            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var itemExistente = carrinho.Find(i => i.Id == id);
+            if (itemExistente != null)
+            {
+                itemExistente.Quantidade++;
+            }
+            else
+            {
+                carrinho.Add(new ItemCarrinhoModel
+                {
+                    Id = id,
+                    NomeProduto = nome,
+                    Preco = preco,
+                    Quantidade = 1
+                });
+            }
+
+            HttpContext.Session.SetObject(CarrinhoSessionKey, carrinho);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Limpar()
+        {
+            HttpContext.Session.Remove(CarrinhoSessionKey);
+            return RedirectToAction("Index");
+        }
     }
 }

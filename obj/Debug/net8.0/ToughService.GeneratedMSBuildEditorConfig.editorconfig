@@ -18,8 +18,8 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Aluno SENAI.C308-LAB3-036\Documents\GitHub\ProjetoThoughServiceMvc
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Aluno SENAI.C308-LAB3-036/Documents/GitHub/ProjetoThoughServiceMvc/Views/Carrinho/Carrinho.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FycmluaG9cQ2FycmluaG8uY3NodG1s
+[C:/Users/Aluno SENAI.C308-LAB3-036/Documents/GitHub/ProjetoThoughServiceMvc/Views/Carrinho/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FycmluaG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Aluno SENAI.C308-LAB3-036/Documents/GitHub/ProjetoThoughServiceMvc/Views/Home/Index.cshtml]

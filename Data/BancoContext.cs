@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ToughService.Models;
+using ProjetoThoughServiceMvc.Models;
 
 namespace ToughService.Data
 {
@@ -13,6 +14,8 @@ namespace ToughService.Data
         {
         }
 
-       public DbSet<UsuarioModel> Usuarios { get; set; }
+        public DbSet<UsuarioModel> Usuarios { get; set; }
+        public DbSet<ProdutoModel> Produtos { get; set; }
+        
     }
 }
