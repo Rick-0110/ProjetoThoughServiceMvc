@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hC7IoiV1k/0=",
+  "dgSpecHash": "D8dcG6pPQPE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj",
+  "projectFilePath": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\ToughService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Windows\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Windows\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

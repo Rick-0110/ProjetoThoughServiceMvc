@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
+    "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj": {
+    "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\ToughService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "projectUniqueName": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\ToughService.csproj",
         "projectName": "ToughService",
-        "projectPath": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "projectPath": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\ToughService.csproj",
         "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Windows\\Downloads\\ProjetoThoughServiceMvc\\obj\\",
+        "outputPath": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config"
