@@ -7,7 +7,7 @@ public static class SessionExtensions
     // Método para armazenar um objeto genérico na sessão como string JSON
     public static void SetObject<T>(this ISession session, string key, T value)
     {
-        // Serializa o objeto para JSON e salva na sessão usando uma chave
+       
         session.SetString(key, JsonConvert.SerializeObject(value));
     }
 
