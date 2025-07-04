@@ -3,11 +3,13 @@
 @{
     ViewData["Title"] = "Carrinho de Compras";
     var quantidadeItensCarrinho = Model?.Count ?? 0;
-}
-@{
+
     var userId = Context.Session.GetInt32("UserId");
     bool isLoggedIn = userId.HasValue;
-    var subtotal = (Model?.Sum(i => i.Preco * i.Quantidade)) ?? 0m;
+
+    var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
+
+    var subtotal = (Model?.Sum(i => (i.Preco / 100m) * i.Quantidade)) ?? 0m;
     var frete = 0m;
     var total = subtotal + frete;
 }
@@ -15,107 +17,112 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="icon" href="~/IMG/LOGO (2).png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho de Compras</title>
-    <link rel="stylesheet" href="~/css/carrinho.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="~/IMG/LOGO (2).png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/carrinho.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
-
     <header>
-       <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
 
-            <!-- Área de Pesquisa Centralizada -->
-            <section class="search-section">
-              <div class="container">
-                <div class="search-container">
-                  <form class="search-form" asp-action="Buscar" asp-controller="Produto" method="GET">
-                    <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
-                    <button class="search-button" type="submit">
-                      <i class="bi bi-search search-icon"></i>
-                      Buscar
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </section>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
-                    @if (!isLoggedIn)
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
-                    }
-                    else
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                    }
-                    <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
-                </ul>
-                <form class="d-flex">
-                    <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
-                        <i class="bi-cart-fill me-1"></i>
-                        Carrinho
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
-
-                    </a>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    </header>
-
-    <!-- Conteúdo do carrinho -->
-    <section>
-        <div class="carrinho-container">
-            <div class="carrinho-items">
-                @if (Model != null && Model.Any())
-                {
-                    @foreach (var item in Model)
-                    {
-                        <div class="carrinho-item">
-                            <h3>@item.NomeProduto</h3>
-                            <p>Preço: R$ @item.Preco.ToString("F2")</p>
-                            <p>Quantidade: @item.Quantidade</p>
-                            <p>Total: R$ @(item.Preco * item.Quantidade).ToString("F2")</p>
+                <!-- Área de Pesquisa Centralizada -->
+                <section class="search-section">
+                    <div class="container">
+                        <div class="search-container">
+                            <form class="search-form" asp-action="Buscar" asp-controller="Produto" method="GET">
+                                <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
+                                <button class="search-button" type="submit">
+                                    <i class="bi bi-search search-icon"></i>
+                                    Buscar
+                                </button>
+                            </form>
                         </div>
-                    }
-                }
-                else
-                {
-                    <p class="vazio">O carrinho está vazio.</p>
-                }
-            </div>
+                    </div>
+                </section>
 
-            <div class="carrinho-resumo">
-                <div class="resumo-item">
-                    <span>Subtotal:</span>
-                    <span class="subtotal">R$ @subtotal.ToString("F2")</span>
-                </div>
-                <div class="resumo-item">
-                    <span>Frete:</span>
-                    <span class="frete">R$ @frete.ToString("F2")</span>
-                </div>
-                <div class="resumo-total">
-                    <span>Total:</span>
-                    <span class="total">R$ @total.ToString("F2")</span>
-                </div>
-
-                <div class="carrinho-actions">
-                    <a class="btn-continuar" asp-action="Index" asp-controller="Home">Continuar compra</a>
-                    <form asp-action="Limpar" method="post">
-                        <button type="submit" class="btn-limpar">Limpar Carrinho</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                        class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
+                        @if (!isLoggedIn)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                        }
+                        <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
+                    </ul>
+                    <form class="d-flex">
+                        <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
+                            <i class="bi-cart-fill me-1"></i>
+                            Carrinho
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
+                        </a>
                     </form>
                 </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+        <div class="carrinho-items">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="carrinho-item">
+                        <div class="info-produto">
+                            <h3>@item.NomeProduto</h3>
+                            <p class="preco">
+                                Preço unitário: <strong>R$ @( (item.Preco / 100m).ToString("N2", culturePtBr) )</strong>
+                            </p>
+                        </div>
+                        <div class="info-quantidade">
+                            <p>Qtd: <strong>@item.Quantidade</strong></p>
+                            <p>
+                                Total:
+                                <strong>
+                                    R$ @(((item.Preco / 100m) * item.Quantidade).ToString("N2", culturePtBr))
+                                </strong>
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="vazio">O carrinho está vazio.</p>
+            }
+        </div>
+
+        <div class="carrinho-resumo">
+            <div class="resumo-item">
+                <span>Subtotal:</span>
+                <span class="subtotal">R$ @subtotal.ToString("N2", culturePtBr)</span>
+            </div>
+            <div class="resumo-item">
+                <span>Frete:</span>
+                <span class="frete">R$ @frete.ToString("N2", culturePtBr)</span>
+            </div>
+            <div class="resumo-total">
+                <span>Total:</span>
+                <span class="total">R$ @total.ToString("N2", culturePtBr)</span>
+            </div>
+
+            <div class="carrinho-actions">
+                <a class="btn-continuar" asp-action="Index" asp-controller="Home">Continuar compra</a>
+                <form asp-action="Limpar" method="post">
+                    <button type="submit" class="btn-limpar">Limpar Carrinho</button>
+                </form>
             </div>
         </div>
     </section>
@@ -127,6 +134,5 @@
             <p>Telefone: (71) 1234-5678</p>
         </div>
     </footer>
-
 </body>
 </html>
