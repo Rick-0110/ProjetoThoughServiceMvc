@@ -48,7 +48,7 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
                     @if (!isLoggedIn)
                     {
                         <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
@@ -111,7 +111,7 @@
                 </div>
 
                 <div class="carrinho-actions">
-                    <a class="btn-continuar" asp-action="Index" asp-controller="Home">Continuar Comprando</a>
+                    <a class="btn-continuar" asp-action="Index" asp-controller="Home">Continuar compra</a>
                     <form asp-action="Limpar" method="post">
                         <button type="submit" class="btn-limpar">Limpar Carrinho</button>
                     </form>
