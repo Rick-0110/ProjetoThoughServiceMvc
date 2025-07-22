@@ -45,6 +45,10 @@
       "PackagePath": "staticwebassets\\IMG\\tough.png"
     },
     {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\css\\Sobre.css",
+      "PackagePath": "staticwebassets\\css\\Sobre.css"
+    },
+    {
       "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\css\\carrinho.css",
       "PackagePath": "staticwebassets\\css\\carrinho.css"
     },

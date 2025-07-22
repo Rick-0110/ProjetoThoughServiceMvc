@@ -1,0 +1,105 @@
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    bool isLoggedIn = userId.HasValue;
+    var quantidadeItensCarrinho = Model?.Count ?? 0;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Tough Service</title>
+    <link rel="stylesheet" href="~/css/Sobre.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="IMG/LOGO (2).png">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+
+                <!-- Área de Pesquisa Centralizada -->
+                <section class="search-section">
+                    <div class="container">
+                        <div class="search-container">
+                            <form class="search-form" asp-action="Buscar" asp-controller="Produto" method="GET">
+                                <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
+                                <button class="search-button" type="submit">
+                                    <i class="bi bi-search search-icon"></i>
+                                    Buscar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                        class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
+                        @if (!isLoggedIn)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                        }
+                        <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
+                    </ul>
+                    <form class="d-flex">
+                        <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
+                            <i class="bi-cart-fill me-1"></i>
+                            Carrinho
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    </header>
+    <main>
+        <section class="sobre-container">
+            <h1>Sobre a Tough Service</h1>
+            <p>
+                A Tough Service nasceu com o propósito de conectar pessoas e empresas a serviços de qualidade, com segurança, agilidade e confiança. Nossa plataforma oferece soluções inovadoras para facilitar o dia a dia de quem busca ou oferece serviços, promovendo o crescimento de profissionais e a satisfação de clientes.
+            </p>
+            <h2>Missão</h2>
+            <p>
+                Proporcionar experiências positivas, conectando clientes a profissionais qualificados, promovendo a excelência e a confiança em cada serviço realizado.
+            </p>
+            <h2>Visão</h2>
+            <p>
+                Ser referência nacional em intermediação de serviços, reconhecida pela inovação, qualidade e compromisso com nossos usuários.
+            </p>
+            <h2>Valores</h2>
+            <ul>
+                <li>Ética e transparência</li>
+                <li>Compromisso com a qualidade</li>
+                <li>Respeito ao cliente e ao profissional</li>
+                <li>Inovação constante</li>
+                <li>Responsabilidade social</li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: contato@toughservice.com</p>
+                <p>Telefone: (71) 99204-6022</p>
+            </div>
+            <div class="footer-section">
+                <h3>Endereço</h3>
+                <p>Rua, 123</p>
+                <p>Camaçari - BA</p>
+            </div>
+        </div>
+    </footer>
+    <script src="JS/Sobre.js"></script>
+</body>
+</html>

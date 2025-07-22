@@ -22,12 +22,20 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FycmluaG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Windows/Documents/Curso/ProjetoThoughServiceMvc/Views/Carrinho/InfoProduto.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FycmluaG9cSW5mb1Byb2R1dG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Windows/Documents/Curso/ProjetoThoughServiceMvc/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Windows/Documents/Curso/ProjetoThoughServiceMvc/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Windows/Documents/Curso/ProjetoThoughServiceMvc/Views/Home/Sobre.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTb2JyZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Windows/Documents/Curso/ProjetoThoughServiceMvc/Views/Perfil/perfil.cshtml]
