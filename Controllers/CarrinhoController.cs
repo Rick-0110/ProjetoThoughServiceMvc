@@ -1,12 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoThoughServiceMvc.Models;
 using System.Collections.Generic;
+using ToughService.Data;
 
 namespace ProjetoThoughServiceMvc.Controllers
 {
     // Controlador responsável pelas operações do carrinho de compras
     public class CarrinhoController : Controller
     {
+        private readonly BancoContext _context;
+            public CarrinhoController(BancoContext context)
+    {
+        _context = context;
+    }
+
+    public IActionResult InfoProduto(int id)
+    {
+        var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+        if (produto == null)
+        {
+            return NotFound();
+        }
+        return View(produto);
+    }
+
         // Chave usada para armazenar e recuperar o carrinho da sessão do usuário
         private const string CarrinhoSessionKey = "Carrinho";
 
@@ -23,21 +40,21 @@ namespace ProjetoThoughServiceMvc.Controllers
 
         // Método POST para adicionar um item ao carrinho
        [HttpPost]
-public IActionResult Adicionar(int id, string nome, string preco)
+
+
+public IActionResult Adicionar(int id, string nome, string preco, int quantidade)
 {
-    // Converte a string preco para decimal usando a cultura brasileira
     if (!decimal.TryParse(preco, System.Globalization.NumberStyles.Number, new System.Globalization.CultureInfo("pt-BR"), out decimal precoDecimal))
     {
-        // Se não conseguir converter, redireciona ou lança erro
         return BadRequest("Preço inválido");
     }
 
     var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
 
-    var itemExistente = carrinho.Find(i => i.Id == id);
+    var itemExistente = carrinho.FirstOrDefault(i => i.Id == id);
     if (itemExistente != null)
     {
-        itemExistente.Quantidade++;
+        itemExistente.Quantidade += quantidade;
     }
     else
     {
@@ -46,7 +63,7 @@ public IActionResult Adicionar(int id, string nome, string preco)
             Id = id,
             NomeProduto = nome,
             Preco = precoDecimal,
-            Quantidade = 1
+            Quantidade = quantidade
         });
     }
 
@@ -54,6 +71,7 @@ public IActionResult Adicionar(int id, string nome, string preco)
 
     return RedirectToAction("Index");
 }
+
 
         // Método POST para limpar o carrinho, removendo todos os itens
         [HttpPost]

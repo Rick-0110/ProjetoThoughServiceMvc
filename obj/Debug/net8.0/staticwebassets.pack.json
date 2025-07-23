@@ -5,6 +5,22 @@
       "PackagePath": "staticwebassets\\ToughService.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\50KG.png",
+      "PackagePath": "staticwebassets\\IMG\\50KG.png"
+    },
+    {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\AguaPressurizada.png",
+      "PackagePath": "staticwebassets\\IMG\\AguaPressurizada.png"
+    },
+    {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\CO26KG.png",
+      "PackagePath": "staticwebassets\\IMG\\CO26KG.png"
+    },
+    {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\EspumaMecanica.jpeg",
+      "PackagePath": "staticwebassets\\IMG\\EspumaMecanica.jpeg"
+    },
+    {
       "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\Ex3.png",
       "PackagePath": "staticwebassets\\IMG\\Ex3.png"
     },
@@ -13,8 +29,20 @@
       "PackagePath": "staticwebassets\\IMG\\Extintor-Co2-1.png"
     },
     {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\IncendioEspuma.png",
+      "PackagePath": "staticwebassets\\IMG\\IncendioEspuma.png"
+    },
+    {
       "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\LOGO (2).png",
       "PackagePath": "staticwebassets\\IMG\\LOGO (2).png"
+    },
+    {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\PÓSECO4KG.png",
+      "PackagePath": "staticwebassets\\IMG\\PÓSECO4KG.png"
+    },
+    {
+      "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\PÓSECO6KG.png",
+      "PackagePath": "staticwebassets\\IMG\\PÓSECO6KG.png"
     },
     {
       "Id": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\IMG\\TOUGH-SERVICE.png",
