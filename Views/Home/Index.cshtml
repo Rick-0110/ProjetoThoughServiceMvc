@@ -92,7 +92,7 @@
             <div class="text-center text-white">
                 <img src="IMG/LOGO (2).png" height="150px" alt="" />
                 <h1 class="display-4 fw-bolder">TOUGH SERVICE</h1>
-                <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANCA LTDA</p>
+                <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANÇA LTDA</p>
             </div>
         </div>
     </header>
@@ -110,7 +110,8 @@
     {
         <div class="col mb-5">
             <div class="card h-100">
-                <img class="card-img-top" src="~/img/@produto.ImagemUrl" alt="@produto.Nome" />
+                <img class="card-img-top" src="@Url.Content("~/img/" + produto.ImagemUrl)" alt="@produto.Nome" />
+
                 <div class="card-body p-4">
                     <div class="text-center">
                         <h5 class="fw-bolder">@produto.Nome</h5>
