@@ -1,21 +1,27 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
+using ProjetoThoughServiceMvc.Models;
+using System.Linq;
+using System.Collections.Generic;
 
+using Microsoft.AspNetCore.Http;
+using ToughService.Data;
 namespace ToughService.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+     private readonly BancoContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(BancoContext context)
     {
-        _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var produtos = _context.Produtos.ToList();
+        return View(produtos);
     }
 
     public IActionResult Privacy()

@@ -6,6 +6,8 @@
     bool isLoggedIn = userId.HasValue;
 }
 @using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
+@model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
+
 
 @{
     // Pega o carrinho da sessão, ou uma lista vazia se não existir
@@ -102,158 +104,35 @@
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             
             <!-- Produto 1 -->
-
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/ESPUMAMECANICA 10L.png" alt="Extintor Água Pressurizada 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">Extintor de Incêndio Espuma Mecânica 10L</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$ 198,50
-                        </div>
+  @if (Model != null && Model.Count > 0)
+{
+    foreach (var produto in Model)
+    {
+        <div class="col mb-5">
+            <div class="card h-100">
+                <img class="card-img-top" src="~/img/@produto.ImagemUrl" alt="@produto.Nome" />
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <h5 class="fw-bolder">@produto.Nome</h5>
+                        ⭐⭐⭐⭐⭐<br />
+                        R$ @produto.Preco.ToString("F2")
                     </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
+                </div>
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                        <a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id">Visualizar</a>
                     </div>
                 </div>
             </div>
+        </div>
+    }
+}
+else
+{
+    <p>Nenhum produto disponível no momento.</p>
+}
 
-            <!-- Produto 2 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/extintor8kgPÓ.png" alt="Extintor Espuma Mecânica 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR INDUSTRIAL PÓ QUIMICO 8KG CLASSE ABC</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                           R$ 199,95
-                           <br>
-                         ou
-                         <br>
-Em até 12x de R$ 20,16 com juros
 
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 3 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/50KG.png" alt="Extintor Água Pressurizada 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR 50 KG PQS BC - FDM Extintores e gases</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$  2.711,50
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 4 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/PÓSECO4KG.png" alt="Extintor Espuma Mecânica 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR ESPUMA MECÂNICA 10L CLASSE A/B</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$ 259,90
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 5 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/CO26KG.png" alt="Extintor Água Pressurizada 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR CO2 6KG</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$  693,49
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 6 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/PÓSECO6KG.png" alt="Extintor Espuma Mecânica 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">Extintor Pó Químico Seco 6Kg Classe A/B/C
-
-</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$ 173,50
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 7 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/AguaPressurizada.png" alt="Extintor Água Pressurizada 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR ÁGUA PRESSURIZADA 10L CLASSE A</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$ 198,50
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Produto 8 -->
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <img class="card-img-top" src="~/img/IncendioEspuma.png" alt="Extintor Espuma Mecânica 10L" />
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">EXTINTOR ESPUMA MECÂNICA 10L CLASSE A/B</h5>
-                            ⭐⭐⭐⭐⭐
-                            <br />
-                            R$ 259,90
-                        </div>
-                    </div>
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho">Visualizar</a></div>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- Fim da row -->
     </div>
 </section>
 

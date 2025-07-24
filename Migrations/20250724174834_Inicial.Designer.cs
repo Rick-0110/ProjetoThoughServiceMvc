@@ -11,8 +11,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20250723192701_CriarTabelaProdutos")]
-    partial class CriarTabelaProdutos
+    [Migration("20250724174834_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -30,23 +30,24 @@ namespace ProjetoThoughServiceMvc.Controllers
         // Método que retorna a view com os itens atuais do carrinho
         public IActionResult Index()
         {
-            // Tenta recuperar a lista de itens do carrinho da sessão,
-            // se não existir, cria uma lista vazia
-            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
-
-            // Passa a lista para a view para exibição
-            return View(carrinho);
+            
+            return View();
         }
 
+
+
+
         // Método POST para adicionar um item ao carrinho
-       [HttpPost]
 
 
-public IActionResult Adicionar(int id, string nome, string preco, int quantidade)
+
+        [HttpPost]
+public IActionResult Adicionar(int id, int quantidade)
 {
-    if (!decimal.TryParse(preco, System.Globalization.NumberStyles.Number, new System.Globalization.CultureInfo("pt-BR"), out decimal precoDecimal))
+    var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+    if (produto == null)
     {
-        return BadRequest("Preço inválido");
+        return NotFound("Produto não encontrado.");
     }
 
     var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
@@ -60,9 +61,9 @@ public IActionResult Adicionar(int id, string nome, string preco, int quantidade
     {
         carrinho.Add(new ItemCarrinhoModel
         {
-            Id = id,
-            NomeProduto = nome,
-            Preco = precoDecimal,
+            Id = produto.Id,
+            NomeProduto = produto.Nome,
+            Preco = produto.Preco,
             Quantidade = quantidade
         });
     }
@@ -71,6 +72,7 @@ public IActionResult Adicionar(int id, string nome, string preco, int quantidade
 
     return RedirectToAction("Index");
 }
+
 
 
         // Método POST para limpar o carrinho, removendo todos os itens
