@@ -27,5 +27,8 @@ namespace ToughService.Models
         [DataType(DataType.Password)]
         [Compare("Senha", ErrorMessage = "As senhas não conferem.")]
         public string ConfirmaSenha { get; set; }
+
+        [Required]
+        public string Perfil { get; set; }
     }
 }

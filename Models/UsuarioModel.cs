@@ -6,21 +6,25 @@ using System.ComponentModel.DataAnnotations;
 namespace ToughService.Models
 {
     public class UsuarioModel
-    {
-        [Key]
-        public int Id { get; set; }
+{
+    public int Id { get; set; }
 
-        public string Nome { get; set; }
+    [Required]
+    public string Nome { get; set; }
 
-        public string CpfCnpj { get; set; }
+    [Required]
+    public string CpfCnpj { get; set; }
 
-        public string Email { get; set; }
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
 
-        public string Senha { get; set; }
+    [Required]
+    public string Senha { get; set; }
 
-        public string Cep { get; set; } = string.Empty;
-    public string Endereco { get; set; }= string.Empty;
-    public string Cidade { get; set; } = string.Empty;
-    public string Estado { get; set; }= string.Empty;
-    }
+    // 👇 Campo para indicar o tipo de perfil
+    [Required]
+    public string Perfil { get; set; } = "Cliente"; 
+}
+
 }
