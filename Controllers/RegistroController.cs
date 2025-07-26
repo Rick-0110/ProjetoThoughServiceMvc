@@ -48,18 +48,19 @@ namespace ToughService.Controllers
                     Nome = registro.Nome,
                     CpfCnpj = registro.CpfCnpj,
                     Email = registro.Email,
-                    Senha = registro.Senha // Atenção: em produção deve usar hash para senhas!
+                    Senha = registro.Senha, // Atenção: em produção deve usar hash para senhas!
+                     EhAdmin = registro.Email == "matosh0111@gmail.com"
                 };
 
-                // Adiciona o usuário ao contexto e salva no banco
+               
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
-                // Após o registro, redireciona para a página de login
+                
                 return RedirectToAction("Login");
             }
 
-            // Se dados inválidos, retorna a mesma view com mensagens de erro
+          
             return View(registro);
         }
 

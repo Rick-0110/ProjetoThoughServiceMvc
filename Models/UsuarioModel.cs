@@ -12,7 +12,7 @@ namespace ToughService.Models
         public string CpfCnpj { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public bool EhAdmin { get; set; } 
+        public bool EhAdmin { get; set; } = false;
     }
 
 }

@@ -1,7 +1,8 @@
 ﻿@{
     // Tenta obter o Id do usuário que está armazenado na sessão, se ele estiver logado
     var userId = Context.Session.GetInt32("UserId");
-
+    var usuario = Context.RequestServices.GetService<ToughService.Data.BancoContext>()
+                  .Usuarios.FirstOrDefault(u => u.Id == userId);
     // Verifica se o usuário está logado, ou seja, se o userId tem algum valor
     bool isLoggedIn = userId.HasValue;
 }
@@ -62,6 +63,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                    @if(usuario != null && usuario.EhAdmin){
+                        
+                     <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="AdicionarProdutoADM" asp-controller="Home">Adicionar Produto</a></li>
+                     }
                     @if (!isLoggedIn)
                     {
                         <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
@@ -122,6 +127,15 @@
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                     <div class="text-center">
                         <a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id">Visualizar</a>
+                       @if (usuario != null && usuario.EhAdmin)
+                        {
+                    <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" style="display:inline;">
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <button type="submit" class="btn btn-outline-danger mt-2">Excluir</button>
+                    </form>
+                            }
+                        
+                       
                     </div>
                 </div>
             </div>

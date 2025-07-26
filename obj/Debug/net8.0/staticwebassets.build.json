@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "q6ktOAhojH0PsyjNbDf3Dg6mzN1MN25gm0j50pf7+Tk=",
+  "Hash": "Jjkgw2f4PqE9K4XHAEpoMMsJScLtEyD8mIZzxlXN8DA=",
   "Source": "ToughService",
   "BasePath": "_content/ToughService",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ToughService.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\css\\AdicionarProdutoADM.css",
+      "SourceId": "ToughService",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\",
+      "BasePath": "_content/ToughService",
+      "RelativePath": "css/AdicionarProdutoADM.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\AdicionarProdutoADM.css"
     },
     {
       "Identity": "C:\\Users\\Windows\\Documents\\Curso\\ProjetoThoughServiceMvc\\wwwroot\\css\\carrinho.css",

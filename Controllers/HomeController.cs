@@ -24,14 +24,62 @@ public class HomeController : Controller
         return View(produtos);
     }
 
-    public IActionResult Privacy()
+   [HttpPost]
+public IActionResult RemoverProduto(int id)
+{
+    var userId = HttpContext.Session.GetInt32("UserId");
+    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
+
+    if (usuario == null || !usuario.EhAdmin)
+        return RedirectToAction("Login", "Registro");
+
+    var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+
+    if (produto != null)
     {
-        return View();
+        _context.Produtos.Remove(produto);
+        _context.SaveChanges();
     }
+
+    return RedirectToAction("Index");
+}
+
+
+ [HttpGet]
+public IActionResult AdicionarProdutoADM()
+{
+    var userId = HttpContext.Session.GetInt32("UserId");
+    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
+    
+    if (usuario == null || !usuario.EhAdmin)
+        return RedirectToAction("Login", "Registro");
+
+    return View(); // Mostra o formulário em branco
+}
       public IActionResult Sobre()
     {
         return View();
     }
+
+    [HttpPost]
+public IActionResult AdicionarProdutoADM(ProdutoModel produto)
+{
+    var userId = HttpContext.Session.GetInt32("UserId");
+    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
+    
+    if (usuario == null || !usuario.EhAdmin)
+        return RedirectToAction("Login", "Registro");
+
+    if (ModelState.IsValid)
+    {
+        _context.Produtos.Add(produto);
+        _context.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
+    return View(produto);
+}
+
     
 
     
