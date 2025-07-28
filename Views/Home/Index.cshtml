@@ -9,7 +9,7 @@
 @using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
 @model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
 
-
+@using ProjetoThoughServiceMvc.Models 
 @{
     // Pega o carrinho da sessão, ou uma lista vazia se não existir
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
@@ -115,7 +115,7 @@
     {
         <div class="col mb-5">
             <div class="card h-100">
-                <img class="card-img-top" src="@Url.Content("~/img/" + produto.ImagemUrl)" alt="@produto.Nome" />
+                <img class="card-img-top" src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
 
                 <div class="card-body p-4">
                     <div class="text-center">
@@ -171,7 +171,7 @@ else
                 <h3>Redes Sociais</h3>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i><a href="https://www.instagram.com/tough_service?utm_source=ig_web_button_share_sheet&igsh=MW1hdjNwZHoyZ2NsMw=="></a></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>

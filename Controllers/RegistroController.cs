@@ -56,8 +56,11 @@ namespace ToughService.Controllers
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
-                
-                return RedirectToAction("Login");
+            // Agora recupera o ID e salva na sessão
+            HttpContext.Session.SetInt32("UserId", usuario.Id);
+
+            // Redireciona direto para a página de perfil ou home
+            return RedirectToAction("Perfil", "Perfil");
             }
 
           
