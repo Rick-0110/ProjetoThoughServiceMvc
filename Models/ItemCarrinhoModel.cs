@@ -6,5 +6,7 @@ namespace ProjetoThoughServiceMvc.Models
         public string NomeProduto { get; set; }
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
+
+        public string ImagemUrl { get; set; } 
     }
 }

@@ -48,7 +48,7 @@ namespace ToughService.Controllers
                     Nome = registro.Nome,
                     CpfCnpj = registro.CpfCnpj,
                     Email = registro.Email,
-                    Senha = registro.Senha, // Atenção: em produção deve usar hash para senhas!
+                    Senha = registro.Senha, 
                      EhAdmin = registro.Email == "matosh0111@gmail.com"
                 };
 

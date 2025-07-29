@@ -31,7 +31,32 @@ namespace ProjetoThoughServiceMvc.Controllers
         public IActionResult Index()
         {
             
-            return View();
+           var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
+
+            // Calcula o subtotal, frete e total dos itens no carrinho
+            var subtotal = 0m;
+            foreach (var item in carrinho)
+            {
+                subtotal += item.Preco * item.Quantidade;
+            }
+
+            var frete = 0m; // Aqui você pode implementar a lógica de cálculo de frete
+
+            if (subtotal > 100)
+            {
+                frete = 0; // Frete grátis para compras acima de R$100
+            }
+            else
+            {
+                frete = 10; // Frete fixo de R$10 para compras abaixo de R$100
+            }
+            var total = subtotal + frete;
+
+            ViewBag.Subtotal = subtotal;
+            ViewBag.Frete = frete;
+            ViewBag.Total = total;
+
+            return View(carrinho);
         }
 
 
