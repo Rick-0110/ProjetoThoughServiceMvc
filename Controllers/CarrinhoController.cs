@@ -69,7 +69,10 @@ namespace ProjetoThoughServiceMvc.Controllers
         [HttpPost]
         public IActionResult Adicionar(int id, int quantidade)
         {
-          
+                 if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+        return RedirectToAction("Login", "Registro");
+    }
 
             var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
             if (produto == null)
