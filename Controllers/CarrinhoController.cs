@@ -67,35 +67,38 @@ namespace ProjetoThoughServiceMvc.Controllers
 
 
         [HttpPost]
-public IActionResult Adicionar(int id, int quantidade)
-{
-    var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
-    if (produto == null)
-    {
-        return NotFound("Produto não encontrado.");
-    }
-
-    var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
-
-    var itemExistente = carrinho.FirstOrDefault(i => i.Id == id);
-    if (itemExistente != null)
-    {
-        itemExistente.Quantidade += quantidade;
-    }
-    else
-    {
-        carrinho.Add(new ItemCarrinhoModel
+        public IActionResult Adicionar(int id, int quantidade)
         {
-            Id = produto.Id,
-            NomeProduto = produto.Nome,
-            Preco = produto.Preco,
-            Quantidade = quantidade
-        });
-    }
+          
 
-    HttpContext.Session.SetObject(CarrinhoSessionKey, carrinho);
+            var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+            if (produto == null)
+            {
+                return NotFound("Produto não encontrado.");
+            }
 
-    return RedirectToAction("Index");
+            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
+
+            var itemExistente = carrinho.FirstOrDefault(i => i.Id == id);
+            if (itemExistente != null)
+            {
+                itemExistente.Quantidade += quantidade;
+            }
+            else
+            {
+                carrinho.Add(new ItemCarrinhoModel
+                {
+                    Id = produto.Id,
+                    NomeProduto = produto.Nome,
+                    Preco = produto.Preco,
+                    Quantidade = quantidade
+                });
+            }
+
+            HttpContext.Session.SetObject(CarrinhoSessionKey, carrinho);
+
+            return RedirectToAction("Index");
+       
 }
 
 
