@@ -1,10 +1,9 @@
 ﻿@{
     // Tenta obter o Id do usuário que está armazenado na sessão, se ele estiver logado
-    var userId = Context.Session.GetInt32("UserId");
-    var usuario = Context.RequestServices.GetService<ToughService.Data.BancoContext>()
-                  .Usuarios.FirstOrDefault(u => u.Id == userId);
-    // Verifica se o usuário está logado, ou seja, se o userId tem algum valor
-    bool isLoggedIn = userId.HasValue;
+var userIdString = Context.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+var userManager = Context.RequestServices.GetService<UserManager<ApplicationUser>>();
+var usuario = userManager?.FindByIdAsync(userIdString).Result;
+bool isLoggedIn = usuario != null;
 }
 @using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
 @model List<ProjetoThoughServiceMvc.Models.ProdutoModel>

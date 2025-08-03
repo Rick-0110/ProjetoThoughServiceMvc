@@ -589,3 +589,4 @@ C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\refint
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.pdb
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.genruntimeconfig.cache
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ref\ToughService.dll
+C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.MvcApplicationPartsAssemblyInfo.cs

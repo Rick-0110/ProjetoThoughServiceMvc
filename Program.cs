@@ -1,17 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using ToughService.Data;
 
+using ToughService.Data;
+using ProjetoThoughServiceMvc.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
-// Registra o IHttpContextAccessor para usar na view
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddControllersWithViews();
-
-// Habilitar cache em memória para sessão
 builder.Services.AddDistributedMemoryCache();
 
-// Adicionar serviço de sessão
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -19,11 +19,15 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Sua conexão e DbContext
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultDatabase");
-builder.Services.AddDbContext<BancoContext>(opt => {
-    opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection));
-});
+builder.Services.AddDbContext<BancoContext>(opt =>
+    opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+    .AddEntityFrameworkStores<BancoContext>();
 
 var app = builder.Build();
 
@@ -39,6 +43,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

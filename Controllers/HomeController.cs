@@ -2,91 +2,99 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
 using ProjetoThoughServiceMvc.Models;
-using System.Linq;
-using System.Collections.Generic;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using ToughService.Data;
-namespace ToughService.Controllers;
 
-public class HomeController : Controller
+namespace ToughService.Controllers
 {
-     private readonly BancoContext _context;
-
-    public HomeController(BancoContext context)
+    public class HomeController : Controller
     {
-        _context = context;
-    }
+        private readonly BancoContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    public IActionResult Index()
-    {
-        var produtos = _context.Produtos.ToList();
-        return View(produtos);
-    }
+        public HomeController(BancoContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
-   [HttpPost]
-public IActionResult RemoverProduto(int id)
+        public IActionResult Index()
+        {
+            var produtos = _context.Produtos.ToList();
+            return View(produtos);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoverProduto(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+                return RedirectToAction("Login", "Registro");
+
+            var usuario = await _userManager.FindByIdAsync(userId.Value.ToString());
+
+            if (usuario == null || !usuario.EhAdmin)
+                return RedirectToAction("Login", "Registro");
+
+            var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+
+            if (produto != null)
+            {
+                _context.Produtos.Remove(produto);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+      public async Task<IActionResult> AdicionarProdutoADM()
 {
-    var userId = HttpContext.Session.GetInt32("UserId");
-    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var usuario = await _userManager.FindByIdAsync(userId);
 
     if (usuario == null || !usuario.EhAdmin)
         return RedirectToAction("Login", "Registro");
 
-    var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+    ViewBag.UsuarioEhAdmin = true;
 
-    if (produto != null)
-    {
-        _context.Produtos.Remove(produto);
-        _context.SaveChanges();
-    }
-
-    return RedirectToAction("Index");
+    return View();
 }
 
+        [HttpPost]
+        public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
 
- [HttpGet]
-public IActionResult AdicionarProdutoADM()
-{
-    var userId = HttpContext.Session.GetInt32("UserId");
-    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
-    
-    if (usuario == null || !usuario.EhAdmin)
-        return RedirectToAction("Login", "Registro");
+            if (userId == null)
+                return RedirectToAction("Login", "Registro");
 
-    return View(); // Mostra o formulário em branco
-}
-      public IActionResult Sobre()
-    {
-        return View();
-    }
+            var usuario = await _userManager.FindByIdAsync(userId.Value.ToString());
 
-    [HttpPost]
-public IActionResult AdicionarProdutoADM(ProdutoModel produto)
-{
-    var userId = HttpContext.Session.GetInt32("UserId");
-    var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == userId);
-    
-    if (usuario == null || !usuario.EhAdmin)
-        return RedirectToAction("Login", "Registro");
+            if (usuario == null || !usuario.EhAdmin)
+                return RedirectToAction("Login", "Registro");
 
-    if (ModelState.IsValid)
-    {
-        _context.Produtos.Add(produto);
-        _context.SaveChanges();
-        return RedirectToAction("Index");
-    }
+            if (ModelState.IsValid)
+            {
+                _context.Produtos.Add(produto);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-    return View(produto);
-}
+            return View(produto);
+        }
 
-    
+        public IActionResult Sobre()
+        {
+            return View();
+        }
 
-    
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

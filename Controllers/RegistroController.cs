@@ -1,115 +1,85 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ToughService.Models;
-using ToughService.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+using ProjetoThoughServiceMvc.Models; // ApplicationUser
+using ToughService.Models; // seus modelos de input (RegistroModel, LoginModel)
 
 namespace ToughService.Controllers
 {
-    // Controlador responsável pelo registro, login e logout dos usuários
     public class RegistroController : Controller
     {
-        // Contexto do banco de dados para acessar as tabelas
-        private readonly BancoContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        // Construtor que recebe o contexto via injeção de dependência
-        public RegistroController(BancoContext context)
+        public RegistroController(UserManager<ApplicationUser> userManager,
+                                  SignInManager<ApplicationUser> signInManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        // GET: Exibe o formulário para novo registro
         [HttpGet]
         public IActionResult Registro()
         {
             return View();
         }
 
-        // POST: Recebe os dados do formulário de registro e cria um novo usuário
         [HttpPost]
-        public IActionResult Registro(RegistroModel registro)
+        public async Task<IActionResult> Registro(RegistroModel registro)
         {
-            // Verifica se os dados do formulário são válidos
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(registro);
+
+            var user = new ApplicationUser
             {
-                // Checa se o email já está cadastrado no banco
-                if (_context.Usuarios.Any(u => u.Email == registro.Email))
-                {
-                    // Adiciona erro de validação para email já existente
-                    ModelState.AddModelError("Email", "Email já cadastrado.");
-                    return View(registro);
-                }
+                UserName = registro.Email,
+                Email = registro.Email,
+                Nome = registro.Nome,
+                CpfCnpj = registro.CpfCnpj,
+                EhAdmin = registro.Email == "matosh0111@gmail.com"
+            };
 
-                // Cria um novo objeto usuário com os dados do formulário
-                var usuario = new UsuarioModel
-                {
-                    Nome = registro.Nome,
-                    CpfCnpj = registro.CpfCnpj,
-                    Email = registro.Email,
-                    Senha = registro.Senha, 
-                     EhAdmin = registro.Email == "matosh0111@gmail.com"
-                };
+            var result = await _userManager.CreateAsync(user, registro.Senha);
 
-               
-                _context.Usuarios.Add(usuario);
-                _context.SaveChanges();
-
-            // Agora recupera o ID e salva na sessão
-            HttpContext.Session.SetInt32("UserId", usuario.Id);
-
-            // Redireciona direto para a página de perfil ou home
-            return RedirectToAction("Perfil", "Perfil");
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Perfil", "Perfil");
             }
 
-          
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
             return View(registro);
         }
 
-        // GET: Exibe o formulário de login
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Recebe os dados do login e autentica o usuário
         [HttpPost]
-        public IActionResult Login(LoginModel login)
+        public async Task<IActionResult> Login(LoginModel login)
         {
-            // Verifica se os dados do formulário são válidos
             if (!ModelState.IsValid)
                 return View(login);
 
-            // Busca um usuário no banco que tenha o email e senha informados
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == login.Email && u.Senha == login.Senha);
+            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Senha, isPersistent: false, lockoutOnFailure: false);
 
-            if (usuario != null)
-            {
-                // Se encontrado, salva o Id do usuário na sessão para manter a autenticação
-                HttpContext.Session.SetInt32("UserId", usuario.Id);
-
-                // Redireciona para a página de perfil do usuário autenticado
+            if (result.Succeeded)
                 return RedirectToAction("Perfil", "Perfil");
-            }
 
-            // Se não encontrar, adiciona erro genérico de autenticação falhada
             ModelState.AddModelError("", "Email ou senha inválidos.");
-
-            // Retorna para a view de login com erro
             return View(login);
         }
 
-        // POST: Logout do usuário, limpa a sessão e redireciona para login
         [HttpPost]
-        [ValidateAntiForgeryToken] // Protege contra ataques CSRF
-        public IActionResult Logout()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            // Limpa todos os dados da sessão, encerrando a autenticação
-            HttpContext.Session.Clear();
-
-            // Redireciona para a tela de login
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Registro");
         }
     }
