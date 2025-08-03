@@ -16,7 +16,7 @@ public class PerfilController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Perfil()
     {
         // Obtém o ID do usuário logado
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
