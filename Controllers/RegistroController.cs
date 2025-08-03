@@ -8,14 +8,13 @@ namespace ToughService.Controllers
     public class RegistroController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public RegistroController(UserManager<ApplicationUser> userManager,
-                                  SignInManager<ApplicationUser> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+{
+    _userManager = userManager;
+    _signInManager = signInManager;
+}
 
         [HttpGet]
         public IActionResult Registro()

@@ -590,3 +590,5 @@ C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughS
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.genruntimeconfig.cache
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ref\ToughService.dll
 C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\obj\Debug\net8.0\ToughService.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Windows\Documents\Curso\ProjetoThoughServiceMvc\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll

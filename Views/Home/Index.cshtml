@@ -1,23 +1,12 @@
-﻿@{
-    // Tenta obter o Id do usuário que está armazenado na sessão, se ele estiver logado
-    var userId = Context.Session.GetInt32("UserId");
-    var usuario = Context.RequestServices.GetService<ToughService.Data.BancoContext>()
-                  .Usuarios.FirstOrDefault(u => u.Id == userId);
-    // Verifica se o usuário está logado, ou seja, se o userId tem algum valor
-    bool isLoggedIn = userId.HasValue;
-}
-@using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
+﻿@using ProjetoThoughServiceMvc.Models
 @model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
 
-@using ProjetoThoughServiceMvc.Models 
 @{
-    // Pega o carrinho da sessão, ou uma lista vazia se não existir
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
-
-    // Conta quantos itens existem no carrinho
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
+    bool isLoggedIn = (bool)(ViewBag.IsLoggedIn ?? false);
+    bool usuarioEhAdmin = (bool)(ViewBag.UsuarioEhAdmin ?? false);
 }
-
 
 
 <!DOCTYPE html>
@@ -58,27 +47,36 @@
               </div>
             </section>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
-                    @if(usuario != null && usuario.EhAdmin){
-                        
-                     <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="AdicionarProdutoADM" asp-controller="Home">Adicionar Produto</a></li>
-                     }
-                    @if (!isLoggedIn)
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
-                    }
-                    else
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                    }
-                    <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-action="Sobre" asp-controller="Home">Sobre</a></li>
-                </ul>
+           
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+
+                @if (usuarioEhAdmin)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-action="AdicionarProdutoADM" asp-controller="Home">Adicionar Produto</a>
+                    </li>
+                }
+
+                @if (!isLoggedIn)
+                {
+                    <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                }
+                else
+                {
+                    <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                }
+
+                <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
+                <li class="nav-item"><a class="nav-link" asp-action="Sobre" asp-controller="Home">Sobre</a></li>
+            </ul>
+
                 <form class="d-flex">
                     <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
                         <i class="bi-cart-fill me-1"></i>
@@ -127,7 +125,8 @@
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                     <div class="text-center">
                         <a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id">Visualizar</a>
-                       @if (usuario != null && usuario.EhAdmin)
+                       @if (usuarioEhAdmin)
+
                         {
                     <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" style="display:inline;">
                         <input type="hidden" name="id" value="@produto.Id" />
