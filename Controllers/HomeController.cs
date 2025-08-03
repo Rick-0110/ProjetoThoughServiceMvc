@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
 using ProjetoThoughServiceMvc.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
 using ToughService.Data;
+using System.Security.Claims;
 
 namespace ToughService.Controllers
 {
@@ -18,22 +18,27 @@ namespace ToughService.Controllers
             _context = context;
             _userManager = userManager;
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var produtos = _context.Produtos.ToList();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuario = await _userManager.FindByIdAsync(userId);
+
+            ViewBag.UsuarioEhAdmin = usuario != null && usuario.EhAdmin;
+            ViewBag.IsLoggedIn = usuario != null;
+
             return View(produtos);
         }
 
         [HttpPost]
         public async Task<IActionResult> RemoverProduto(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
                 return RedirectToAction("Login", "Registro");
 
-            var usuario = await _userManager.FindByIdAsync(userId.Value.ToString());
+            var usuario = await _userManager.FindByIdAsync(userId);
 
             if (usuario == null || !usuario.EhAdmin)
                 return RedirectToAction("Login", "Registro");
@@ -50,28 +55,28 @@ namespace ToughService.Controllers
         }
 
         [HttpGet]
-      public async Task<IActionResult> AdicionarProdutoADM()
-{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var usuario = await _userManager.FindByIdAsync(userId);
+        public async Task<IActionResult> AdicionarProdutoADM()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuario = await _userManager.FindByIdAsync(userId);
 
-    if (usuario == null || !usuario.EhAdmin)
-        return RedirectToAction("Login", "Registro");
+            if (usuario == null || !usuario.EhAdmin)
+                return RedirectToAction("Login", "Registro");
 
-    ViewBag.UsuarioEhAdmin = true;
+            ViewBag.UsuarioEhAdmin = true;
 
-    return View();
-}
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
                 return RedirectToAction("Login", "Registro");
 
-            var usuario = await _userManager.FindByIdAsync(userId.Value.ToString());
+            var usuario = await _userManager.FindByIdAsync(userId);
 
             if (usuario == null || !usuario.EhAdmin)
                 return RedirectToAction("Login", "Registro");
