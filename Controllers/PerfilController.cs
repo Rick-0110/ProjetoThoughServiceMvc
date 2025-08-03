@@ -1,72 +1,62 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ToughService.Data;
+using ProjetoThoughServiceMvc.Models; // ApplicationUser
+using System.Security.Claims;
 using ToughService.Models;
-using Microsoft.AspNetCore.Http;
 
-// Controlador responsável pela exibição e atualização do perfil do usuário
+[Authorize] // Garante que só usuários autenticados podem acessar
 public class PerfilController : Controller
 {
-    // Contexto do banco de dados para acessar as entidades
-    private readonly BancoContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    // Construtor recebe o contexto via injeção de dependência
-    public PerfilController(BancoContext context)
+    public PerfilController(UserManager<ApplicationUser> userManager)
     {
-        _context = context;
+        _userManager = userManager;
     }
 
-    // Ação GET para exibir o perfil do usuário
     [HttpGet]
-    public IActionResult Perfil()
+    public async Task<IActionResult> Index()
     {
-        // Obtém o Id do usuário logado da sessão
-        int? userId = HttpContext.Session.GetInt32("UserId");
+        // Obtém o ID do usuário logado
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // Se não estiver logado, redireciona para a página de login
-        if (userId == null)
-            return RedirectToAction("Login", "Registro");
+        // Busca o usuário pelo ID
+        var usuario = await _userManager.FindByIdAsync(userId);
 
-        // Busca o usuário no banco pelo Id
-        var usuario = _context.Usuarios.Find(userId.Value);
-
-        // Se não encontrar o usuário, também redireciona para login
         if (usuario == null)
             return RedirectToAction("Login", "Registro");
 
-        // Envia o usuário para a view para exibir os dados do perfil
-        return View(usuario);
+        return View(usuario); // Passa o ApplicationUser para a View
     }
 
-    // Ação POST para atualizar os dados do perfil
     [HttpPost]
-    [ValidateAntiForgeryToken] // Previne ataques CSRF
-    public IActionResult AtualizarPerfil(UsuarioModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AtualizarPerfil(ApplicationUser model)
     {
-        // Obtém o Id do usuário logado da sessão
-        int? userId = HttpContext.Session.GetInt32("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var usuario = await _userManager.FindByIdAsync(userId);
 
-        // Se não estiver logado, redireciona para login
-        if (userId == null)
-            return RedirectToAction("Login", "Registro");
-
-        // Busca o usuário no banco pelo Id
-        var usuario = _context.Usuarios.Find(userId.Value);
-
-        // Se não encontrar o usuário, redireciona para login
         if (usuario == null)
             return RedirectToAction("Login", "Registro");
 
-        // Atualiza os campos que o usuário pode alterar no perfil
+        // Atualiza apenas os campos permitidos
         usuario.Nome = model.Nome;
         usuario.CpfCnpj = model.CpfCnpj;
 
-        // Salva as alterações no banco de dados
-        _context.SaveChanges();
+        var result = await _userManager.UpdateAsync(usuario);
 
-        // Define uma mensagem temporária para informar sucesso na atualização
-        TempData["Mensagem"] = "Perfil atualizado com sucesso!";
+        if (result.Succeeded)
+        {
+            TempData["Mensagem"] = "Perfil atualizado com sucesso!";
+            return RedirectToAction("Index");
+        }
 
-        // Redireciona para a página do perfil, mostrando as informações atualizadas
-        return RedirectToAction("Perfil");
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+
+        return View("Index", usuario);
     }
 }
