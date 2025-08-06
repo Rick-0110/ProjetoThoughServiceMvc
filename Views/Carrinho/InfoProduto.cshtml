@@ -1,21 +1,17 @@
 @model ProjetoThoughServiceMvc.Models.ProdutoModel
-@{
-    // Tenta obter o Id do usuário que está armazenado na sessão, se ele estiver logado
-    var userId = Context.Session.GetInt32("UserId");
-
-    // Verifica se o usuário está logado, ou seja, se o userId tem algum valor
-    bool isLoggedIn = userId.HasValue;
-}
-@using ProjetoThoughServiceMvc.Models  <!-- Importa o namespace do seu modelo -->
+@using ProjetoThoughServiceMvc.Models
 
 
 @{
-    // Pega o carrinho da sessão, ou uma lista vazia se não existir
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
-
-    // Conta quantos itens existem no carrinho
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
+    bool isLoggedIn = User.Identity.IsAuthenticated;
+    bool usuarioEhAdmin = User.Identity.Name == "matosh0111@gmail.com";
 }
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -103,7 +99,7 @@
                 <input class="form-control mb-3" name="quantidade" type="number" value="1" min="1" style="max-width: 100px;" />
                 @if (isLoggedIn)
                     {
-                <button type="submit" class="btn btn-outline-dark">
+                <button type="submit" class="btn btn-outline-dark" asp-action="index" asp-controller="Carrinho">
                     <i class="bi-cart-fill me-1"></i>
                     Adicionar ao Carrinho
                 </button>

@@ -72,7 +72,7 @@ namespace ToughService.Controllers
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+        
             if (userId == null)
                 return RedirectToAction("Login", "Registro");
 
