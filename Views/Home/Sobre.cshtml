@@ -1,6 +1,5 @@
 @{
-    var userId = Context.Session.GetInt32("UserId");
-    bool isLoggedIn = userId.HasValue;
+    bool isLoggedIn = User.Identity.IsAuthenticated;
     var quantidadeItensCarrinho = Model?.Count ?? 0;
 }
 <!DOCTYPE html>
