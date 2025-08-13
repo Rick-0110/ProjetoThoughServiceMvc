@@ -34,7 +34,7 @@ public RegistroController(UserManager<ApplicationUser> userManager, SignInManage
                 Email = registro.Email,
                 Nome = registro.Nome,
                 CpfCnpj = registro.CpfCnpj,
-                EhAdmin = registro.Email == "matosh0111@gmail.com"
+               
             };
 
             var result = await _userManager.CreateAsync(user, registro.Senha);
