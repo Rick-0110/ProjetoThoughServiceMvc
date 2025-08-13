@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ProjetoThoughServiceMvc.Models; // ApplicationUser
-using ToughService.Models; // seus modelos de input (RegistroModel, LoginModel)
+using ProjetoThoughServiceMvc.Models; 
+using ToughService.Models; 
 
 namespace ToughService.Controllers
 {

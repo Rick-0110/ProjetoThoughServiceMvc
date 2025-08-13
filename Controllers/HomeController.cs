@@ -5,7 +5,7 @@ using ProjetoThoughServiceMvc.Models;
 using Microsoft.AspNetCore.Identity;
 using ToughService.Data;
 using System.Security.Claims;
-
+using Microsoft.AspNetCore.Authorization;
 namespace ToughService.Controllers
 {
     public class HomeController : Controller
@@ -30,6 +30,7 @@ namespace ToughService.Controllers
             return View(produtos);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RemoverProduto(int id)
         {
