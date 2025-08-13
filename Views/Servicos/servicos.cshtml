@@ -1,7 +1,8 @@
 
+@model ProjetoThoughServiceMvc.Models.ApplicationUser
+
 @{
-    var userId = Context.Session.GetInt32("UserId");
-    bool isLoggedIn = userId.HasValue;
+    var isLoggedIn = User.Identity.IsAuthenticated;
 }
 <!DOCTYPE html>
 <html lang="pt-BR">

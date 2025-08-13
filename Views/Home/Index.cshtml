@@ -5,7 +5,7 @@
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
     bool isLoggedIn = User.Identity.IsAuthenticated;
-    bool usuarioEhAdmin = User.Identity.Name == "matosh0111@gmail.com";
+    bool usuarioEhAdmin = User.IsInRole("Admin");
 }
 
 
