@@ -69,7 +69,7 @@ namespace ProjetoThoughServiceMvc.Controllers
         [HttpPost]
         public IActionResult Adicionar(int id, int quantidade)
         {
-                 if (HttpContext.Session.GetInt32("UserId") == null)
+                 if (!User.Identity.IsAuthenticated)
             {
         return RedirectToAction("Login", "Registro");
     }
