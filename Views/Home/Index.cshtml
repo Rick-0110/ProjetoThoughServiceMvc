@@ -4,8 +4,8 @@
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-    bool isLoggedIn = User.Identity.IsAuthenticated;
-    bool usuarioEhAdmin = User.IsInRole("Admin");
+      var isLoggedIn = ViewBag.IsLoggedIn ?? false;
+    bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
 }
 
 

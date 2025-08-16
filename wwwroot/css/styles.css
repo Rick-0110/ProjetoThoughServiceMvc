@@ -10,6 +10,16 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+ /* style.css - arquivo principal que importa todos os outros */
+
+/* Bootstrap local ou CDN */
+
+
+/* Seus arquivos personalizados */
+
+
+
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;

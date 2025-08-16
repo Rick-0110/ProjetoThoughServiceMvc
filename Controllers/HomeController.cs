@@ -30,7 +30,7 @@ namespace ToughService.Controllers
             return View(produtos);
         }
 
-        [Authorize(Roles = "Admin")]
+       [Authorize]
         [HttpPost]
         public async Task<IActionResult> RemoverProduto(int id)
         {
