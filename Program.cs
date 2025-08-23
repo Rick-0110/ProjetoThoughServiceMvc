@@ -1,4 +1,3 @@
-
 using ToughService.Data;
 using ProjetoThoughServiceMvc.Models;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
@@ -19,7 +19,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-string mySqlConnection = builder.Configuration.GetConnectionString("DefaultDatabase");
+
+string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
+
 builder.Services.AddDbContext<BancoContext>(opt =>
     opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
@@ -45,9 +47,7 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
-app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
