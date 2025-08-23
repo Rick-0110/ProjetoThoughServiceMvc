@@ -2,22 +2,25 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoThoughServiceMvc.Models;
 using System.Collections.Generic;
 using ToughService.Data;
+using ToughService.Repository;
 
 namespace ProjetoThoughServiceMvc.Controllers
 {
     
     public class CarrinhoController : Controller
     {
-        private readonly BancoContext _context;
-            public CarrinhoController(BancoContext context)
-    {
-        _context = context;
-    }
+        private readonly IProdutoRepository _produtoRepository;
 
-    public IActionResult InfoProduto(int id)
+        public CarrinhoController(IProdutoRepository produtoRepository)
+        {
+            _produtoRepository = produtoRepository;
+        }
+
+
+        public IActionResult InfoProduto(int id)
     {
-        var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
-        if (produto == null)
+        var produto = _produtoRepository.GetProdutoById(id);
+            if (produto == null)
         {
             return NotFound();
         }
@@ -74,7 +77,7 @@ namespace ProjetoThoughServiceMvc.Controllers
         return RedirectToAction("Login", "Registro");
     }
 
-            var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
+            var produto = _produtoRepository.GetProdutoById(id);
             if (produto == null)
             {
                 return NotFound("Produto não encontrado.");

@@ -1,10 +1,11 @@
-using ToughService.Data;
-using ProjetoThoughServiceMvc.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjetoThoughServiceMvc.Models;
+using ToughService.Data;
+using ToughService.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
 

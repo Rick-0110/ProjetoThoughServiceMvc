@@ -1,26 +1,29 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using ToughService.Models;
-using ProjetoThoughServiceMvc.Models;
-using Microsoft.AspNetCore.Identity;
-using ToughService.Data;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using ProjetoThoughServiceMvc.Models;
+using System.Diagnostics;
+using System.Security.Claims;
+using ToughService.Data;
+using ToughService.Models;
+using ToughService.Repository;
+
 namespace ToughService.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly BancoContext _context;
+        private readonly IProdutoRepository _produtoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(BancoContext context, UserManager<ApplicationUser> userManager)
+        public HomeController(IProdutoRepository produtoRepository, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _produtoRepository = produtoRepository;
             _userManager = userManager;
         }
+
         public async Task<IActionResult> Index()
         {
-            var produtos = _context.Produtos.ToList();
+            var produtos = _produtoRepository.GetAllProdutos();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var usuario = await _userManager.FindByIdAsync(userId);
 
@@ -30,27 +33,19 @@ namespace ToughService.Controllers
             return View(produtos);
         }
 
-       [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RemoverProduto(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (userId == null)
                 return RedirectToAction("Login", "Registro");
 
             var usuario = await _userManager.FindByIdAsync(userId);
-
             if (usuario == null || !usuario.EhAdmin)
                 return RedirectToAction("Login", "Registro");
 
-            var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
-
-            if (produto != null)
-            {
-                _context.Produtos.Remove(produto);
-                _context.SaveChanges();
-            }
+            _produtoRepository.RemoveProduto(id);
 
             return RedirectToAction("Index");
         }
@@ -65,7 +60,6 @@ namespace ToughService.Controllers
                 return RedirectToAction("Login", "Registro");
 
             ViewBag.UsuarioEhAdmin = true;
-
             return View();
         }
 
@@ -73,19 +67,16 @@ namespace ToughService.Controllers
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
             if (userId == null)
                 return RedirectToAction("Login", "Registro");
 
             var usuario = await _userManager.FindByIdAsync(userId);
-
             if (usuario == null || !usuario.EhAdmin)
                 return RedirectToAction("Login", "Registro");
 
             if (ModelState.IsValid)
             {
-                _context.Produtos.Add(produto);
-                _context.SaveChanges();
+                _produtoRepository.AddProduto(produto);
                 return RedirectToAction("Index");
             }
 
