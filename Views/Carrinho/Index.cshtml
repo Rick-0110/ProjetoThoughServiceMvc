@@ -10,7 +10,7 @@
 
     var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
 
-    var subtotal = (Model?.Sum(i => (i.Preco / 100m) * i.Quantidade)) ?? 0m;
+    var subtotal = (Model?.Sum(i => (i.Preco / 1m) * i.Quantidade)) ?? 0m;
     var frete = 0m;
     var total = subtotal + frete;
 }
@@ -94,6 +94,9 @@
                 {
                     <div class="carrinho-item">
                         <div class="info-produto">
+                            <div class="imagem-produto">
+                                <img src="@Url.Content($"~/IMG/Model.ImagemUrl")" alt="@item.NomeProduto" class="img-produto" style="max-width:120px;max-height:120px;" />
+                            </div>
                             <h3>@item.NomeProduto</h3>
                             <p class="preco">
                                 Preço unitário: <strong>R$ @(item.Preco.ToString("N2", culturePtBr))</strong>
