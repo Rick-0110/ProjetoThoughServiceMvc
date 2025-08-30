@@ -101,10 +101,7 @@ namespace ProjetoThoughServiceMvc.Controllers
        
 }
 
-        // Remover o método duplicado InfoProduto(int id)
-        // O método InfoProduto aparece duas vezes no mesmo controller, causando o erro CS0111.
-        // Mantenha apenas uma versão do método. Aqui está a versão mais completa, que retorna outros produtos também:
-
+        
         public IActionResult InfoProduto(int id)
         {
             var produto = _produtoRepository.GetProdutoById(id);
@@ -112,11 +109,11 @@ namespace ProjetoThoughServiceMvc.Controllers
             if (produto == null)
                 return NotFound();
 
-            // Buscar outros produtos no repositório
+            
             var outrosProdutos = _produtoRepository
                 .GetAllProdutos()
                 .Where(p => p.Id != id)
-                .Take(4) // mostra até 4
+                .Take(4) 
                 .ToList();
 
             var viewModel = new ProdutoDetalheViewModel
@@ -131,14 +128,14 @@ namespace ProjetoThoughServiceMvc.Controllers
 
 
 
-        // Método POST para limpar o carrinho, removendo todos os itens
+       
         [HttpPost]
         public IActionResult Limpar()
         {
-            // Remove a chave do carrinho da sessão, esvaziando-o
+            
             HttpContext.Session.Remove(CarrinhoSessionKey);
 
-            // Redireciona para a página do carrinho, que agora estará vazio
+           
             return RedirectToAction("Index");
         }
     }
