@@ -7,6 +7,8 @@ obj/
 *.log
 *.cache
 
+*.css
+
 # arquivos do sistema
 Thumbs.db
 .DS_Store
