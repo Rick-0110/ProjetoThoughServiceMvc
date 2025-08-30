@@ -1,4 +1,5 @@
 ﻿@model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
+@using ProjetoThoughServiceMvc.Models
 
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
