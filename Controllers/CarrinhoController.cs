@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjetoThoughServiceMvc.Models;
 using System.Collections.Generic;
 using ToughService.Data;
+using ToughService.Models;
 using ToughService.Repository;
 
 namespace ProjetoThoughServiceMvc.Controllers
@@ -17,15 +19,7 @@ namespace ProjetoThoughServiceMvc.Controllers
         }
 
 
-        public IActionResult InfoProduto(int id)
-    {
-        var produto = _produtoRepository.GetProdutoById(id);
-            if (produto == null)
-        {
-            return NotFound();
-        }
-        return View(produto);
-    }
+    
 
         
         private const string CarrinhoSessionKey = "Carrinho";
@@ -106,6 +100,34 @@ namespace ProjetoThoughServiceMvc.Controllers
             return RedirectToAction("Index");
        
 }
+
+        // Remover o método duplicado InfoProduto(int id)
+        // O método InfoProduto aparece duas vezes no mesmo controller, causando o erro CS0111.
+        // Mantenha apenas uma versão do método. Aqui está a versão mais completa, que retorna outros produtos também:
+
+        public IActionResult InfoProduto(int id)
+        {
+            var produto = _produtoRepository.GetProdutoById(id);
+
+            if (produto == null)
+                return NotFound();
+
+            // Buscar outros produtos no repositório
+            var outrosProdutos = _produtoRepository
+                .GetAllProdutos()
+                .Where(p => p.Id != id)
+                .Take(4) // mostra até 4
+                .ToList();
+
+            var viewModel = new ProdutoDetalheViewModel
+            {
+                Produto = produto,
+                OutrosProdutos = outrosProdutos
+            };
+
+            return View(viewModel);
+        }
+
 
 
 

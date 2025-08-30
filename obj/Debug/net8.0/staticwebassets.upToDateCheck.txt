@@ -24,6 +24,7 @@ wwwroot\IMG\LOGO (2).png
 wwwroot\IMG\perfil2.png
 wwwroot\IMG\PÓSECO4KG.png
 wwwroot\IMG\PÓSECO6KG.png
+wwwroot\IMG\QuemSomos.png
 wwwroot\IMG\sidebar.png
 wwwroot\IMG\TOUGH-SERVICE.png
 wwwroot\IMG\tough.png
