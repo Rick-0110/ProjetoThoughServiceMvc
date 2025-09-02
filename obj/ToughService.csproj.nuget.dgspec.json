@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.15.0, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -68,7 +72,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[8.0.3, )"
+              "version": "[13.0.3, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",

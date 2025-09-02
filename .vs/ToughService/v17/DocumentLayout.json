@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\models\\loginmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:models\\loginmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,19 +51,55 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-08-30T19:27:24.66Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-08-30T19:26:58.033Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-08-30T19:26:51.541Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "LoginModel.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\LoginModel.cs",
               "RelativeDocumentMoniker": "Models\\LoginModel.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\LoginModel.cs",
               "RelativeToolTip": "Models\\LoginModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T19:19:29.615Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T19:19:29.615Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
@@ -59,12 +107,11 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T19:19:00.653Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T19:19:00.653Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "PerfilController.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\PerfilController.cs",
               "RelativeDocumentMoniker": "Controllers\\PerfilController.cs",
@@ -72,12 +119,11 @@
               "RelativeToolTip": "Controllers\\PerfilController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T19:18:59.589Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T19:18:59.589Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "RegistroController.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\RegistroController.cs",
               "RelativeDocumentMoniker": "Controllers\\RegistroController.cs",
@@ -85,8 +131,7 @@
               "RelativeToolTip": "Controllers\\RegistroController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T19:18:58.801Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T19:18:58.801Z"
             }
           ]
         }
