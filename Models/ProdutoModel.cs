@@ -13,5 +13,6 @@ namespace ProjetoThoughServiceMvc.Models
 
         public string ImagemUrl { get; set; } = string.Empty;
            public string Nome { get; set; }
+        public string Categoria { get; set; }
     }
 }

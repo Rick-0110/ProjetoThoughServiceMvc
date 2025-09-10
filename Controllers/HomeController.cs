@@ -30,6 +30,7 @@ namespace ToughService.Controllers
             ViewBag.UsuarioEhAdmin = usuario != null && usuario.EhAdmin;
             ViewBag.IsLoggedIn = usuario != null;
 
+
             return View(produtos);
         }
 
@@ -86,6 +87,44 @@ namespace ToughService.Controllers
         public IActionResult Sobre()
         {
             return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> BuscaAvancada(string busca, string categoria, decimal? precoMin, decimal? precoMax) 
+        {
+            var produtos = _produtoRepository.GetAllProdutos().AsQueryable();
+
+            if (!string.IsNullOrEmpty(busca))
+            {
+                produtos = produtos.Where(p => p.Nome.Contains(busca, StringComparison.OrdinalIgnoreCase));
+            }
+            if (!string.IsNullOrEmpty(categoria))
+            {
+                produtos = produtos.Where(p => p.Descricao.Contains(categoria, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (precoMin.HasValue)
+            {
+                               produtos = produtos.Where(p => p.Preco >= precoMin.Value);
+            }
+            if (precoMax.HasValue)
+            {
+                produtos = produtos.Where(p => p.Preco <= precoMax.Value);
+            }
+            var produtosFiltrados = produtos.ToList();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuario = await _userManager.FindByIdAsync(userId);
+            ViewBag.UsuarioEhAdmin = usuario != null && usuario.EhAdmin;
+            ViewBag.IsLoggedIn = usuario != null;
+
+            ViewBag.Categorias = _produtoRepository.GetAllProdutos()
+                                        .Select(p => p.Categoria)
+                                        .Distinct()
+                                        .ToList();
+
+            return View("Index", produtosFiltrados);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
