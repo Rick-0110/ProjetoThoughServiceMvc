@@ -33,19 +33,31 @@
         <div class="container px-4 px-lg-5">
 
             <!-- Área de Pesquisa Centralizada -->
-            <section class="search-section">
-              <div class="container">
-                <div class="search-container">
-                  <form class="search-form" asp-action="Buscar" asp-controller="Home" method="GET">
-                    <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
-                    <button class="search-button" type="submit">
-                      <i class="bi bi-search search-icon"></i>
-                      Buscar
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </section>
+          <form class="search-form" asp-action="BuscarAvancado" asp-controller="Home" method="GET">
+    <input type="text" name="busca" class="search-input" placeholder="Buscar por nome..." value="@Context.Request.Query["busca"]" />
+
+
+                    <select name="categoria" class="search-input">
+                        <option value="">Todas as categorias</option>
+                        @if (ViewBag.Categorias != null)
+                        {
+                            foreach (var cat in ViewBag.Categorias as List<string>)
+                            {
+                                var isSelected = Context.Request.Query["categoria"].FirstOrDefault() == cat;
+                                <option value="@cat" selected="@(isSelected ? "selected" : null)">@cat</option>
+                            }
+                        }
+                    </select>
+
+
+    <input type="number" name="precoMin" class="search-input" placeholder="Preço mínimo" step="0.01" value="@Context.Request.Query["precoMin"]" />
+    <input type="number" name="precoMax" class="search-input" placeholder="Preço máximo" step="0.01" value="@Context.Request.Query["precoMax"]" />
+
+    <button class="search-button" type="submit">
+        <i class="bi bi-search search-icon"></i>
+        Buscar
+    </button>
+</form>
 
            
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">

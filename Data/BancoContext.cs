@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ToughService.Data
 {
-    // Contexto do banco de dados que representa a conexão e as tabelas do sistema
+
     public class BancoContext : IdentityDbContext<ApplicationUser>
     {
-        // Construtor que recebe as opções de configuração do DbContext (como string de conexão)
+        
         public BancoContext(DbContextOptions<BancoContext> options) : base(options)
         {
         }
