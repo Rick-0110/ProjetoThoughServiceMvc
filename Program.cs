@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using ProjetoThoughServiceMvc.Models;
 using ToughService.Data;
 using ToughService.Repository;
+using ToughService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
 
