@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoThoughServiceMvc.Models; 
-using ToughService.Models; 
+using ToughService.Models;
+using ToughService.Services;
 
 namespace ToughService.Controllers
 {
@@ -10,11 +11,12 @@ namespace ToughService.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 private readonly SignInManager<ApplicationUser> _signInManager;
 
-public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICaptchaService captchaService)
 {
     _userManager = userManager;
     _signInManager = signInManager;
-}
+    ICaptchaService _captchaService = captchaService;
+        }
 
         [HttpGet]
         public IActionResult Registro()
@@ -23,10 +25,13 @@ public RegistroController(UserManager<ApplicationUser> userManager, SignInManage
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registro(RegistroModel registro)
+        public async Task<IActionResult> Registro(RegistroModel registro,CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return View(registro);
+
+            var captchaToken = Request.Form["g-recaptcha-response"];
+            var captchaValido = await _captchaService.VerifyCaptchaAsync(captchaToken, cancellationToken);
 
             var user = new ApplicationUser
             {
