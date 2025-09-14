@@ -26,10 +26,22 @@ namespace ToughService.Services
                 null,
                 cancellationToken);
 
-            var jsonString = await response.Content.ReadAsStringAsync(cancellationToken);
-            dynamic result = JsonConvert.DeserializeObject(jsonString);
+            if (!response.IsSuccessStatusCode)
+                return false;
 
-            return result.success == "true";
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<RecaptchaResponse>(jsonString);
+
+            return result?.Success ?? false;
+        }
+
+        private class RecaptchaResponse
+        {
+            [JsonProperty("success")]
+            public bool Success { get; set; }
+
+            [JsonProperty("error-codes")]
+            public string[] ErrorCodes { get; set; }
         }
     }
 }

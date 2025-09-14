@@ -10,12 +10,13 @@ namespace ToughService.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
 private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ICaptchaService _captchaService;
 
-public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICaptchaService captchaService)
+        public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICaptchaService captchaService)
 {
     _userManager = userManager;
     _signInManager = signInManager;
-    ICaptchaService _captchaService = captchaService;
+    _captchaService = captchaService;
         }
 
         [HttpGet]
