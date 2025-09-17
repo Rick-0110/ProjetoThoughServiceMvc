@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\servicos\\agendamentomanutencaorecarga.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\servicos\\agendamentomanutencaorecarga.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\servicoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\servicoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\registro\\registro.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\registro\\registro.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\wwwroot\\css\\agendamentomanutencaorecarga.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:wwwroot\\css\\agendamentomanutencaorecarga.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\wwwroot\\css\\adicionarprodutoadm.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:wwwroot\\css\\adicionarprodutoadm.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\registro\\registro.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\registro\\registro.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\registrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -55,45 +59,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AgendamentoManutencaoRecarga.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\AgendamentoManutencaoRecarga.cshtml",
-              "RelativeDocumentMoniker": "Views\\Servicos\\AgendamentoManutencaoRecarga.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\AgendamentoManutencaoRecarga.cshtml",
-              "RelativeToolTip": "Views\\Servicos\\AgendamentoManutencaoRecarga.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "ServicosController.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ServicosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ServicosController.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ServicosController.cs",
+              "RelativeToolTip": "Controllers\\ServicosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T23:10:25.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "servicos.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\servicos.cshtml",
+              "RelativeDocumentMoniker": "Views\\Servicos\\servicos.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\servicos.cshtml*",
+              "RelativeToolTip": "Views\\Servicos\\servicos.cshtml*",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAFIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-17T23:04:30.552Z",
+              "WhenOpened": "2025-09-17T23:09:05.938Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "AgendamentoManutencaoRecarga.css",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\AgendamentoManutencaoRecarga.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\AgendamentoManutencaoRecarga.css",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\AgendamentoManutencaoRecarga.css",
+              "RelativeToolTip": "wwwroot\\css\\AgendamentoManutencaoRecarga.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-17T23:08:21.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAmwIIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-09-17T22:44:18.005Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AdicionarProdutoADM.css",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\AdicionarProdutoADM.css",
-              "RelativeDocumentMoniker": "wwwroot\\css\\AdicionarProdutoADM.css",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\AdicionarProdutoADM.css",
-              "RelativeToolTip": "wwwroot\\css\\AdicionarProdutoADM.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-17T22:40:03.312Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "registro.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Registro\\registro.cshtml",
               "RelativeDocumentMoniker": "Views\\Registro\\registro.cshtml",
@@ -106,7 +123,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "RegistroController.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\RegistroController.cs",
               "RelativeDocumentMoniker": "Controllers\\RegistroController.cs",
@@ -119,7 +136,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -131,7 +148,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "RecaptchaService.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Services\\RecaptchaService.cs",
               "RelativeDocumentMoniker": "Services\\RecaptchaService.cs",
