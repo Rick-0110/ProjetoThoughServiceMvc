@@ -79,12 +79,21 @@
                         <li>Ajustes necessários</li>
                         <li>Testes de funcionamento</li>
                     </ul>
+                        @if (isLoggedIn)
+                        {
+                            <form asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos" method="get">
+                                <button class="btn-servico" asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos">Solicitar Orçamento</button>
+                            </form>
+                        }
+                        else
+                        {
+                          <form >
+                            <button class="btn-servico" onclick="alert('Por favor, faça login para solicitar um orçamento.')"
+                            asp-action="Login" asp-controller="Registro">Solicitar Orçamento</button>
 
-                        <form asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos" method="get">
-                            <button class="btn-servico" asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos">Solicitar Orçamento</button>
-                        </form>
-
-                </div>
+                            </form>
+                        }
+                    </div>
             </section>
                 <!-- Serviço 2 -->
                  <section>
