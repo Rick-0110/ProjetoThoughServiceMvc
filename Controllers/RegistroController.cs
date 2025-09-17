@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ProjetoThoughServiceMvc.Models; 
 using ToughService.Models;
 using ToughService.Services;
@@ -11,17 +12,20 @@ namespace ToughService.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ICaptchaService _captchaService;
+        private readonly IConfiguration _configuration;
 
-        public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICaptchaService captchaService)
+        public RegistroController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICaptchaService captchaService, IConfiguration configuration)
 {
     _userManager = userManager;
     _signInManager = signInManager;
     _captchaService = captchaService;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public IActionResult Registro()
         {
+            ViewData["SiteKey"] = _configuration["Captcha:SiteKey"];
             return View();
         }
 

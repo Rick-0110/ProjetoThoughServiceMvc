@@ -79,7 +79,11 @@
                         <li>Ajustes necessários</li>
                         <li>Testes de funcionamento</li>
                     </ul>
-                    <button class="btn-servico">Solicitar Orçamento</button>
+
+                        <form asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos" method="get">
+                            <button class="btn-servico" asp-action="AgendamentoManutencaoRecarga" asp-controller="Servicos">Solicitar Orçamento</button>
+                        </form>
+
                 </div>
             </section>
                 <!-- Serviço 2 -->

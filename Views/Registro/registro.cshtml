@@ -57,10 +57,14 @@
                     <span asp-validation-for="ConfirmaSenha" class="text-danger"></span>
                 </div>
 
+                <div class="g-recaptcha" data-sitekey="@ViewData["SiteKey"]"></div>
+
+
                 <button type="submit" class="botao-entrar">
                     <i class="fas fa-user-plus"></i>
                     Registrar
                 </button>
+
 
                 <div class="links">
                     Já tem conta? <a asp-action="Login" asp-controller="Registro">Login</a>
@@ -70,6 +74,7 @@
     </div>
 
     <script src="~/js/registro.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />

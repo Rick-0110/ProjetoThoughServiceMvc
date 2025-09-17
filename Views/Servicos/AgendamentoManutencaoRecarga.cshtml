@@ -1,0 +1,244 @@
+﻿@page
+@model ToughService.Views.Servicos.AgendamentoManutencaoRecargaModel
+@{
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" href="IMG/LOGO (2).png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendamento de Manutenção/Recarga - ToughService</title>
+    <link href="CSS/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/AgendamentoManutencaoRecarga.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <!-- Logo -->
+                <a class="navbar-brand" href="index.html">
+                    <img src="IMG/LOGO (2).png" alt="ToughService" height="40">
+                </a>
+
+                <!-- Área de Pesquisa Centralizada -->
+                <section class="search-section">
+                    <div class="container">
+                        <div class="search-container">
+                            <form class="search-form" action="#" method="GET">
+                                <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
+                                <button class="search-button" type="submit">
+                                    <i class="bi bi-search search-icon"></i>
+                                    Buscar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="registro.html">Registro</a></li>
+                        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="servicos.html">Serviços</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="AreaManutencaoOuRecarga.html">Agendamento</a></li>
+                        <li class="nav-item"><a class="nav-link" href="Sobre.html">Sobre</a></li>
+                    </ul>
+
+                    <form class="d-flex">
+                        <a class="btn btn-outline-dark" href="carrinho.html">
+                            <i class="bi-cart-fill me-1"></i>
+                            Carrinho
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="agendamento-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="agendamento-card">
+                        <div class="agendamento-header">
+                            <h1><i class="fas fa-calendar-alt"></i> Agendamento de Manutenção/Recarga</h1>
+                            <p>Agende sua manutenção preventiva ou recarga de extintores de forma rápida e fácil</p>
+                        </div>
+
+                        <form class="agendamento-form" id="agendamentoForm">
+                            <!-- Tipo de Serviço -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-tools"></i> Tipo de Serviço</h3>
+                                <div class="servico-options">
+                                    <div class="servico-option">
+                                        <input type="radio" id="manutencao" name="tipoServico" value="manutencao" required>
+                                        <label for="manutencao">
+                                            <div class="servico-card">
+                                                <i class="fas fa-wrench"></i>
+                                                <h4>Manutenção Preventiva</h4>
+                                                <p>Inspeção e manutenção completa dos extintores</p>
+                                                <span class="preco">A partir de R$ 50,00</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="servico-option">
+                                        <input type="radio" id="recarga" name="tipoServico" value="recarga" required>
+                                        <label for="recarga">
+                                            <div class="servico-card">
+                                                <i class="fas fa-fire-extinguisher"></i>
+                                                <h4>Recarga de Extintores</h4>
+                                                <p>Recarga e teste de pressão dos extintores</p>
+                                                <span class="preco">A partir de R$ 80,00</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informações do Cliente -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-user"></i> Informações do Cliente</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nome">Nome Completo *</label>
+                                            <input type="text" id="nome" name="nome" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">E-mail *</label>
+                                            <input type="email" id="email" name="email" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="telefone">Telefone *</label>
+                                            <input type="tel" id="telefone" name="telefone" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="empresa">Empresa/Instituição</label>
+                                            <input type="text" id="empresa" name="empresa">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data e Horário -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-calendar-check"></i> Data e Horário</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="data">Data Preferida *</label>
+                                            <input type="date" id="data" name="data" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="horario">Horário Preferido *</label>
+                                            <select id="horario" name="horario" required>
+                                                <option value="">Selecione um horário</option>
+                                                <option value="08:00">08:00</option>
+                                                <option value="09:00">09:00</option>
+                                                <option value="10:00">10:00</option>
+                                                <option value="11:00">11:00</option>
+                                                <option value="14:00">14:00</option>
+                                                <option value="15:00">15:00</option>
+                                                <option value="16:00">16:00</option>
+                                                <option value="17:00">17:00</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Local -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-map-marker-alt"></i> Local do Serviço</h3>
+                                <div class="form-group">
+                                    <label for="endereco">Endereço Completo *</label>
+                                    <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, CEP" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="complemento">Complemento</label>
+                                            <input type="text" id="complemento" name="complemento" placeholder="Apartamento, sala, etc.">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="referencia">Ponto de Referência</label>
+                                            <input type="text" id="referencia" name="referencia" placeholder="Próximo ao...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detalhes do Serviço -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-info-circle"></i> Detalhes do Serviço</h3>
+                                <div class="form-group">
+                                    <label for="quantidade">Quantidade de Extintores</label>
+                                    <input type="number" id="quantidade" name="quantidade" min="1" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="observacoes">Observações Adicionais</label>
+                                    <textarea id="observacoes" name="observacoes" rows="4" placeholder="Descreva qualquer informação adicional sobre o serviço..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Termos e Condições -->
+                            <div class="form-section">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="termos" name="termos" required>
+                                    <label for="termos">
+                                        Li e aceito os <a href="#" class="termos-link">termos e condições</a> do serviço *
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+                                    <i class="fas fa-eraser"></i> Limpar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-calendar-plus"></i> Agendar Serviço
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-section">
+            <h3>Contato</h3>
+            <p>Email: contato@toughservice.com</p>
+            <p>Telefone: (71) xxxx-xxxx</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/agendamento.js"></script>
+</body>
+</html>
