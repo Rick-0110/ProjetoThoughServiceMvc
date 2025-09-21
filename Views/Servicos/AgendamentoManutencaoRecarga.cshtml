@@ -135,6 +135,30 @@
                                 </div>
                             </div>
 
+                            <div class="form-section">
+                                <h3><i class="fas fa-fire-extinguisher"></i> Tipo de Extintor</h3>
+                                <div class="form-group">
+                                    <label for="tipoExtintor">Selecione o tipo de extintor *</label>
+                                    <select id="tipoExtintor" name="tipoExtintor" required>
+                                        <option value="">Selecione o tipo de extintor</option>
+                                        <option value="agua">Água (Classe A)</option>
+                                        <option value="espuma">Espuma (Classe A e B)</option>
+                                        <option value="co2">CO₂ (Classe B e C)</option>
+                                        <option value="po-quimico">Pó Químico ABC (Classe A, B e C)</option>
+                                        <option value="po-quimico-bc">Pó Químico BC (Classe B e C)</option>
+                                        <option value="halon">Halon (Classe A, B e C)</option>
+                                        <option value="agua-pressurizada">Água Pressurizada</option>
+                                        <option value="agua-gel">Água com Gel</option>
+                                        <option value="nao-sei">Não sei o tipo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="capacidade">Capacidade do Extintor (litros ou kg)</label>
+                                    <input type="text" id="capacidade" name="capacidade" placeholder="Ex: 4kg, 6kg, 10L, etc.">
+                                </div>
+                            </div>
+
+
                             <!-- Informações do Cliente -->
                             <div class="form-section">
                                 <h3><i class="fas fa-user"></i> Informações do Cliente</h3>
@@ -159,12 +183,7 @@
                                             <input type="tel" id="telefone" name="telefone" required>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="empresa">Empresa/Instituição</label>
-                                            <input type="text" id="empresa" name="empresa">
-                                        </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
 

@@ -20,27 +20,14 @@
         <div class="container px-4 px-lg-5">
 
             <!-- Área de Pesquisa Centralizada -->
-            <section class="search-section">
-              <div class="container">
-                <div class="search-container">
-                  <form class="search-form" asp-action="Buscar" asp-controller="Produto" method="GET">
-                    <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
-                    <button class="search-button" type="submit">
-                      <i class="bi bi-search search-icon"></i>
-                      Buscar
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </section>
-
-           
+         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
                 <li class="nav-item"><a class="nav-link active" asp-action="Index" asp-controller="Home">Home</a></li>
 
                 @if (usuarioEhAdmin)
@@ -52,12 +39,13 @@
 
                 @if (!isLoggedIn)
                 {
-                    <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
                 }
                 else
                 {
-                    <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                  
+                    <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
                 }
 
                 <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
@@ -77,8 +65,9 @@
     </nav>
 
 <body>
-    <h1>Adicionar Produto</h1>
+    
     <form class="form-produto" asp-action="AdicionarProdutoADM" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <h1>Adicionar Produto</h1>
         <label for="Nome">Nome do Produto:</label>
         <input type="text" id="Nome" name="Nome" required /><br><br>
 
