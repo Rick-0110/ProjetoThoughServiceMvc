@@ -1,5 +1,6 @@
 
 @import url('styles.css');
+
 * {
     margin: 0;
     padding: 0;
@@ -207,6 +208,76 @@ body {
 .perfil-acoes button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.perfil-servicos {
+    margin-top: 20px;
+}
+
+    .perfil-servicos .info-card {
+        padding: 24px 24px 28px;
+    }
+
+        .perfil-servicos .info-card h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .perfil-servicos .info-card .d-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .perfil-servicos .info-card a.btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            border-radius: 10px;
+            color: #333;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+            .perfil-servicos .info-card a.btn i {
+                font-size: 1.25rem;
+                color: #8a0404;
+            }
+
+            .perfil-servicos .info-card a.btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+                border-color: #dcdcdc;
+            }
+
+
+            .perfil-servicos .info-card a.btn[href*="Historico"],
+            .perfil-servicos .info-card a.btn:nth-child(1) {
+                background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            }
+
+            .perfil-servicos .info-card a.btn[href*="Metodos"],
+            .perfil-servicos .info-card a.btn:nth-child(2) {
+                background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+            }
+
+            .perfil-servicos .info-card a.btn[href*="Baixar"],
+            .perfil-servicos .info-card a.btn:nth-child(3) {
+                background: linear-gradient(180deg, #ffffff 0%, #f9f9f9 100%);
+            }
+
+@media (max-width: 480px) {
+    .perfil-servicos .info-card .d-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Footer */
