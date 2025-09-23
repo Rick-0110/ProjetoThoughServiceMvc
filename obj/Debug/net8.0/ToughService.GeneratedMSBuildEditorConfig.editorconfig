@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsXHBlcmZpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Windows/Source/Repos/ProjetoThoughServiceMvc/Views/Perfil/VerHistoricoPedidos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsXFZlckhpc3Rvcmljb1BlZGlkb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Windows/Source/Repos/ProjetoThoughServiceMvc/Views/Registro/login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9cbG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

@@ -59,4 +59,10 @@ public class PerfilController : Controller
 
         return View("Index", usuario);
     }
+
+    [HttpGet]
+    public IActionResult VerHistoricoPedidos()
+    {
+        return View();
+    }
 }

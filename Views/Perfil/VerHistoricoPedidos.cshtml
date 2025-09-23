@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+    <title>Histórico de Pedidos</title>
+    <link href="~/css/VerHistoricoPedidos.css" rel="stylesheet" />
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="~/IMG/LOGO (2).png" />
+</head>
+<body>
+
+  
+    <div class="page-header">
+        <h1><i class="bi bi-receipt"></i> Histórico de Pedidos</h1>
+        <p class="text-muted">Acompanhe seus pedidos e o status de cada compra.</p>
+    </div>
+
+    <div class="orders-wrapper">
+        <div class="orders-filters">
+            <input type="text" placeholder="Buscar por ID ou produto" />
+            <select>
+                <option value="">Todos os status</option>
+                <option>Pago</option>
+                <option>Pendente</option>
+                <option>Cancelado</option>
+            </select>
+            <select>
+                <option>Últimos 30 dias</option>
+                <option>Últimos 6 meses</option>
+                <option>Último ano</option>
+            </select>
+        </div>
+
+        <div class="orders-list">
+            <div class="order-card">
+                <div class="order-top">
+                    <div class="order-id">Pedido #12345</div>
+                    <span class="order-status status-pago">Pago</span>
+                </div>
+                <div class="order-body">
+                    <div class="order-meta">Realizado em 20/09/2025 • Total R$ 199,90</div>
+                    <div class="order-actions">
+                        <a href="comprovante.html"><i class="bi bi-download"></i> Nota/Comprovante</a>
+                        <a href="#"><i class="bi bi-truck"></i> Rastrear</a>
+                        <a href="#"><i class="bi bi-eye"></i> Detalhes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-card">
+                <div class="order-top">
+                    <div class="order-id">Pedido #12312</div>
+                    <span class="order-status status-pendente">Pendente</span>
+                </div>
+                <div class="order-body">
+                    <div class="order-meta">Realizado em 12/09/2025 • Total R$ 89,00</div>
+                    <div class="order-actions">
+                        <a href="comprovante.html"><i class="bi bi-download"></i> Nota/Comprovante</a>
+                        <a href="#"><i class="bi bi-eye"></i> Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:18px">
+            <a href="perfil.html" class="btn btn-secondary">Voltar ao perfil</a>
+        </div>
+    </div>
+</body>
+</html>
+
