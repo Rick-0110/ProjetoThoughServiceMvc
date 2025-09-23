@@ -1,4 +1,6 @@
-﻿.voltarPG {
+﻿@import url('styles.css');
+
+.voltarPG {
     position: absolute;
     top: 10px;
     left: 10px;
