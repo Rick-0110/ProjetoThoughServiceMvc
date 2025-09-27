@@ -4,7 +4,7 @@
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-      var isLoggedIn = ViewBag.IsLoggedIn ?? false;
+    var isLoggedIn = ViewBag.IsLoggedIn ?? false;
     bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
 }
 
@@ -26,196 +26,201 @@
 
     <!-- Core theme CSS (includes Bootstrap) -->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <link href="~/css/TemaVermelho.css" rel="stylesheet" />
+    <link href="~/css/Minimalista.css" rel="stylesheet" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
+    <!-- Navigation Minimalista -->
+    <nav class="navbar-minimal">
+        <div class="nav-container">
+            <!-- Logo -->
+            <div class="nav-logo">
+                <a asp-action="Index" asp-controller="Home" class="logo-link">
+                    
+                    <span class="logo-text">Tough Service</span>
+                </a>
+            </div>
 
-            <!-- Área de Pesquisa Centralizada -->
- 
-                <section class="search-section">
-                    <div class="container">
-                        <div class="search-container">
-                            <form class="search-form" asp-action="Buscar" asp-controller="Home" method="GET">
-                                <input type="text" name="busca" class="search-input" placeholder="Buscar produtos..." required />
-                                <button class="search-button" type="submit">
-                                    <i class="bi bi-search search-icon"></i>
-                                    Buscar
-                                </button>
-                            </form>
-
-                       
-
-                        </div>
+            <!-- Busca Minimalista -->
+            <div class="nav-search">
+                <form asp-action="Buscar" asp-controller="Home" method="GET" class="search-form-minimal">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="busca" placeholder="Buscar produtos..." class="search-input-minimal" />
                     </div>
-                </section>
+                </form>
+            </div>
 
-
-  
-
-
-           
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+            <!-- Menu Principal -->
+            <div class="nav-menu">
+                <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
 
                 @if (usuarioEhAdmin)
                 {
-                    <li class="nav-item">
-                        <a class="nav-link active" asp-action="AdicionarProdutoADM" asp-controller="Home">Adicionar Produto</a>
-                    </li>
+                    <a asp-action="AdicionarProdutoADM" asp-controller="Home" class="nav-link">Admin</a>
                 }
 
                 @if (!isLoggedIn)
                 {
-                    <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                    <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
+                    <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
                 }
                 else
                 {
-                    <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                        
+                    <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
                 }
 
-                <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
-                <li class="nav-item"><a class="nav-link" asp-action="Sobre" asp-controller="Home">Sobre</a></li>
-            </ul>
-             @if (!isLoggedIn)
+                <a asp-action="Servicos" asp-controller="Servicos" class="nav-link">Serviços</a>
+                <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
+            </div>
+
+            <!-- Carrinho -->
+            <div class="nav-cart">
+                @if (!isLoggedIn)
                 {
-             
-                
-                   
-                    <form class="d-flex">
-                        <a class="btn btn-outline-dark" asp-action="Login" asp-controller="Registro">
-                            <i class="bi-cart-fill me-1"></i>
-                            Faça o login
-
-
-                        </a>
-
-                    </form>
+                    <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </a>
                 }
                 else
                 {
-                    <form class="d-flex">
-                        <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
-                            <i class="bi-cart-fill me-1"></i>
-                            Carrinho
-                            <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
-
-                        </a>
-
-                    </form>
+                    <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">@quantidadeItensCarrinho</span>
+                    </a>
                 }
             </div>
+
+            <!-- Menu Mobile -->
+            <button class="mobile-menu-btn" type="button">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
-    <!-- Header -->
+    <!-- Hero Section Minimalista -->
     <header class="bg-dark py-5" height="300px">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center text-white">
-                <img src="IMG/LOGO (2).png" height="150px" alt="" class="LogoThough" />
-                <h1 class="display-4 fw-bolder">TOUGH SERVICE</h1>
+                <img src="IMG/LOGO (2).png" height="200px" alt="" class="LogoThough" />
                 <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANÇA LTDA</p>
+                <div class="hero-features">
+                    <span class="feature-badge">✓ Certificado ISO</span>
+                    <span class="feature-badge">✓ Entrega Rápida</span>
+                    <span class="feature-badge">✓ Suporte 24/7</span>
+                </div>
+            </div>
             </div>
         </div>
     </header>
 
-    
+
     <!-- Section: Produtos -->
+    <!-- Produtos Minimalistas -->
+    <section class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nossos Produtos</h2>
+                <p class="section-subtitle">Equipamentos de segurança com qualidade certificada</p>
+            </div>
 
-
-  
-<section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            
-            <!-- Produto 1 -->
-  @if (Model != null && Model.Count > 0)
-{
-    foreach (var produto in Model)
-    {
-        <div class="col mb-5">
-            <div class="card h-100">
-                <img class="card-img-top" src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
-
-                <div class="card-body p-4">
-                    <div class="text-center">
-                        <h5 class="fw-bolder">@produto.Nome</h5>
-                        ⭐⭐⭐⭐⭐<br />
-                        R$ @produto.Preco.ToString("F2")
+            <div class="products-grid">
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var produto in Model)
+                    {
+                        <div class="product-card-minimal">
+                            <div class="product-image">
+                                <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
+                                <div class="product-overlay">
+                                    <a asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id" class="view-btn">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if (usuarioEhAdmin)
+                                    {
+                                        <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
+                                            <input type="hidden" name="id" value="@produto.Id" />
+                                            <button type="submit" class="delete-btn">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">@produto.Nome</h3>
+                                <div class="product-rating">
+                                    <div class="stars">★★★★★</div>
+                                </div>
+                                <div class="product-price">R$ @produto.Preco.ToString("F2")</div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <p>Nenhum produto disponível no momento.</p>
                     </div>
-                </div>
-                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                    <div class="text-center">
-                        <a class="btn btn-outline-dark mt-auto" asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id">Visualizar</a>
-                       @if (usuarioEhAdmin)
-
-                        {
-                    <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" style="display:inline;">
-                        <input type="hidden" name="id" value="@produto.Id" />
-                        <button type="submit" class="btn btn-outline-danger mt-2">Excluir</button>
-                    </form>
-                            }
-                        
-                       
-                    </div>
-                </div>
+                }
             </div>
         </div>
-    }
-}
-else
-{
-    <p>Nenhum produto disponível no momento.</p>
-}
+    </section>
 
 
-    </div>
-</section>
+    <!-- Footer Minimalista -->
+    <footer class="footer-minimal">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Tough Service</h3>
+                    <p>Equipamentos e assessoria de segurança</p>
+                </div>
 
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Empresa</h4>
+                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
+                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+                        <a href="#">Contato</a>
+                    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Sobre Nós</h3>
-                <p>Tough Service - Sua plataforma confiável para serviços de qualidade.</p>
-            </div>
+                    <div class="footer-column">
+                        <h4>Suporte</h4>
+                        <a href="#">FAQ</a>
+                        <a href="#">Política de Privacidade</a>
+                        <a href="#">Termos de Uso</a>
+                    </div>
 
-            <div class="footer-section">
-                <h3>Contato</h3>
-                <p>Email: contato@toughservice.com</p>
-                <p>Telefone: (71) 1234-5678</p>
-            </div>
-
-            <div class="footer-section">
-                <h3>Redes Sociais</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i><a href="https://www.instagram.com/tough_service?utm_source=ig_web_button_share_sheet&igsh=MW1hdjNwZHoyZ2NsMw=="></a></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <div class="footer-column">
+                        <h4>Redes Sociais</h4>
+                        <div class="social-links-minimal">
+                            <a href="#" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="footer-section">
-                <h3>Links Úteis</h3>
-                <ul>
-                    <li><a href="#">Termos de Uso</a></li>
-                    <li><a href="#">Política de Privacidade</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
             </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
         </div>
     </footer>
 
@@ -223,5 +228,7 @@ else
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS -->
     <script src="js/scripts.js"></script>
+    <!-- Minimal Interactive JS -->
+    <script src="~/js/MinimalistaPrincipal.js"></script>
 </body>
 </html>

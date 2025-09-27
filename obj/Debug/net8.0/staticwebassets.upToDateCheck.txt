@@ -2,12 +2,14 @@ wwwroot\css\AdicionarProdutoADM.css
 wwwroot\css\AgendamentoManutencaoRecarga.css
 wwwroot\css\carrinho.css
 wwwroot\css\login.css
+wwwroot\css\Minimalista.css
 wwwroot\css\perfil.css
 wwwroot\css\registro.css
 wwwroot\css\servicos.css
 wwwroot\css\site.css
 wwwroot\css\Sobre.css
 wwwroot\css\styles.css
+wwwroot\css\TemaVermelho.css
 wwwroot\css\VerHistoricoPedidos.css
 wwwroot\favicon.ico
 wwwroot\IMG\50KG.png
@@ -32,10 +34,10 @@ wwwroot\IMG\TOUGH-SERVICE.png
 wwwroot\IMG\tough.png
 wwwroot\js\carrinho.js
 wwwroot\js\login.js
+wwwroot\js\MinimalistaPrincipal.js
 wwwroot\js\perfil.js
 wwwroot\js\registro.js
 wwwroot\js\scripts.js
-wwwroot\js\servicos.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
