@@ -26,7 +26,7 @@
 
     <!-- Core theme CSS (includes Bootstrap) -->
     <link href="~/css/styles.css" rel="stylesheet" />
-    <link href="~/css/TemaVermelho.css" rel="stylesheet" />
+    
     <link href="~/css/Minimalista.css" rel="stylesheet" />
 
     <!-- Google Fonts -->
@@ -75,7 +75,10 @@
                     <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
                 }
 
-                <a asp-action="Servicos" asp-controller="Servicos" class="nav-link">Serviços</a>
+               
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
+                       asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+             
                 <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
             </div>
 

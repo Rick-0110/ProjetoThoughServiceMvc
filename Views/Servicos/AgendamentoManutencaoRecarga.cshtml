@@ -2,9 +2,12 @@
 @using ProjetoThoughServiceMvc.Models
 
 @{
+    bool isLoggedIn = User.Identity.IsAuthenticated;
+
+}
+@{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-    var isLoggedIn = ViewBag.IsLoggedIn ?? false;
     bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
 }
 
@@ -22,77 +25,54 @@
 </head>
 <body>
     <header>
-        <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-
-              
-                
-                <img class="LogoAgendamento" height="100vh" src="~/IMG/LOGO (2).png"  />
-               
-
-
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
 
-                        @if (usuarioEhAdmin)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link active" asp-action="AdicionarProdutoADM" asp-controller="Home">Adicionar Produto</a>
-                            </li>
-                        }
-
+                        <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
                         @if (!isLoggedIn)
                         {
-                            <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                        }
-                        else
-                        {
-                            
                             <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
                             <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
                         }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
+                        }
 
-                        <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Sobre" asp-controller="Home">Sobre</a></li>
+
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
+                           asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+                        <li class="nav-item dropdown">
+
+                        </li>
                     </ul>
-                    @if (!isLoggedIn)
-                    {
+                    <div class="nav-cart">
+                        @if (!isLoggedIn)
+                        {
 
 
-
-                        <form class="d-flex">
-                            <a class="btn btn-outline-dark" asp-action="Login" asp-controller="Registro">
-                                <i class="bi-cart-fill me-1"></i>
-                                Faça o login
-
-
+                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Carrinho</span>
                             </a>
+                        }
+                        else
+                        {
 
-                        </form>
-                    }
-                    else
-                    {
-                        <form class="d-flex">
-                            <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
-                                <i class="bi-cart-fill me-1"></i>
-                                Carrinho
-                                <span class="badge bg-dark text-white ms-1 rounded-pill">@quantidadeItensCarrinho</span>
-
+                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">@quantidadeItensCarrinho</span>
                             </a>
+                        }
+                    </div>
 
-                        </form>
-                    }
                 </div>
             </div>
         </nav>
-
     </header>
 
     <main class="agendamento-container">

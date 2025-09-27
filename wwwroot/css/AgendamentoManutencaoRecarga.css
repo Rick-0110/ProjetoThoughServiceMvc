@@ -1,4 +1,6 @@
 ﻿@import url('styles.css');
+@import url('Minimalista.css');
+
 /* Estilos para página de agendamento */
 .agendamento-container {
     background: linear-gradient(135deg, #5e0000 0%, #000000 100%);

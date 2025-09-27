@@ -68,7 +68,7 @@ body {
 
 /* ===== NAVEGAÇÃO MINIMALISTA ===== */
 .navbar-minimal {
-    background: var(--white);
+    
     border-bottom: 1px solid var(--gray-200);
     padding: var(--space-4) 0;
     position: sticky;
@@ -152,6 +152,7 @@ body {
     display: flex;
     align-items: center;
     gap: var(--space-6);
+  
 }
 
 .nav-link {
