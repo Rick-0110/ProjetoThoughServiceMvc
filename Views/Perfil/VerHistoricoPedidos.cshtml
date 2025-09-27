@@ -1,10 +1,12 @@
 ﻿@model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
 @using ProjetoThoughServiceMvc.Models
+@{
+    bool isLoggedIn = User.Identity.IsAuthenticated;
 
+}
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-    var isLoggedIn = ViewBag.IsLoggedIn ?? false;
     bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
 }
 
@@ -19,44 +21,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
     <title>Histórico de Pedidos</title>
     <link href="~/css/VerHistoricoPedidos.css" rel="stylesheet" />
-  
+    <link href="~/css/Minimalista.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="icon" href="~/IMG/LOGO (2).png" />
 </head>
 <body>
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li><img src="~/IMG/LOGO (2).png" alt="Logo Tough Service" width="40px" /></li>
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" asp-action="Index" asp-controller="Home">Home</a></li>
-                    @if (!isLoggedIn)
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
-                    }
-                    else
-                    {
-                        <li class="nav-item"><a class="nav-link" asp-action="Perfil" asp-controller="Perfil">Perfil</a></li>
-                    }
-                    <li class="nav-item"><a class="nav-link" asp-action="Servicos" asp-controller="Servicos">Serviços</a></li>
-                </ul>
-                <form class="d-flex">
-                    <a class="btn btn-outline-dark" asp-action="Index" asp-controller="Carrinho">
-                        <i class="bi-cart-fill me-1"></i> Carrinho
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                    </a>
-                </form>
-            </div>
-        </div>
-    </nav>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
 
+
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")"
+                               asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
+                        @if (!isLoggedIn)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
+                        }
+                        else
+                        {
+                            <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
+                        }
+
+
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
+                               asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+                        </li>
+                        <li class="nav-item dropdown">
+
+                        </li>
+                    </ul>
+                    <div class="nav-cart">
+                        @if (!isLoggedIn)
+                        {
+
+
+                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Carrinho</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">@quantidadeItensCarrinho</span>
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
   
     <div class="page-header">
         <h1><i class="bi bi-receipt"></i> Histórico de Pedidos</h1>
