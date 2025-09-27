@@ -96,7 +96,8 @@
                     <div class="carrinho-item">
                         <div class="info-produto">
                             <div class="imagem-produto">
-                                <img src="@Url.Content($"~/IMG/Model.ImagemUrl")" alt="@item.NomeProduto" class="img-produto" style="max-width:120px;max-height:120px;" />
+                                <img src="@Url.Content("~/IMG/" + item.ImagemUrl)" alt="@item.NomeProduto"class="img-produto" style="max-width:300px;max-height:300px;" />
+
                             </div>
                             <h3>@item.NomeProduto</h3>
                             <p class="preco">

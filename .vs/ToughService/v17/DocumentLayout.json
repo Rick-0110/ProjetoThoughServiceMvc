@@ -54,8 +54,7 @@
               "RelativeToolTip": "wwwroot\\css\\VerHistoricoPedidos.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-23T18:45:18.916Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-23T18:45:18.916Z"
             },
             {
               "$type": "Document",
@@ -74,14 +73,13 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "VerHistoricoPedidos.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\VerHistoricoPedidos.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "RelativeDocumentMoniker": "Views\\Perfil\\VerHistoricoPedidos.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\VerHistoricoPedidos.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "RelativeToolTip": "Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "ViewState": "AgIAABwAAAAAAAAAAAAAADUAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-23T18:29:44.011Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-23T18:29:44.011Z"
             },
             {
               "$type": "Document",
@@ -93,8 +91,7 @@
               "RelativeToolTip": "Views\\Perfil\\perfil.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAAADgAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-23T17:50:18.782Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-23T17:50:18.782Z"
             },
             {
               "$type": "Document",
@@ -106,8 +103,7 @@
               "RelativeToolTip": "wwwroot\\css\\AdicionarProdutoADM.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-21T00:11:11.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-21T00:11:11.043Z"
             }
           ]
         }

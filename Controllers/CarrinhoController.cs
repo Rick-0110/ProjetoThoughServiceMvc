@@ -91,7 +91,8 @@ namespace ProjetoThoughServiceMvc.Controllers
                     Id = produto.Id,
                     NomeProduto = produto.Nome,
                     Preco = produto.Preco,
-                    Quantidade = quantidade
+                    Quantidade = quantidade,
+                    ImagemUrl = produto.ImagemUrl
                 });
             }
 
