@@ -97,7 +97,7 @@ body {
 }
 
 .logo-img {
-    height: 40px;
+    height: 60vh;
     width: auto;
 }
 
@@ -146,13 +146,40 @@ body {
         background: var(--white);
         box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
     }
+/* Menu-others */
+.nav-others {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+}
 
+.nav-link-others {
+    text-decoration: none;
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    position: relative;
+}
+.nav-link-others:hover,
+    .nav-link-others.active {
+        color: var(--primary-red);
+    }
+        .nav-link-others.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-red);
+            border-radius: 1px;
+        }
 /* Menu */
 .nav-menu {
     display: flex;
     align-items: center;
     gap: var(--space-6);
-  
 }
 
 .nav-link {

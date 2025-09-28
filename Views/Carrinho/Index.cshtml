@@ -34,57 +34,64 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container px-4 px-lg-5">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li><img src="~/IMG/LOGO (2).png" alt="" width="40px"></li>
+        <nav class="navbar-minimal">
+            <div class="nav-container">
+                <!-- Logo -->
+                <div class="nav-logo">
+                    <a asp-action="Index" asp-controller="Home" class="logo-link">
 
-
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")"
-                               asp-action="Index" asp-controller="Home">Home</a>
-                        </li>
-                        @if (!isLoggedIn)
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-action="Registro" asp-controller="Registro">Registro</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-action="Login" asp-controller="Registro">Login</a></li>
-                        }
-                        else
-                        {
-                            <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
-                        }
-
-
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
-                               asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-                        </li>
-                        <li class="nav-item dropdown">
-
-                        </li>
-                    </ul>
-                    <div class="nav-cart">
-                        @if (!isLoggedIn)
-                        {
-
-
-                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <span>Carrinho</span>
-                            </a>
-                        }
-                        else
-                        {
-                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="cart-count">@quantidadeItensCarrinho</span>
-                            </a>
-                        }
-                    </div>
-
+                        <img src="~/IMG/LOGO (2).png" alt="" width="60vh">
+                    </a>
                 </div>
+
+
+                <!-- Menu Principal -->
+                <div class="nav-menu">
+                    <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
+
+                
+
+                    @if (!isLoggedIn)
+                    {
+                        <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
+                        <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
+                    }
+
+
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
+                       asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+
+                    <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
+                </div>
+
+                <!-- Carrinho -->
+                <div class="nav-cart">
+                    @if (!isLoggedIn)
+                    {
+                        <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">@quantidadeItensCarrinho</span>
+                        </a>
+                    }
+                </div>
+
+                <!-- Menu Mobile -->
+                <button class="mobile-menu-btn" type="button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </nav>
     </header>
@@ -157,5 +164,7 @@
             <p>Telefone: (71) xxxx-xxxx</p>
         </div>
     </footer>
+    <script src="~/js/MinimalistaPrincipal.js"></script>
 </body>
+
 </html>
