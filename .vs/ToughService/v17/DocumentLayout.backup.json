@@ -79,8 +79,7 @@
               "RelativeToolTip": "Views\\Carrinho\\Index.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACgAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:49:38.748Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:49:38.748Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "wwwroot\\css\\Minimalista.css",
               "ViewState": "AgIAAIQAAAAAAAAAAAAiwKIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-28T14:36:29.388Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:36:29.388Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "Views\\Perfil\\perfil.cshtml",
               "ViewState": "AgIAAM8AAAAAAAAAAAAAAN8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:36:05.059Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:36:05.059Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "Views\\Servicos\\servicos.cshtml",
               "ViewState": "AgIAAEkAAAAAAAAAAAAAAGEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:26:08.516Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:26:08.516Z"
             },
             {
               "$type": "Document",
@@ -131,8 +127,7 @@
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
               "ViewState": "AgIAACMAAAAAAAAAAAAAAC0AAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-23T18:42:16.252Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-23T18:42:16.252Z"
             },
             {
               "$type": "Document",
@@ -144,8 +139,7 @@
               "RelativeToolTip": "wwwroot\\css\\VerHistoricoPedidos.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T17:55:48.5Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T17:55:48.5Z"
             },
             {
               "$type": "Document",
@@ -157,8 +151,7 @@
               "RelativeToolTip": "Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "ViewState": "AgIAABEAAAAAAAAAAAAAwCMAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T17:55:28.102Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T17:55:28.102Z"
             }
           ]
         }
