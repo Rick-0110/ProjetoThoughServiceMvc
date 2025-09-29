@@ -2,10 +2,10 @@ wwwroot\css\AdicionarProdutoADM.css
 wwwroot\css\AgendamentoManutencaoRecarga.css
 wwwroot\css\carrinho.css
 wwwroot\css\login.css
+wwwroot\css\Minimalista.css
 wwwroot\css\perfil.css
 wwwroot\css\registro.css
 wwwroot\css\servicos.css
-wwwroot\css\site.css
 wwwroot\css\Sobre.css
 wwwroot\css\styles.css
 wwwroot\css\TemaVermelho.css
@@ -95,4 +95,3 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\css\Minimalista.css

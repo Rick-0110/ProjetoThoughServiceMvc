@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\home\\sobre.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\home\\sobre.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\carrinho\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\carrinho\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -55,19 +59,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Sobre.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Sobre.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Sobre.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Sobre.cshtml",
+              "RelativeToolTip": "Views\\Home\\Sobre.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-28T14:53:26.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Carrinho\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Carrinho\\Index.cshtml",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Carrinho\\Index.cshtml",
               "RelativeToolTip": "Views\\Carrinho\\Index.cshtml",
-              "ViewState": "AgIAACoAAAAAAAAAAAAAADcAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACgAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:49:38.748Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:49:38.748Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Minimalista.css",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\Minimalista.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\Minimalista.css",
@@ -75,25 +91,23 @@
               "RelativeToolTip": "wwwroot\\css\\Minimalista.css",
               "ViewState": "AgIAAIQAAAAAAAAAAAAiwKIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-28T14:36:29.388Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:36:29.388Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "perfil.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\perfil.cshtml",
               "RelativeDocumentMoniker": "Views\\Perfil\\perfil.cshtml",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\perfil.cshtml",
               "RelativeToolTip": "Views\\Perfil\\perfil.cshtml",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAAAFUAAABUAAAAAAAAAA==",
+              "ViewState": "AgIAAM8AAAAAAAAAAAAAAN8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:36:05.059Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:36:05.059Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "servicos.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\servicos.cshtml",
               "RelativeDocumentMoniker": "Views\\Servicos\\servicos.cshtml",
@@ -101,12 +115,11 @@
               "RelativeToolTip": "Views\\Servicos\\servicos.cshtml",
               "ViewState": "AgIAAEkAAAAAAAAAAAAAAGEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T14:26:08.516Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-28T14:26:08.516Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
@@ -114,12 +127,11 @@
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
               "ViewState": "AgIAACMAAAAAAAAAAAAAAC0AAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-23T18:42:16.252Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-23T18:42:16.252Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "VerHistoricoPedidos.css",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\VerHistoricoPedidos.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\VerHistoricoPedidos.css",
@@ -127,12 +139,11 @@
               "RelativeToolTip": "wwwroot\\css\\VerHistoricoPedidos.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T17:55:48.5Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T17:55:48.5Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "VerHistoricoPedidos.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "RelativeDocumentMoniker": "Views\\Perfil\\VerHistoricoPedidos.cshtml",
@@ -140,8 +151,7 @@
               "RelativeToolTip": "Views\\Perfil\\VerHistoricoPedidos.cshtml",
               "ViewState": "AgIAABEAAAAAAAAAAAAAwCMAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T17:55:28.102Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T17:55:28.102Z"
             }
           ]
         }

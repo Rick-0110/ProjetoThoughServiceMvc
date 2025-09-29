@@ -46,7 +46,7 @@
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
                        asp-action="Servicos" asp-controller="Servicos">Serviços</a>
 
-                    <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
+                    <a asp-action="Sobre" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Sobre" ? "active" : "")">Sobre</a>
                 </div>
 
                 <!-- Carrinho -->
