@@ -48,10 +48,7 @@
                 <div class="nav-menu">
                     <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
 
-                    @if (usuarioEhAdmin)
-                    {
-                        <a asp-action="AdicionarProdutoADM" asp-controller="Home" class="nav-link">Admin</a>
-                    }
+             
 
                     @if (!isLoggedIn)
                     {
