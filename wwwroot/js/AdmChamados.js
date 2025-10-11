@@ -1,41 +1,5 @@
 // ===== JAVASCRIPT SIMPLES PARA CHAMADOS =====
 
-// Dados simulados
-let chamadosData = [
-    {
-        id: 1,
-        nome: 'João Silva',
-        data: '2024-01-15',
-        tipo: 'instalacao',
-        status: 'novo',
-        tipoExtintor: 'Extintor PQS 4kg',
-        quantidade: 5,
-        observacoes: 'Instalação em escritório comercial',
-        telefone: '(11) 99999-9999'
-    },
-    {
-        id: 2,
-        nome: 'Maria Santos',
-        data: '2024-01-16',
-        tipo: 'agendamento',
-        status: 'em-andamento',
-        tipoExtintor: 'Sistema de Sprinklers',
-        quantidade: 1,
-        observacoes: 'Sistema completo para indústria',
-        telefone: '(11) 88888-8888'
-    },
-    {
-        id: 3,
-        nome: 'Pedro Costa',
-        data: '2024-01-14',
-        tipo: 'manutencao',
-        status: 'finalizado',
-        tipoExtintor: 'Extintor CO2 5kg',
-        quantidade: 3,
-        observacoes: 'Manutenção preventiva',
-        telefone: '(11) 77777-7777'
-    }
-];
 
 // Carregar quando a página abrir
 document.addEventListener('DOMContentLoaded', function () {
