@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chamados - Área Administrativa</title>
+    <link rel="stylesheet" href="~/css/ADM.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="IMG/LOGO (2).png" alt="Tough Service" class="logo">
+                <h1>Gerenciar Chamados</h1>
+            </div>
+            <div class="user-info">
+                <a href="admin.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <a href="index.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- Filters and Actions -->
+            <div class="filters-section">
+                <div class="filters-left">
+                    <div class="filter-group">
+                        <label for="statusFilter">Status:</label>
+                        <select id="statusFilter" onchange="filterChamados()">
+                            <option value="">Todos</option>
+                            <option value="novo">Novo</option>
+                            <option value="em-andamento">Em Andamento</option>
+                            <option value="finalizado">Finalizado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="tipoFilter">Tipo:</label>
+                        <select id="tipoFilter" onchange="filterChamados()">
+                            <option value="">Todos</option>
+                            <option value="instalacao">Instalação</option>
+                            <option value="agendamento">Agendamento</option>
+                            <option value="manutencao">Manutenção</option>
+                            <option value="reparo">Reparo</option>
+                            <option value="suporte">Suporte</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filters-right">
+                    <button class="btn-primary" onclick="refreshChamados()">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    <button class="btn-secondary" onclick="exportChamados()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalChamados">0</h3>
+                        <p>Total de Chamados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="chamadosNovos">0</h3>
+                        <p>Novos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="chamadosAndamento">0</h3>
+                        <p>Em Andamento</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="chamadosFinalizados">0</h3>
+                        <p>Finalizados</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chamados List -->
+            <div class="chamados-section">
+                <h2>Lista de Chamados</h2>
+                <div class="chamados-list" id="chamadosList">
+                    <!-- Chamados serão carregados aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Detalhes do Chamado -->
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Detalhes do Chamado</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="chamado-details" id="chamadoDetails">
+                    <!-- Detalhes serão carregados aqui -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Fechar</button>
+                <button class="btn-warning" onclick="marcarEmAndamento()">Marcar em Andamento</button>
+                <button class="btn-success" onclick="finalizarChamado()">Finalizar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/AdmChamados.js"></script>
+</body>
+</html>

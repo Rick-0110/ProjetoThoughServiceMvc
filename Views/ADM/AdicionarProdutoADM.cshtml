@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Produtos - Área Administrativa</title>
+    <link rel="stylesheet" href="CSS/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="IMG/LOGO (2).png" alt="Tough Service" class="logo">
+                <h1>Gerenciar Produtos</h1>
+            </div>
+            <div class="user-info">
+                <a href="admin.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <a href="index.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('adicionar')">
+                    <i class="fas fa-plus"></i> Adicionar Produto
+                </button>
+                <button class="tab-btn" onclick="showTab('listar')">
+                    <i class="fas fa-list"></i> Listar Produtos
+                </button>
+            </div>
+
+            <!-- Tab: Adicionar Produto -->
+            <div id="tab-adicionar" class="tab-content active">
+                <div class="form-section">
+                    <h2>Adicionar Novo Produto</h2>
+                    <form id="form-adicionar-produto" enctype="multipart/form-data" onsubmit="submitProduct(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nome">Nome do Produto *</label>
+                                <input type="text" id="nome" name="nome" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoria">Categoria *</label>
+                                <select id="categoria" name="categoria" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="extintores">Extintores</option>
+                                    <option value="sistemas-fixos">Sistemas Fixos</option>
+                                    <option value="detecao">Sistemas de Detecção</option>
+                                    <option value="acessorios">Acessórios</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="preco">Preço (R$) *</label>
+                                <input type="number" id="preco" name="preco" step="0.01" min="0" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantidade">Quantidade em Estoque *</label>
+                                <input type="number" id="quantidade" name="quantidade" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição *</label>
+                            <textarea id="descricao" name="descricao" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagem">Imagem do Produto</label>
+                            <input type="file" id="imagem" name="imagem" accept="image/*">
+                            <small>Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="resetForm()">Limpar</button>
+                                <i class="fas fa-plus"></i> Adicionar Produto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab: Listar Produtos -->
+            <div id="tab-listar" class="tab-content">
+                <div class="products-section">
+                    <div class="section-header">
+                        <h2>Produtos Cadastrados</h2>
+                        <div class="search-box">
+                            <input type="text" id="searchProduct" placeholder="Buscar produtos..." onkeyup="searchProducts()">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Produtos serão carregados aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Edição -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Editar Produto</h2>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-editar-produto" onsubmit="updateProduct(event)">
+                    <input type="hidden" id="editId" name="id">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="editNome">Nome do Produto *</label>
+                            <input type="text" id="editNome" name="nome" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editCategoria">Categoria *</label>
+                            <select id="editCategoria" name="categoria" required>
+                                <option value="extintores">Extintores</option>
+                                <option value="sistemas-fixos">Sistemas Fixos</option>
+                                <option value="detecao">Sistemas de Detecção</option>
+                                <option value="acessorios">Acessórios</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPreco">Preço (R$) *</label>
+                            <input type="number" id="editPreco" name="preco" step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editQuantidade">Quantidade em Estoque *</label>
+                            <input type="number" id="editQuantidade" name="quantidade" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDescricao">Descrição *</label>
+                        <textarea id="editDescricao" name="descricao" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="JS/admin-produtos.js"></script>
+</body>
+</html>

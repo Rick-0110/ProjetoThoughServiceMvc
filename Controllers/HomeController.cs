@@ -34,60 +34,14 @@ namespace ToughService.Controllers
             return View(produtos);
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> RemoverProduto(int id)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return RedirectToAction("Login", "Registro");
-
-            var usuario = await _userManager.FindByIdAsync(userId);
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            _produtoRepository.RemoveProduto(id);
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AdicionarProdutoADM()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var usuario = await _userManager.FindByIdAsync(userId);
-
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            ViewBag.UsuarioEhAdmin = true;
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return RedirectToAction("Login", "Registro");
-
-            var usuario = await _userManager.FindByIdAsync(userId);
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            if (ModelState.IsValid)
-            {
-                _produtoRepository.AddProduto(produto);
-                return RedirectToAction("Index");
-            }
-
-            return View(produto);
-        }
+       
 
         public IActionResult Sobre()
         {
             return View();
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Buscar(string busca)
@@ -110,9 +64,9 @@ namespace ToughService.Controllers
             return View("Index", produtos); 
         }
 
-
-
         
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

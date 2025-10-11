@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Administrativa - Tough Service</title>
+    <link rel="stylesheet" href="~/css/ADM.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="IMG/LOGO (2).png" alt="Tough Service" class="logo">
+                <h1>Área Administrativa</h1>
+            </div>
+            <div class="user-info">
+                <span class="welcome">Bem-vindo, Admin</span>
+                <a class="logout-btn" asp-action="Index" asp-controller="Home">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- Dashboard Cards -->
+            <div class="dashboard-grid">
+                <!-- Card: Ver Chamados -->
+                <a asp-controller="ADM" asp-action="AdmChamados" class="admin-card-link">
+                    <div class="admin-card">
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Ver Chamados</h3>
+                            <p>Visualizar e gerenciar solicitações de orçamento e agendamentos</p>
+                            <div class="card-stats">
+                                <span class="stat-number" id="totalChamados">0</span>
+                                <span class="stat-label">Chamados</span>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card: Adicionar Produto -->
+                <div class="admin-card" onclick="navigateTo('produtos')">
+                    <div class="card-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Gerenciar Produtos</h3>
+                        <p>Adicionar, editar e remover produtos do catálogo</p>
+                        <div class="card-stats">
+                            <span class="stat-number" id="totalProdutos">0</span>
+                            <span class="stat-label">Produtos</span>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card: Relatórios -->
+                <div class="admin-card" onclick="navigateTo('relatorios')">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Relatórios</h3>
+                        <p>Visualizar relatórios de vendas e chamados</p>
+                        <div class="card-stats">
+                            <span class="stat-number">-</span>
+                            <span class="stat-label">Em breve</span>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card: Configurações -->
+                <div class="admin-card" onclick="navigateTo('configuracoes')">
+                    <div class="card-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Configurações</h3>
+                        <p>Configurar sistema e preferências</p>
+                        <div class="card-stats">
+                            <span class="stat-number">-</span>
+                            <span class="stat-label">Em breve</span>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2>Ações Rápidas</h2>
+                <div class="actions-grid">
+                    <button class="quick-btn" onclick="navigateTo('chamados')">
+                        <i class="fas fa-eye"></i>
+                        <span>Ver Novos Chamados</span>
+                    </button>
+                    <button class="quick-btn" onclick="navigateTo('produtos')">
+                        <i class="fas fa-plus"></i>
+                        <span>Adicionar Produto</span>
+                    </button>
+                    <button class="quick-btn" onclick="exportData()">
+                        <i class="fas fa-download"></i>
+                        <span>Exportar Dados</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h2>Atividade Recente</h2>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-plus text-success"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>Novo produto adicionado:</strong> Extintor PQS 4kg</p>
+                            <span class="activity-time">Há 2 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-clipboard-list text-warning"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>Novo chamado recebido:</strong> Solicitação de instalação</p>
+                            <span class="activity-time">Há 4 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check text-success"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>Chamado finalizado:</strong> Orçamento de manutenção</p>
+                            <span class="activity-time">Ontem</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="admin-footer">
+        <div class="container">
+            <p>&copy; 2024 Tough Service - Área Administrativa</p>
+        </div>
+    </footer>
+
+    <script src="~/js/ADM.js"></script>
+</body>
+</html>
