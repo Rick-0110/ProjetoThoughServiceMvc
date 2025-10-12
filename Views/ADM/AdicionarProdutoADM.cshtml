@@ -16,10 +16,10 @@
                 <h1>Gerenciar Produtos</h1>
             </div>
             <div class="user-info">
-                <a href="admin.html" class="back-btn">
+                <a class="back-btn" asp-action="ADM" asp-controller="ADM">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-                <a href="index.html" class="logout-btn">
+                <a asp-action="Index" asp-controller="Home" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
             </div>
@@ -51,6 +51,11 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="sku">Código do Produto (SKU)</label>
+                                <input type="text" id="sku" name="sku" placeholder="Ex: EXT-001">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="categoria">Categoria *</label>
                                 <select id="categoria" name="categoria" required>
                                     <option value="">Selecione uma categoria</option>
@@ -62,6 +67,11 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="marca">Marca</label>
+                                <input type="text" id="marca" name="marca" placeholder="Digite a marca do produto">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="preco">Preço (R$) *</label>
                                 <input type="number" id="preco" name="preco" step="0.01" min="0" required>
                             </div>
@@ -69,6 +79,11 @@
                             <div class="form-group">
                                 <label for="quantidade">Quantidade em Estoque *</label>
                                 <input type="number" id="quantidade" name="quantidade" min="0" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="peso">Peso (kg)</label>
+                                <input type="number" id="peso" name="peso" step="0.01" min="0" placeholder="Ex: 1.5">
                             </div>
                         </div>
 
@@ -83,10 +98,14 @@
                             <small>Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
                         </div>
 
+                        <div class="form-group form-group-checkbox">
+                            <input type="checkbox" id="ativo" name="ativo" checked>
+                            <label for="ativo">Produto Ativo (visível no site)</label>
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" class="btn-secondary" onclick="resetForm()">Limpar</button>
-                                <i class="fas fa-plus"></i> Adicionar Produto
-                            </button>
+                            <button class="fas fa-plus">Adicionar Produto</button>
                         </div>
                     </form>
                 </div>

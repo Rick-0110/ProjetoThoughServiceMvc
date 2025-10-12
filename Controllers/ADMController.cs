@@ -1,82 +1,102 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Mvc;
 using ProjetoThoughServiceMvc.Models;
-using System.Diagnostics;
-using System.Security.Claims;
-using ToughService.Data;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using ToughService.Models;
 using ToughService.Repository;
+
 namespace ToughService.Controllers
 {
+    
+    [Authorize(Roles = "Admin")]
     public class ADMController : Controller
     {
         private readonly IProdutoRepository _produtoRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public ADMController(IProdutoRepository produtoRepository, UserManager<ApplicationUser> userManager)
+        private readonly IWebHostEnvironment _webHostEnvironment; 
+
+  
+        public ADMController(IProdutoRepository produtoRepository, IWebHostEnvironment webHostEnvironment)
         {
             _produtoRepository = produtoRepository;
-            _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult ADM()
         {
+         
             return View();
         }
 
         public IActionResult AdmChamados()
         {
+            
             return View();
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> RemoverProduto(int id)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return RedirectToAction("Login", "Registro");
-
-            var usuario = await _userManager.FindByIdAsync(userId);
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            _produtoRepository.RemoveProduto(id);
-
-            return RedirectToAction("Index");
-        }
-
+        
         [HttpGet]
-        public async Task<IActionResult> AdicionarProdutoADM()
+        public IActionResult AdicionarProduto() 
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var usuario = await _userManager.FindByIdAsync(userId);
-
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            ViewBag.UsuarioEhAdmin = true;
             return View();
         }
 
+        // Action [HttpPost] para RECEBER os dados do formulário e SALVAR o produto
         [HttpPost]
-        public async Task<IActionResult> AdicionarProdutoADM(ProdutoModel produto)
+        public async Task<IActionResult> AdicionarProduto([FromForm] ProdutoCreateViewModel model)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return RedirectToAction("Login", "Registro");
-
-            var usuario = await _userManager.FindByIdAsync(userId);
-            if (usuario == null || !usuario.EhAdmin)
-                return RedirectToAction("Login", "Registro");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _produtoRepository.AddProduto(produto);
-                return RedirectToAction("Index");
+                return BadRequest(ModelState);
             }
 
-            return View(produto);
+       
+            CategoriaEnum categoriaConvertida;
+            bool conversaoOk = Enum.TryParse<CategoriaEnum>(model.Categoria, true, out categoriaConvertida);
+
+            if (!conversaoOk)
+            {
+                ModelState.AddModelError("Categoria", "A categoria selecionada é inválid.");
+                return BadRequest(ModelState);
+            }
+
+            string imagemUrlUnica = null;
+
+            if (model.Imagem != null && model.Imagem.Length > 0)
+            {
+                string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "images/produtos");
+                if (!Directory.Exists(pastaUploads))
+                {
+                    Directory.CreateDirectory(pastaUploads);
+                }
+                imagemUrlUnica = Guid.NewGuid().ToString() + "_" + model.Imagem.FileName;
+                string caminhoArquivo = Path.Combine(pastaUploads, imagemUrlUnica);
+                using (var fileStream = new FileStream(caminhoArquivo, FileMode.Create))
+                {
+                    await model.Imagem.CopyToAsync(fileStream);
+                }
+            }
+
+            var novoProduto = new ProdutoModel
+            {
+                Nome = model.Nome,
+                Preco = model.Preco,
+                Descricao = model.Descricao,
+                ImagemUrl = imagemUrlUnica != null ? $"/images/produtos/{imagemUrlUnica}" : "/images/placeholder.png",
+                Categoria = categoriaConvertida,
+
+                Sku = model.Sku,
+                Marca = model.Marca,
+                Quantidade = model.Quantidade,
+                Peso = model.Peso,
+                Ativo = model.Ativo
+            };
+
+            _produtoRepository.AddProduto(novoProduto);
+
+            return Ok(new { success = true, message = "Produto adicionado com sucesso!" });
         }
     }
 }

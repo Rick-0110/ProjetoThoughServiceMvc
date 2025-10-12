@@ -1,5 +1,7 @@
 ﻿using ProjetoThoughServiceMvc.Models;
+using System.Linq;
 using ToughService.Data;
+using ToughService.Models;
 
 namespace ToughService.Repository
 {
@@ -11,6 +13,29 @@ namespace ToughService.Repository
         {
             _context = context;
         }
+
+        public IEnumerable<ProdutoModel> SearchProdutos(string termobusca)
+        {
+            if (string.IsNullOrEmpty(termobusca))
+            {
+                return GetAllProdutos();
+            }
+            var categoriasCorrespondentes = Enum.GetValues(typeof(CategoriaEnum))
+           .Cast<CategoriaEnum>()
+           .Where(cat => cat.ToString().Contains(termobusca, StringComparison.OrdinalIgnoreCase))
+           .ToList();
+
+          
+            return _context.Produtos
+
+                .Where(p =>
+                    p.Nome.Contains(termobusca) ||
+                  
+                    categoriasCorrespondentes.Contains(p.Categoria.Value)
+                )
+                .ToList();
+        }
+        
 
 
         public IEnumerable<ProdutoModel> GetAllProdutos()

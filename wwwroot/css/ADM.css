@@ -48,12 +48,13 @@ body {
     z-index: 1000;
 }
 /* Remove a listra azul e a cor azul de todos os cards de link */
+a.admin-card,
 a.admin-card-link,
 a.admin-card-link:hover,
 a.admin-card-link:focus,
 a.admin-card-link:active {
-    text-decoration: none; 
-    color: inherit; 
+    text-decoration: none;
+    color: inherit;
 }
 
    

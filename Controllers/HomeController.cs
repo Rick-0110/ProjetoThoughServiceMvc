@@ -27,7 +27,7 @@ namespace ToughService.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var usuario = await _userManager.FindByIdAsync(userId);
 
-            ViewBag.UsuarioEhAdmin = usuario != null && usuario.EhAdmin;
+            
             ViewBag.IsLoggedIn = usuario != null;
 
 
@@ -44,27 +44,23 @@ namespace ToughService.Controllers
 
 
         [HttpGet]
+        
         public async Task<IActionResult> Buscar(string busca)
         {
          
-            var produtos = string.IsNullOrEmpty(busca)
-                ? _produtoRepository.GetAllProdutos()
-                : _produtoRepository.GetAllProdutos()
-                    .Where(p => p.Nome.Contains(busca, StringComparison.OrdinalIgnoreCase)
-                             || p.Categoria.Contains(busca, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+            var produtos = _produtoRepository.SearchProdutos(busca);
 
            
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var usuario = await _userManager.FindByIdAsync(userId);
 
-            ViewBag.UsuarioEhAdmin = usuario != null && usuario.EhAdmin;
+        
             ViewBag.IsLoggedIn = usuario != null;
 
-            return View("Index", produtos); 
+            return View("Index", produtos);
         }
 
-        
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using ToughService.Models;
 
 namespace ProjetoThoughServiceMvc.Models
 {
@@ -13,6 +15,19 @@ namespace ProjetoThoughServiceMvc.Models
 
         public string ImagemUrl { get; set; } = string.Empty;
            public string Nome { get; set; }
-        public string Categoria { get; set; }
+
+        public int CategoriaId { get; set; }
+        public CategoriaEnum? Categoria { get; set; }
+
+
+        public string Sku { get; set; }
+        public string Marca { get; set; }
+        public int Quantidade { get; set; } 
+        public decimal? Peso { get; set; } 
+        public bool Ativo { get; set; }
+
+        [NotMapped] 
+        public IFormFile? Imagem { get; set; }
+
     }
 }

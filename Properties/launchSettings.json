@@ -15,7 +15,10 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5125",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AdminUser__Email": "ADM@gmail.com",
+        "AdminUser__Password": "SenhaDoADM@2025",
+       
       }
     },
     "https": {
@@ -24,14 +27,20 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7004;http://localhost:5125",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AdminUser__Email": "ADM@gmail.com",
+        "AdminUser__Password": "SenhaDoADM@2025",
+        
       }
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AdminUser__Email": "ADM@gmail.com",
+        "AdminUser__Password": "SenhaDoADM@2025",
+      
       }
     }
   }

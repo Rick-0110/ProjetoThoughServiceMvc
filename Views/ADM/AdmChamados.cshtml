@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -12,14 +14,14 @@
     <header class="admin-header">
         <div class="header-content">
             <div class="logo-section">
-                <img src="IMG/LOGO (2).png" alt="Tough Service" class="logo">
+                <img src="~/IMG/LOGO (2).png" alt="Tough Service" class="logo">
                 <h1>Gerenciar Chamados</h1>
             </div>
             <div class="user-info">
-                <a href="admin.html" class="back-btn">
+                <a asp-action="ADM" asp-controller="ADM" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-                <a href="index.html" class="logout-btn">
+                <a asp-action="Index" asp-controller="Home" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
             </div>

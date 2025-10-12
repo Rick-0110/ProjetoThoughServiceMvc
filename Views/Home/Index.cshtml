@@ -60,7 +60,7 @@
             <div class="nav-menu">
                 <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
 
-                @if (usuarioEhAdmin)
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
                     <a asp-action="ADM" asp-controller="ADM" class="nav-link">Admin</a>
                 }
@@ -122,7 +122,7 @@
                 </div>
             </div>
             </div>
-        </div>
+        
     </header>
 
 
