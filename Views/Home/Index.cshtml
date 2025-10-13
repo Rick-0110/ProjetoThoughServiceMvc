@@ -5,7 +5,7 @@
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
     var isLoggedIn = ViewBag.IsLoggedIn ?? false;
-    bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
+    
 }
 
 
@@ -147,7 +147,7 @@
                                     <a asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id" class="view-btn">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    @if (usuarioEhAdmin)
+                                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                                     {
                                         <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
                                             <input type="hidden" name="id" value="@produto.Id" />

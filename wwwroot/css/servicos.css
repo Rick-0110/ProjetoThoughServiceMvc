@@ -9,6 +9,11 @@
     box-sizing: border-box;
 }
 
+a.btn-servico {
+    text-decoration: none;
+    color: white;
+}
+
 body {
     min-height: 100vh;
     display: flex;

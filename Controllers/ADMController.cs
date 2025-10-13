@@ -38,14 +38,14 @@ namespace ToughService.Controllers
 
         
         [HttpGet]
-        public IActionResult AdicionarProduto() 
+        public IActionResult AdicionarProdutoADM() 
         {
             return View();
         }
 
         // Action [HttpPost] para RECEBER os dados do formulário e SALVAR o produto
         [HttpPost]
-        public async Task<IActionResult> AdicionarProduto([FromForm] ProdutoCreateViewModel model)
+        public async Task<IActionResult> AdicionarProdutoADM([FromForm] ProdutoCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {

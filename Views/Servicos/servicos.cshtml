@@ -9,7 +9,7 @@
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-    bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
+
 }
 
 <!DOCTYPE html>
@@ -47,10 +47,7 @@
                 <div class="nav-menu">
                     <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
 
-                    @if (usuarioEhAdmin)
-                    {
-                        <a asp-action="AdicionarProdutoADM" asp-controller="Home" class="nav-link">Admin</a>
-                    }
+                  
 
                     @if (!isLoggedIn)
                     {
@@ -98,9 +95,10 @@
     </header>
 
     <main>
+       
         <section class="servicos-container">
             <h1>Nossos Serviços</h1>
-
+           
             <div class="servicos-grid">
                 <!-- Serviço 1 -->
                 <section>
@@ -116,9 +114,17 @@
                             <li>Ajustes necessários</li>
                             <li>Testes de funcionamento</li>
                         </ul>
-                        <button class="btn-servico" onclick="openModal('manutencao')">Solicitar Orçamento</button>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
                     </div>
                 </section>
+                
                 <!-- Serviço 2 -->
                 <section>
                     <div class="servico-card">
@@ -133,7 +139,14 @@
                             <li>Substituição de peças</li>
                             <li>Garantia do serviço</li>
                         </ul>
-                        <button class="btn-servico" onclick="openModal('reparo')">Solicitar Orçamento</button>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
                     </div>
                 </section>
                 <!-- Serviço 3 -->
@@ -150,7 +163,14 @@
                             <li>Testes de segurança</li>
                             <li>Treinamento operacional</li>
                         </ul>
-                        <button class="btn-servico" onclick="openModal('instalacao')">Solicitar Orçamento</button>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
                     </div>
                 </section>
                 <!-- Serviço 4 -->
@@ -167,7 +187,14 @@
                             <li>Orientação técnica</li>
                             <li>Solução de problemas</li>
                         </ul>
-                        <button class="btn-servico" onclick="openModal('suporte')">Solicitar Orçamento</button>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
                     </div>
                 </section>
             </div>
