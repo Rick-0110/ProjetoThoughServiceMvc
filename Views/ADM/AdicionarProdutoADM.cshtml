@@ -1,4 +1,8 @@
 ﻿
+@{
+    ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
+}
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -118,19 +122,50 @@
                 <div class="products-section">
                     <div class="section-header">
                         <h2>Produtos Cadastrados</h2>
-                        <div class="search-box">
-                            <input type="text" id="searchProduct" placeholder="Buscar produtos..." onkeyup="searchProducts()">
-                            <i class="fas fa-search"></i>
-                        </div>
                     </div>
 
                     <div class="products-grid" id="productsGrid">
 
-                       
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var produto in Model)
+                            {
+                                <div class="product-card-minimal">
+                                    <div class="product-image">
+                                        <img src="@produto.ImagemUrl" alt="@produto.Nome" />
+                                        <div class="product-overlay">
+                                            <button class="icon-btn edit-btn"
+                                                    onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"
+                                                    title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                            <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
+                                                <input type="hidden" name="id" value="@produto.Id" />
+                                                <button type="submit" class="icon-btn delete-btn" title="Excluir">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">@produto.Nome</h3>
+                                        <div class="product-rating">
+                                            <div class="stars">★★★★★</div>
+                                        </div>
+                                        <div class="product-price">@produto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-BR"))</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Nenhum produto cadastrado.</p>
+                        }
+
                     </div>
                 </div>
             </div>
-        </div>
     </main>
 
     <!-- Modal de Edição -->
