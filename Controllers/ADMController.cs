@@ -37,10 +37,11 @@ namespace ToughService.Controllers
         }
 
 
-
-        public IActionResult AdicionarProdutoADM()
+        [HttpGet]
+        public async Task<IActionResult> GerenciarProdutos()
         {
-            return View();
+            var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
+            return View(listaDeProdutos);
         }
 
 

@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\adm\\gerenciarprodutos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\adm\\gerenciarprodutos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,8 +15,8 @@
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:models\\produtomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\adm\\adicionarprodutoadm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\adm\\adicionarprodutoadm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\adm\\adm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\adm\\adm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,7 +34,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -40,6 +44,19 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-11T17:49:05.983Z",
               "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ADM.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\ADM.cshtml",
+              "RelativeDocumentMoniker": "Views\\ADM\\ADM.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\ADM.cshtml",
+              "RelativeToolTip": "Views\\ADM\\ADM.cshtml",
+              "ViewState": "AgIAACcAAAAAAAAAAAAAAD0AAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-15T15:06:43.739Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -55,38 +72,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ProdutoModel.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\ProdutoModel.cs",
               "RelativeDocumentMoniker": "Models\\ProdutoModel.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\ProdutoModel.cs",
               "RelativeToolTip": "Models\\ProdutoModel.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAcAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAcAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-14T23:04:20.994Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdicionarProdutoADM.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdicionarProdutoADM.cshtml",
-              "RelativeDocumentMoniker": "Views\\ADM\\AdicionarProdutoADM.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdicionarProdutoADM.cshtml",
-              "RelativeToolTip": "Views\\ADM\\AdicionarProdutoADM.cshtml",
+              "DocumentIndex": 0,
+              "Title": "GerenciarProdutos.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\Views\\ADM\\GerenciarProdutos.cshtml",
+              "RelativeDocumentMoniker": "Views\\ADM\\GerenciarProdutos.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\Views\\ADM\\GerenciarProdutos.cshtml",
+              "RelativeToolTip": "Views\\ADM\\GerenciarProdutos.cshtml",
               "ViewState": "AgIAAJYAAAAAAAAAAAAAAAYAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-14T22:53:28.221Z"
+              "WhenOpened": "2025-10-14T22:53:28.221Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ADMController.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
               "RelativeDocumentMoniker": "Controllers\\ADMController.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
               "RelativeToolTip": "Controllers\\ADMController.cs",
-              "ViewState": "AgIAAI8AAAAAAAAAAAAewKoAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAJEAAAAAAAAAAAAgwCsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-12T19:19:38.891Z",
               "EditorCaption": ""
