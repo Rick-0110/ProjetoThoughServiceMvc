@@ -6,10 +6,11 @@ namespace ToughService.Repository
 {
     public interface IProdutoRepository
     {
-        IEnumerable<ProdutoModel> GetAllProdutos();
-        IEnumerable<ProdutoModel> SearchProdutos(string termobusca);
-        ProdutoModel GetProdutoById(int id);
-        void AddProduto(ProdutoModel produto);
-        void RemoveProduto(int id);
+     Task<IEnumerable<ProdutoModel>> GetAllProdutosAsync();
+        Task<ProdutoModel> GetProdutoByIdAsync(int id);
+        Task<ProdutoModel> AddProdutoAsync(ProdutoModel produto);
+        Task<bool> RemoveProdutoAsync(int id);
+        Task<ProdutoModel> UpdateProdutoAsync(ProdutoModel produto);
+        Task<IEnumerable<ProdutoModel>> SearchProdutosAsync(string termobusca);
     }
 }

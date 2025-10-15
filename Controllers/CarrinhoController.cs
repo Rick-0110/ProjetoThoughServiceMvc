@@ -64,14 +64,14 @@ namespace ProjetoThoughServiceMvc.Controllers
 
 
         [HttpPost]
-        public IActionResult Adicionar(int id, int quantidade)
+        public async Task<IActionResult> Adicionar(int id, int quantidade)
         {
                  if (!User.Identity.IsAuthenticated)
             {
         return RedirectToAction("Login", "Registro");
     }
 
-            var produto = _produtoRepository.GetProdutoById(id);
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
             if (produto == null)
             {
                 return NotFound("Produto não encontrado.");
@@ -102,19 +102,19 @@ namespace ProjetoThoughServiceMvc.Controllers
        
 }
 
-        
-        public IActionResult InfoProduto(int id)
+
+        public async Task<IActionResult> InfoProduto(int id)
         {
-            var produto = _produtoRepository.GetProdutoById(id);
+         
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
 
             if (produto == null)
                 return NotFound();
 
-            
-            var outrosProdutos = _produtoRepository
-                .GetAllProdutos()
+            var todosProdutos = await _produtoRepository.GetAllProdutosAsync();
+            var outrosProdutos = todosProdutos
                 .Where(p => p.Id != id)
-                .Take(4) 
+                .Take(4)
                 .ToList();
 
             var viewModel = new ProdutoDetalheViewModel
@@ -129,7 +129,8 @@ namespace ProjetoThoughServiceMvc.Controllers
 
 
 
-       
+
+
         [HttpPost]
         public IActionResult Limpar()
         {

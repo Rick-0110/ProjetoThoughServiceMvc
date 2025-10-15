@@ -23,7 +23,7 @@ namespace ToughService.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var produtos = _produtoRepository.GetAllProdutos();
+            var produtos = await _produtoRepository.GetAllProdutosAsync();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var usuario = await _userManager.FindByIdAsync(userId);
 
@@ -48,7 +48,7 @@ namespace ToughService.Controllers
         public async Task<IActionResult> Buscar(string busca)
         {
          
-            var produtos = _produtoRepository.SearchProdutos(busca);
+            var produtos = await _produtoRepository.SearchProdutosAsync(busca);
 
            
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
