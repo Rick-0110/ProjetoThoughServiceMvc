@@ -49,8 +49,8 @@ namespace ToughService.Controllers
         {
             try
             {
-                var produtos =  _produtoRepository.GetAllProdutosAsync(); 
-                return Ok(produtos); 
+                var produtos = _produtoRepository.GetAllProdutosAsync();
+                return Ok(produtos);
             }
             catch (Exception)
             {
@@ -82,7 +82,7 @@ namespace ToughService.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> AtualizarProduto(int id,[FromBody] ProdutoModel produto)
+        public async Task<IActionResult> AtualizarProduto(int id, [FromBody] ProdutoModel produto)
         {
             if (id != produto.Id)
             {
@@ -94,12 +94,12 @@ namespace ToughService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var produtoExistente =  await _produtoRepository.GetProdutoByIdAsync(id);
+            var produtoExistente = await _produtoRepository.GetProdutoByIdAsync(id);
             if (produtoExistente == null)
             {
                 return NotFound("Produto não encontrado.");
             }
-           
+
             produtoExistente.Nome = produto.Nome;
             produtoExistente.Descricao = produto.Descricao;
             produtoExistente.Preco = produto.Preco;
@@ -113,49 +113,31 @@ namespace ToughService.Controllers
             return Ok(updatedProduto);
         }
 
-    
-
-    [HttpPost]
         [HttpPost]
-        public async Task<IActionResult> AdicionarProdutoADM([FromForm] ProdutoCreateViewModel model)
+        public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
+                return View("GerenciarProdutos", listaDeProdutos);
             }
 
-            // ... (resto do seu código para tratar categoria e imagem)
             CategoriaEnum categoriaConvertida;
-            bool conversaoOk = Enum.TryParse<CategoriaEnum>(model.Categoria, true, out categoriaConvertida);
+            bool conversaoBemSucedida = Enum.TryParse<CategoriaEnum>(model.Categoria, true, out categoriaConvertida);
 
-            if (!conversaoOk)
+            if (!conversaoBemSucedida)
             {
-                ModelState.AddModelError("Categoria", "A categoria selecionada é inválida.");
-                return BadRequest(ModelState);
+                ModelState.AddModelError("Categoria", "Categoria inválida.");
+                var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
+                return View("GerenciarProdutos", listaDeProdutos);
             }
 
-            string imagemUrlUnica = null;
-            if (model.Imagem != null && model.Imagem.Length > 0)
-            {
-                string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "images/produtos");
-                if (!Directory.Exists(pastaUploads))
-                {
-                    Directory.CreateDirectory(pastaUploads);
-                }
-                imagemUrlUnica = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.Imagem.FileName);
-                string caminhoArquivo = Path.Combine(pastaUploads, imagemUrlUnica);
-                using (var fileStream = new FileStream(caminhoArquivo, FileMode.Create))
-                {
-                    await model.Imagem.CopyToAsync(fileStream); // A parte async está aqui
-                }
-            }
-
+            // Criação do novoProduto a partir do model recebido
             var novoProduto = new ProdutoModel
             {
                 Nome = model.Nome,
-                Preco = model.Preco,
                 Descricao = model.Descricao,
-                ImagemUrl = imagemUrlUnica != null ? $"/images/produtos/{imagemUrlUnica}" : "/images/placeholder.png",
+                Preco = model.Preco,
                 Categoria = categoriaConvertida,
                 Sku = model.Sku,
                 Marca = model.Marca,
@@ -164,10 +146,37 @@ namespace ToughService.Controllers
                 Ativo = model.Ativo
             };
 
-            // Chamada para o método síncrono do repositório
-            _produtoRepository.AddProdutoAsync(novoProduto);
+            await _produtoRepository.AddProdutoAsync(novoProduto);
 
-            return Ok(new { success = true, message = "Produto adicionado com sucesso!", produto = novoProduto });
+         
+            return RedirectToAction("GerenciarProdutos");
         }
+
+        // Crie esta nova Action [HttpPost] para lidar com a atualização do produto.
+        [HttpPost]
+        public async Task<IActionResult> AtualizarProduto(ProdutoModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var produtoParaAtualizar = await _produtoRepository.GetProdutoByIdAsync(model.Id);
+                if (produtoParaAtualizar != null)
+                {
+                    // Mapeie os dados do model para a entidade
+                    produtoParaAtualizar.Nome = model.Nome;
+                    produtoParaAtualizar.Descricao = model.Descricao;
+                    produtoParaAtualizar.Preco = model.Preco;
+                    produtoParaAtualizar.Quantidade = model.Quantidade;
+                    produtoParaAtualizar.Categoria = model.Categoria;
+                   
+
+                    await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
+                }
+            }
+
+            // Após atualizar (ou se o modelo for inválido), redirecione para a página principal.
+            return RedirectToAction("GerenciarProdutos");
+        }
+
     }
-}
+    }
