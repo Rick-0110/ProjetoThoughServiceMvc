@@ -132,7 +132,7 @@
                             {
                                 <div class="product-card-minimal">
                                     <div class="product-image">
-                                        <img src="@produto.ImagemUrl" alt="@produto.Nome" />
+                                        <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
                                         <div class="product-overlay">
                                             <button class="icon-btn edit-btn"
                                                     onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"

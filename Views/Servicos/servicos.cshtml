@@ -116,7 +116,7 @@
                         </ul>
                         @if (isLoggedIn)
                         {
-                            <button class="btn-servico">Solicitar Orçamento</button>
+                            <button class="btn-servico" onclick="openModal('manutencao')">Solicitar Orçamento</button>
                         }
                         else
                         {
@@ -141,7 +141,7 @@
                         </ul>
                         @if (isLoggedIn)
                         {
-                            <button class="btn-servico">Solicitar Orçamento</button>
+                            <button class="btn-servico" onclick="openModal('reparo')">Solicitar Orçamento</button>
                         }
                         else
                         {
@@ -165,7 +165,7 @@
                         </ul>
                         @if (isLoggedIn)
                         {
-                            <button class="btn-servico">Solicitar Orçamento</button>
+                            <button class="btn-servico" onclick="openModal('instalacao')">Solicitar Orçamento</button>
                         }
                         else
                         {
@@ -189,7 +189,7 @@
                         </ul>
                         @if (isLoggedIn)
                         {
-                            <button class="btn-servico">Solicitar Orçamento</button>
+                            <button class="btn-servico" onclick="openModal('suporte')">Solicitar Orçamento</button>
                         }
                         else
                         {
@@ -207,7 +207,7 @@
     <div id="modalOrcamento" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Solicitar Orçamento</h2>
+                <h2 id="modalTitle" onclick="openModal()">Solicitar Orçamento</h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
