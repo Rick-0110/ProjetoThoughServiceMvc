@@ -65,4 +65,12 @@ public class PerfilController : Controller
     {
         return View();
     }
+
+    [HttpGet]
+    public IActionResult Comprovante()
+    {
+        return View();
+    }
+
+
 }
