@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueci minha senha - Tough Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/EsqueciMinhaSenha.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="~/IMG/LOGO (2).png" />
+</head>
+<body>
+    <div class="voltarPG">
+        <a href="login.html"><i class="fas fa-arrow-left"></i></a>
+    </div>
+    <div class="conteiner">
+        <div class="caixa-login">
+            <div class="logo">
+                <img src="~/IMG/LOGO (2).png" alt="Tough Service Logo">
+            </div>
+            <h2>Esqueci minha senha</h2>
+            <p class="descricao">Digite seu email para receber instruções de recuperação de senha</p>
+
+            <form class="login-form" id="forgotPasswordForm">
+                <div class="grupo-entrada">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+
+                <button type="submit" class="botao-entrar">
+                    <i class="fas fa-paper-plane"></i>
+                    Enviar instruções
+                </button>
+
+                <div class="links">
+                    <a asp-action="Login" asp-controller="Registro">Voltar ao login</a>
+                    <a asp-action="Registro" asp-controller="Registro">Criar conta</a>
+                </div>
+            </form>
+
+            <!-- Mensagem de sucesso (inicialmente oculta) -->
+            <div class="mensagem-sucesso" id="mensagemSucesso" style="display: none;">
+                <div class="icone-sucesso">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Email enviado!</h3>
+                <p>Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.</p>
+                <button type="button" class="botao-voltar" asp-action="Login" asp-controller="Registro">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar ao login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/EsqueciMinhaSenha.js"></script>
+</body>
+</html>

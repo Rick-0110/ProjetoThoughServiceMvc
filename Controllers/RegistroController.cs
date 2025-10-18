@@ -84,6 +84,13 @@ private readonly SignInManager<ApplicationUser> _signInManager;
             return View(login);
         }
 
+        [HttpGet]
+        public IActionResult EsqueciMinhaSenha()
+        {
+            return View();
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
