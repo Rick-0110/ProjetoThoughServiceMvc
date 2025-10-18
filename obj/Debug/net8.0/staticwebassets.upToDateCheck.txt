@@ -37,6 +37,7 @@ wwwroot\js\ADM.js
 wwwroot\js\AdmAdicionarProdutos.js
 wwwroot\js\AdmChamados.js
 wwwroot\js\carrinho.js
+wwwroot\js\EsqueciMinhaSenha.js
 wwwroot\js\login.js
 wwwroot\js\MinimalistaPrincipal.js
 wwwroot\js\perfil.js
@@ -101,4 +102,3 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\js\EsqueciMinhaSenha.js

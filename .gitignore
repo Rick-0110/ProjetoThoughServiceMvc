@@ -1,18 +1,26 @@
-﻿# Visual Studio
+﻿# Arquivos de usuário e cache do Visual Studio (NÃO COMPARTILHAR)
 .vs/
-bin/
-obj/
 *.user
 *.suo
+
+# Arquivos de Build/Compilação (NÃO COMPARTILHAR)
+**/bin/
+**/obj/
+
+# Logs e caches (NÃO COMPARTILHAR)
 *.log
 *.cache
-**/Properties/launchSettings.json
+
+# Configurações de desenvolvimento local (NÃO COMPARTILHAR - CONTÉM SEGREDOS)
 appsettings.Development.json
-appsettings.json
 
-
-
-
-# arquivos do sistema
+# Arquivos de sistema operacional (NÃO COMPARTILHAR)
 Thumbs.db
 .DS_Store
+
+# -------------------------------------------------------------------
+# Arquivos que DEVEM ser compartilhados (NÃO IGNORAR):
+#
+# appsettings.json (Contém a estrutura de configuração)
+# properties/launchSettings.json (Contém as configurações de execução da equipe)
+# -------------------------------------------------------------------
