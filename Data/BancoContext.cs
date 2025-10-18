@@ -24,6 +24,8 @@ namespace ToughService.Data
         public DbSet<ProdutoModel> Produtos { get; set; }
 
           public DbSet<ApplicationUser> Usuarios { get; set; }
+
+        public DbSet<ChamadoModel> Chamados { get; set; }
     }
 
 }
