@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ToughService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c555a62305cbd306081f3b9fae8992864898429")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a95cd252cc5687c8d0319953da0f4f8f9df93b6")]
 [assembly: System.Reflection.AssemblyProductAttribute("ToughService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ToughService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

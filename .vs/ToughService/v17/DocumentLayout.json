@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\wwwroot\\js\\servicos.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:wwwroot\\js\\servicos.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\models\\chamadomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:models\\chamadomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\adm\\admchamados.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\adm\\admchamados.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\migrations\\20251020135050_chamadosmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:migrations\\20251020135050_chamadosmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\chamadoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\chamadoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\models\\chamadomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:models\\chamadomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\models\\statuschamadoenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:models\\statuschamadoenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\servicos\\servicos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\adm\\admchamados.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\adm\\admchamados.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-11T17:49:05.983Z",
               "IsPinned": true,
@@ -56,80 +56,67 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Servicos.js",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\js\\Servicos.js",
-              "RelativeDocumentMoniker": "wwwroot\\js\\Servicos.js",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\js\\Servicos.js",
-              "RelativeToolTip": "wwwroot\\js\\Servicos.js",
-              "ViewState": "AgIAACMAAAAAAAAAAAAQwD0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-10-20T14:37:13.942Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ADMController.cs",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ADMController.cs",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
-              "RelativeToolTip": "Controllers\\ADMController.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAA9wDwAAABQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-20T14:28:30.067Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AdmChamados.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdmChamados.cshtml",
-              "RelativeDocumentMoniker": "Views\\ADM\\AdmChamados.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdmChamados.cshtml*",
-              "RelativeToolTip": "Views\\ADM\\AdmChamados.cshtml*",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAuwJMAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T14:26:51.763Z",
+              "Title": "20251020135050_ChamadosMigration.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Migrations\\20251020135050_ChamadosMigration.cs",
+              "RelativeDocumentMoniker": "Migrations\\20251020135050_ChamadosMigration.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Migrations\\20251020135050_ChamadosMigration.cs",
+              "RelativeToolTip": "Migrations\\20251020135050_ChamadosMigration.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAmwD8AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T21:39:09.969Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "ChamadosController.cs",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ChamadosController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ChamadosController.cs",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ChamadosController.cs",
-              "RelativeToolTip": "Controllers\\ChamadosController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBcAAABYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-20T14:19:52.1Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "servicos.cshtml",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\servicos.cshtml",
               "RelativeDocumentMoniker": "Views\\Servicos\\servicos.cshtml",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Servicos\\servicos.cshtml",
               "RelativeToolTip": "Views\\Servicos\\servicos.cshtml",
-              "ViewState": "AgIAAAgBAAAAAAAAAAAAACIBAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAuwPsAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T14:13:42.254Z",
+              "WhenOpened": "2025-10-20T21:30:44.184Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
+              "Title": "ChamadosController.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ChamadosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ChamadosController.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ChamadosController.cs",
+              "RelativeToolTip": "Controllers\\ChamadosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEQAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T21:29:39.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "StatusChamadoEnum.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\StatusChamadoEnum.cs",
+              "RelativeDocumentMoniker": "Models\\StatusChamadoEnum.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\StatusChamadoEnum.cs",
+              "RelativeToolTip": "Models\\StatusChamadoEnum.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T21:25:25.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "ChamadoModel.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\ChamadoModel.cs",
               "RelativeDocumentMoniker": "Models\\ChamadoModel.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Models\\ChamadoModel.cs",
               "RelativeToolTip": "Models\\ChamadoModel.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAD8AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-20T14:10:46.791Z",
+              "WhenOpened": "2025-10-20T21:21:46.265Z",
               "EditorCaption": ""
             },
             {
@@ -151,6 +138,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AdmChamados.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdmChamados.cshtml",
+              "RelativeDocumentMoniker": "Views\\ADM\\AdmChamados.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\ADM\\AdmChamados.cshtml",
+              "RelativeToolTip": "Views\\ADM\\AdmChamados.cshtml",
+              "ViewState": "AgIAAJYAAAAAAAAAAAAowBYAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-20T15:28:47.477Z",
+              "EditorCaption": ""
             }
           ]
         }
