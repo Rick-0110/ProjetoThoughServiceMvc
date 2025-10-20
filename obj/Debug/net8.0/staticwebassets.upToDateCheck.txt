@@ -2,6 +2,7 @@ wwwroot\css\AdicionarProdutoADM.css
 wwwroot\css\ADM.css
 wwwroot\css\AgendamentoManutencaoRecarga.css
 wwwroot\css\carrinho.css
+wwwroot\css\Comprovante.css
 wwwroot\css\EsqueciMinhaSenha.css
 wwwroot\css\login.css
 wwwroot\css\Minimalista.css
@@ -43,7 +44,6 @@ wwwroot\js\MinimalistaPrincipal.js
 wwwroot\js\perfil.js
 wwwroot\js\registro.js
 wwwroot\js\scripts.js
-wwwroot\js\Servicos.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -102,4 +102,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\css\Comprovante.css
+wwwroot\js\Servicos.js

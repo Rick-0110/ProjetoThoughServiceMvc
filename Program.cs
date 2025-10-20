@@ -24,6 +24,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
+builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
 

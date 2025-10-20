@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ToughService.Data;
 using ToughService.Models;
 
+
 namespace ToughService.Repository
 {
     public class ChamadoRepository : IChamadoRepository
@@ -32,6 +33,14 @@ namespace ToughService.Repository
                 .ToListAsync();
 
 
+        }
+
+        public async Task<ChamadoModel> GetChamadoByIdAsync(int id)
+        {
+           
+            return await _context.Chamados
+                .Include(c => c.User) 
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task UpdateStatusChamadoAsync(int id, StatusChamadoEnum novoStatus)

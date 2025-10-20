@@ -109,11 +109,43 @@
             <div class="chamados-section">
                 <h2>Lista de Chamados</h2>
                 <div class="chamados-list" id="chamadosList">
-                    <!-- Chamados serão carregados aqui via JavaScript -->
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var chamado in Model) 
+                        {
+                            <div class="chamado-card status-@chamado.Status.ToString().ToLower()" data-status="@chamado.Status.ToString().ToLower()" data-tipo="@chamado.TipoServico?.ToLower()">
+                                <div class="chamado-header">
+                                    <span class="chamado-id">#@chamado.Id</span>
+                                    <span class="chamado-status badge-@chamado.Status.ToString().ToLower()">@chamado.Status</span>
+                                </div>
+                                <div class="chamado-body">
+                                    <p><strong>Cliente:</strong> @chamado.NomeCliente</p>
+                                    <p><strong>Email Usuário:</strong> @(chamado.User?.Email ?? "N/A")</p>
+                                    <p><strong>Serviço:</strong> @chamado.TipoServico</p>
+                                    <p><strong>Data Desejada:</strong> @chamado.DataDesejada.ToString("dd/MM/yyyy")</p>
+                                    <p><strong>Solicitado em:</strong> @chamado.DataSolicitacao.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                                <div class="chamado-footer">
+                                   
+                                    <button class="btn-details" onclick="openDetalhesModal(@chamado.Id)">
+                                        <i class="fas fa-eye"></i> Detalhes
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else 
+                    {
+                        <div class="no-chamados">
+                            <p>Nenhum chamado encontrado.</p>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </main>
+
+   
 
     <!-- Modal de Detalhes do Chamado -->
     <div id="modalDetalhes" class="modal">

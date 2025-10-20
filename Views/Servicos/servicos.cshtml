@@ -212,6 +212,7 @@
             </div>
             <div class="modal-body">
                 <form id="formOrcamento" onsubmit="submitForm(event)">
+                    @Html.AntiForgeryToken()
                     <div class="form-group">
                         <label for="nomeCliente">Nome do Cliente *</label>
                         <input type="text" id="nomeCliente" name="nomeCliente" required>
@@ -318,7 +319,7 @@
                 <p>Recebemos sua solicitação e entraremos em contato em breve.</p>
                 <p class="success-details">
                     <strong>Prazo de resposta:</strong> 24 horas<br>
-                    <strong>Contato:</strong> (11) 99999-9999
+                    <strong>Contato:</strong> (71) 99999-9999
                 </p>
                 <button class="btn-submit" onclick="closeSuccessModal()">Fechar</button>
             </div>

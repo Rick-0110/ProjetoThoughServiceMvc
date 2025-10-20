@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ToughService.Models;
 using ToughService.Repository;
+using Microsoft.AspNetCore.Identity;
 
 namespace ToughService.Controllers
 {
@@ -16,12 +17,19 @@ namespace ToughService.Controllers
     {
         private readonly IProdutoRepository _produtoRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IChamadoRepository _chamadoRepository; 
+        private readonly UserManager<ApplicationUser> _userManager; 
 
-
-        public ADMController(IProdutoRepository produtoRepository, IWebHostEnvironment webHostEnvironment)
+        public ADMController(
+            IProdutoRepository produtoRepository,
+            IWebHostEnvironment webHostEnvironment,
+            IChamadoRepository chamadoRepository, 
+            UserManager<ApplicationUser> userManager)
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
+            _chamadoRepository = chamadoRepository; 
+            _userManager = userManager;
         }
 
         public IActionResult ADM()
@@ -30,14 +38,67 @@ namespace ToughService.Controllers
             return View();
         }
 
-        public IActionResult AdmChamados()
+        [HttpGet]
+        public async Task<IActionResult> AdmChamados()
         {
 
-            return View();
+            var chamados = await _chamadoRepository.GetAllChamadosAsync();
+            return View(chamados);
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> ObterDetalhesChamado(int id)
+        {
+            var chamado = await _chamadoRepository.GetChamadoByIdAsync(id);
+            if (chamado == null) return NotFound();
+
+            
+            return Json(new
+            {
+                id = chamado.Id,
+                cliente = chamado.NomeCliente,
+                userEmail = chamado.User?.Email ?? "N/A", 
+                dataSolicitacao = chamado.DataSolicitacao.ToString("dd/MM/yyyy HH:mm"),
+                dataDesejada = chamado.DataDesejada.ToString("dd/MM/yyyy"),
+                tipoServico = chamado.TipoServico,
+                tipoExtintor = chamado.TipoExtintor,
+                quantidade = chamado.Quantidade,
+                cep = chamado.Cep,
+                logradouro = chamado.Logradouro,
+                numero = chamado.Numero,
+                bairro = chamado.Bairro,
+                cidade = chamado.Cidade,
+                estado = chamado.Estado,
+                complemento = chamado.Complemento ?? "", 
+                telefone = chamado.Telefone,
+                observacoes = chamado.Observacoes ?? "Nenhuma", 
+                status = chamado.Status.ToString(),
+                statusRaw = chamado.Status
+            });
+        }
+
+     
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AtualizarStatusChamado(int id, StatusChamadoEnum novoStatus)
+        {
+            try
+            {
+                await _chamadoRepository.UpdateStatusChamadoAsync(id, novoStatus);
+              
+                TempData["ShowSuccessMessage"] = "Status do chamado atualizado com sucesso!";
+            }
+            catch (Exception ex)
+            {
+               
+                TempData["ErroStatus"] = "Erro ao atualizar status do chamado.";
+                
+            }
+            return RedirectToAction("AdmChamados");
         }
 
 
-        [HttpGet]
+[HttpGet]
         public async Task<IActionResult> GerenciarProdutos()
         {
             var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
