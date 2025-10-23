@@ -1,140 +1,227 @@
-﻿
+﻿@model IEnumerable<ToughService.Models.ChamadoModel>
+@using ToughService.Models
+
+@{
+    ViewData["Title"] = "Gerenciar Chamados";
+
+    int? currentStatus = ViewBag.FiltroStatus;
+    string currentTipo = ViewBag.FiltroTipo;
+    string currentOrdenarPor = ViewBag.FiltroOrdenarPor ?? "data-desc"; 
+    string currentBusca = ViewBag.FiltroBusca; 
+    var tiposServico = new List<string> { "Manutenção Preventiva", "Reparo Técnico", "Instalação", "Suporte Técnico" };
+
+    string FormatDate(DateTime date) => date.ToString("dd/MM/yyyy");
+    string FormatDateTime(DateTime date) => date.ToString("dd/MM/yyyy HH:mm");
+}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chamados - Área Administrativa</title>
+    <title>@ViewData["Title"] - Área Administrativa</title>
     <link rel="stylesheet" href="~/css/ADM.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
 </head>
 <body>
-    <!-- Header -->
+    @Html.AntiForgeryToken()
+
     <header class="admin-header">
         <div class="header-content">
             <div class="logo-section">
                 <img src="~/IMG/LOGO (2).png" alt="Tough Service" class="logo">
-                <h1>Gerenciar Chamados</h1>
+                <h1>@ViewData["Title"]</h1>
             </div>
             <div class="user-info">
                 <a asp-action="ADM" asp-controller="ADM" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-                <a asp-action="Index" asp-controller="Home" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </a>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" style="display: inline;">
+                    <button type="submit" class="logout-btn" style="background:none; border:none; color:inherit; cursor:pointer; font:inherit;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="admin-main">
         <div class="container">
-            <!-- Filters and Actions -->
-            <div class="filters-section">
+
+            @if (TempData["ShowSuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["ShowSuccessMessage"]</div>
+            }
+            @if (TempData["ErroStatus"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErroStatus"]</div>
+            }
+
+            <form method="get" asp-action="AdmChamados" asp-controller="ADM" class="filters-section">
                 <div class="filters-left">
                     <div class="filter-group">
-                        <label for="statusFilter">Status:</label>
-                        <select id="statusFilter" onchange="filterChamados()">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status">
                             <option value="">Todos</option>
-                            <option value="novo">Novo</option>
-                            <option value="em-andamento">Em Andamento</option>
-                            <option value="finalizado">Finalizado</option>
+                            @foreach (StatusChamadoEnum se in Enum.GetValues(typeof(StatusChamadoEnum)))
+                            {
+                                <option value="@((int)se)" selected="@(currentStatus == (int)se)">@se</option>
+                            }
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="tipoFilter">Tipo:</label>
-                        <select id="tipoFilter" onchange="filterChamados()">
+                        <label for="tipo">Tipo:</label>
+                        <select id="tipo" name="tipo">
                             <option value="">Todos</option>
-                            <option value="instalacao">Instalação</option>
-                            <option value="agendamento">Agendamento</option>
-                            <option value="manutencao">Manutenção</option>
-                            <option value="reparo">Reparo</option>
-                            <option value="suporte">Suporte</option>
+                            @foreach (var ts in tiposServico)
+                            {
+                                <option value="@ts" selected="@(currentTipo == ts)">@ts</option>
+                            }
                         </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="ordenarPor">Ordenar:</label>
+                        <select id="ordenarPor" name="ordenarPor">
+                            <option value="data-desc" selected="@(currentOrdenarPor == "data-desc")">Recente</option>
+                            <option value="data-asc" selected="@(currentOrdenarPor == "data-asc")">Antigo</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="busca">Buscar:</label>
+                        <input type="search" id="busca" name="busca" value="@currentBusca" placeholder="ID, Cliente, Email...">
                     </div>
                 </div>
                 <div class="filters-right">
-                    <button class="btn-primary" onclick="refreshChamados()">
-                        <i class="fas fa-sync-alt"></i> Atualizar
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-filter"></i> Filtrar / Atualizar
                     </button>
-                    <button class="btn-secondary" onclick="exportChamados()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
+                    <a asp-action="AdmChamados" asp-controller="ADM" class="btn-secondary">
+                        <i class="fas fa-times"></i> Limpar
+                    </a>
                 </div>
-            </div>
+            </form>
 
-            <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
                     <div class="stat-content">
-                        <h3 id="totalChamados">0</h3>
+                        <h3>@(ViewBag.TotalChamados ?? 0)</h3>
                         <p>Total de Chamados</p>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
                     <div class="stat-content">
-                        <h3 id="chamadosNovos">0</h3>
+                        <h3>@(ViewBag.ChamadosNovos ?? 0)</h3>
                         <p>Novos</p>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-cog"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-cog"></i></div>
                     <div class="stat-content">
-                        <h3 id="chamadosAndamento">0</h3>
+                        <h3>@(ViewBag.ChamadosAndamento ?? 0)</h3>
                         <p>Em Andamento</p>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-check"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-check"></i></div>
                     <div class="stat-content">
-                        <h3 id="chamadosFinalizados">0</h3>
+                        <h3>@(ViewBag.ChamadosFinalizados ?? 0)</h3>
                         <p>Finalizados</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Chamados List -->
             <div class="chamados-section">
                 <h2>Lista de Chamados</h2>
                 <div class="chamados-list" id="chamadosList">
-                    <!-- Chamados serão carregados aqui via JavaScript -->
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var chamado in Model)
+                        {
+                            <div class="chamado-item status-@chamado.Status"
+                                 data-id="@chamado.Id"
+                                 data-cliente="@chamado.NomeCliente"
+                                 data-email="@(chamado.User?.Email ?? "N/A")"
+                                 data-telefone="@chamado.Telefone"
+                                 data-datasolicitacao="@FormatDateTime(chamado.DataSolicitacao)"
+                                 data-datadesejada="@FormatDate(chamado.DataDesejada)"
+                                 data-tiposervico="@chamado.TipoServico"
+                                 data-tipoextintor="@chamado.TipoExtintor"
+                                 data-quantidade="@chamado.Quantidade"
+                                 data-cep="@chamado.Cep"
+                                 data-logradouro="@chamado.Logradouro"
+                                 data-numero="@chamado.Numero"
+                                 data-bairro="@chamado.Bairro"
+                                 data-cidade="@chamado.Cidade"
+                                 data-estado="@chamado.Estado"
+                                 data-complemento="@(chamado.Complemento ?? "")"
+                                 data-observacoes="@(chamado.Observacoes ?? "Nenhuma")"
+                                 data-statustexto="@chamado.Status"
+                                 data-statusenum="@((int)chamado.Status)">
+
+                                <div class="chamado-header">
+                                    <div>
+                                        <div class="chamado-title">#@chamado.Id - @chamado.NomeCliente</div>
+                                        <div class="chamado-meta">
+                                            <span class="status-badge status-@chamado.Status">@chamado.Status</span>
+                                            <span class="chamado-tipo">@chamado.TipoServico</span>
+                                        </div>
+                                    </div>
+                                    <div class="chamado-date"><i class="fas fa-calendar-alt"></i> @FormatDateTime(chamado.DataSolicitacao)</div>
+                                </div>
+                                <div class="chamado-info">
+                                    <div class="chamado-detail"><i class="fas fa-user"></i> @(chamado.User?.Email ?? "N/A")</div>
+                                    <div class="chamado-detail"><i class="fas fa-box"></i> @chamado.TipoExtintor (@chamado.Quantidade)</div>
+                                    <div class="chamado-detail"><i class="fas fa-phone"></i> @chamado.Telefone</div>
+                                    <div class="chamado-detail"><i class="fas fa-map-marker-alt"></i> @chamado.Cidade/@chamado.Estado</div>
+                                </div>
+                                <div class="chamado-actions">
+                                    <button type="button" class="btn-view btn-sm" onclick="openDetailsModal(this)" title="Ver Detalhes"> <i class="fas fa-eye"></i> Detalhes </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-chamados"><h3>Nenhum chamado encontrado com os filtros atuais.</h3></div>
+                    }
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal de Detalhes do Chamado -->
     <div id="modalDetalhes" class="modal">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h2>Detalhes do Chamado</h2>
+                <h2>Detalhes do Chamado #<span id="modalChamadoId"></span></h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="chamado-details" id="chamadoDetails">
-                    <!-- Detalhes serão carregados aqui -->
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal()">Fechar</button>
-                <button class="btn-warning" onclick="marcarEmAndamento()">Marcar em Andamento</button>
-                <button class="btn-success" onclick="finalizarChamado()">Finalizar</button>
+                <form id="formAtualizaStatus" asp-action="AtualizarStatusChamado" asp-controller="ADM" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="modalStatusFormId" value="0" />
+                    <input type="hidden" name="novoStatus" id="modalStatusFormNovoStatus" value="" />
+
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Fechar</button>
+
+                    <button type="button" class="btn-warning btn-status-action" data-next-status="@((int)StatusChamadoEnum.EmAndamento)" style="display: none;">
+                        Marcar em Andamento
+                    </button>
+                    <button type="button" class="btn-success btn-status-action" data-next-status="@((int)StatusChamadoEnum.Finalizado)" style="display: none;">
+                        Finalizar
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
-    <script src="~/js/AdmChamados.js"></script>
+    <script src="~/js/AdmChamados.js" asp-append-version="true"></script>
 </body>
 </html>

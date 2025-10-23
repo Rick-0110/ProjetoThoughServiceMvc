@@ -1,15 +1,12 @@
+@using ToughService.Models
+@using ProjetoThoughServiceMvc.Models 
 
-@model ProjetoThoughServiceMvc.Models.ApplicationUser
-@using ProjetoThoughServiceMvc.Models;
-
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     bool isLoggedIn = User.Identity.IsAuthenticated;
-    
-}
-@{
-    var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+    var session = HttpContextAccessor.HttpContext.Session;
+    var carrinho = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
-
 }
 
 <!DOCTYPE html>
@@ -17,103 +14,78 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Though Service</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Bootstrap icons-->
+    <title>Though Service - Serviços</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <!-- Core theme CSS (includes Bootstrap) -->
     <link href="~/css/servicos.css" rel="stylesheet" />
+
+
+    @if (TempData["SucessoForm"] != null)
+    {
+        <meta name="show-success-modal" content="true" />
+    }
+
+
 </head>
 <body>
     <header>
         <nav class="navbar-minimal">
             <div class="nav-container">
-                <!-- Logo -->
                 <div class="nav-logo">
                     <a asp-action="Index" asp-controller="Home" class="logo-link">
-
-                        <img src="~/IMG/LOGO (2).png" alt="" width="60vh">
+                        <img src="~/IMG/LOGO (2).png" alt="Tough Service Logo" width="60vh">
                     </a>
                 </div>
-
-              
-                <!-- Menu Principal -->
                 <div class="nav-menu">
-                    <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
-
-                  
-
+                    <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">Home</a>
                     @if (!isLoggedIn)
                     {
-                        <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
-                        <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
+                        <a asp-action="Registro" asp-controller="Registro" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Registro" ? "active" : "")">Registro</a>
+                        <a asp-action="Login" asp-controller="Registro" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Login" ? "active" : "")">Login</a>
                     }
                     else
                     {
-                        <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
+                        <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
                     }
-
-
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
                        asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-
-                    <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
+                    <a asp-action="Sobre" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Sobre" ? "active" : "")">Sobre</a>
                 </div>
-
-                <!-- Carrinho -->
                 <div class="nav-cart">
                     @if (!isLoggedIn)
                     {
-                        <a asp-action="Login" asp-controller="Registro" class="cart-btn">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
-                        </a>
+                        <a asp-action="Login" asp-controller="Registro" class="cart-btn"><i class="fas fa-sign-in-alt"></i><span>Login</span></a>
                     }
                     else
                     {
-                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">@quantidadeItensCarrinho</span>
+                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Carrinho" ? "active" : "")">
+                            <i class="fas fa-shopping-cart"></i><span class="cart-count">@quantidadeItensCarrinho</span>
                         </a>
                     }
                 </div>
-
-                <!-- Menu Mobile -->
-                <button class="mobile-menu-btn" type="button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
             </div>
         </nav>
     </header>
 
     <main>
-       
         <section class="servicos-container">
             <h1>Nossos Serviços</h1>
-           
+
+
+            @if (TempData["ErroForm"] != null)
+            {
+                <div class="alert alert-danger" role="alert">@TempData["ErroForm"]</div>
+            }
+
             <div class="servicos-grid">
-                <!-- Serviço 1 -->
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon">
-                            <i class="fas fa-tools"></i>
-                        </div>
+                        <div class="servico-icon"><i class="fas fa-tools"></i></div>
                         <h3>Manutenção Preventiva</h3>
-                        <p>Realizamos manutenção preventiva para garantir o melhor desempenho do seu equipamento.</p>
-                        <ul class="servico-lista">
-                            <li>Inspeção completa</li>
-                            <li>Lubrificação</li>
-                            <li>Ajustes necessários</li>
-                            <li>Testes de funcionamento</li>
-                        </ul>
+                        <p>Garanta o melhor desempenho.</p>
+                        <ul class="servico-lista"><li>Inspeção</li><li>Lubrificação</li><li>Ajustes</li><li>Testes</li></ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('manutencao')">Solicitar Orçamento</button>
@@ -124,21 +96,12 @@
                         }
                     </div>
                 </section>
-                
-                <!-- Serviço 2 -->
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon">
-                            <i class="fas fa-wrench"></i>
-                        </div>
+                        <div class="servico-icon"><i class="fas fa-wrench"></i></div>
                         <h3>Reparo Técnico</h3>
-                        <p>Equipe especializada em reparos técnicos de equipamentos industriais.</p>
-                        <ul class="servico-lista">
-                            <li>Diagnóstico preciso</li>
-                            <li>Reparo de componentes</li>
-                            <li>Substituição de peças</li>
-                            <li>Garantia do serviço</li>
-                        </ul>
+                        <p>Equipe especializada.</p>
+                        <ul class="servico-lista"><li>Diagnóstico</li><li>Reparo</li><li>Peças</li><li>Garantia</li></ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('reparo')">Solicitar Orçamento</button>
@@ -149,20 +112,12 @@
                         }
                     </div>
                 </section>
-                <!-- Serviço 3 -->
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon">
-                            <i class="fas fa-cogs"></i>
-                        </div>
+                        <div class="servico-icon"><i class="fas fa-cogs"></i></div>
                         <h3>Instalação</h3>
-                        <p>Instalação profissional de equipamentos industriais.</p>
-                        <ul class="servico-lista">
-                            <li>Planejamento da instalação</li>
-                            <li>Montagem profissional</li>
-                            <li>Testes de segurança</li>
-                            <li>Treinamento operacional</li>
-                        </ul>
+                        <p>Instalação profissional.</p>
+                        <ul class="servico-lista"><li>Planejamento</li><li>Montagem</li><li>Testes</li><li>Treinamento</li></ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('instalacao')">Solicitar Orçamento</button>
@@ -173,20 +128,12 @@
                         }
                     </div>
                 </section>
-                <!-- Serviço 4 -->
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
+                        <div class="servico-icon"><i class="fas fa-headset"></i></div>
                         <h3>Suporte Técnico</h3>
-                        <p>Suporte técnico especializado para seus equipamentos.</p>
-                        <ul class="servico-lista">
-                            <li>Atendimento 24/7</li>
-                            <li>Suporte remoto</li>
-                            <li>Orientação técnica</li>
-                            <li>Solução de problemas</li>
-                        </ul>
+                        <p>Suporte especializado.</p>
+                        <ul class="servico-lista"><li>Atendimento</li><li>Remoto</li><li>Orientação</li><li>Solução</li></ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('suporte')">Solicitar Orçamento</button>
@@ -198,128 +145,84 @@
                     </div>
                 </section>
             </div>
-
-
-
+        </section>
     </main>
 
-    <!-- Modal de Orçamento/Agendamento -->
     <div id="modalOrcamento" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle" onclick="openModal()">Solicitar Orçamento</h2>
+                <h2 id="modalTitle">Solicitar Orçamento</h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="formOrcamento" onsubmit="submitForm(event)">
+                <form id="formOrcamento"
+                      asp-controller="Chamados"
+                      asp-action="SolicitarServico"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="tipoServicoHidden" name="TipoServico" value="" />
+
                     <div class="form-group">
                         <label for="nomeCliente">Nome do Cliente *</label>
-                        <input type="text" id="nomeCliente" name="nomeCliente" required>
+                        <input type="text" id="nomeCliente" name="NomeCliente" required>
                     </div>
-
                     <div class="form-group">
                         <label for="dataDesejada">Data Desejada *</label>
-                        <input type="date" id="dataDesejada" name="dataDesejada" required>
+                        <input type="date" id="dataDesejada" name="DataDesejada" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="tipoExtintor">Tipo de Extintor / Quantidade *</label>
+                        <label for="tipoExtintor">Tipo de Equipamento / Quantidade *</label>
                         <div class="extintor-container">
-                            <select id="tipoExtintor" name="tipoExtintor" required>
+                            <select id="tipoExtintor" name="TipoExtintor" required>
                                 <option value="">Selecione o tipo</option>
-                                <option value="agua">Extintor de Água (10L)</option>
-                                <option value="pqs">Extintor PQS (4kg)</option>
-                                <option value="co2">Extintor CO2 (5kg)</option>
-                                <option value="espuma">Extintor de Espuma (6L)</option>
-                                <option value="sistema-fixo">Sistema Fixo</option>
-                                <option value="sprinkler">Sistema de Sprinklers</option>
-                                <option value="detecao">Sistema de Detecção</option>
+                                <option value="Extintor de Água (10L)">Extintor de Água (10L)</option>
+                                <option value="Extintor PQS (4kg)">Extintor PQS (4kg)</option>
+                                <option value="Extintor CO2 (5kg)">Extintor CO2 (5kg)</option>
+                                <option value="Extintor de Espuma (6L)">Extintor de Espuma (6L)</option>
+                                <option value="Sistema Fixo">Sistema Fixo</option>
+                                <option value="Sistema de Sprinklers">Sistema de Sprinklers</option>
+                                <option value="Sistema de Detecção">Sistema de Detecção</option>
                             </select>
-                            <input type="number" id="quantidade" name="quantidade" placeholder="Quantidade" min="1" required>
+                            <input type="number" id="quantidade" name="Quantidade" placeholder="Qtde" min="1" required style="width: 80px;">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <h4 style="margin-top: 20px;">Endereço</h4>
-                    </div>
-
+                    <div class="form-group"><h4 style="margin-top: 20px;">Endereço</h4></div>
                     <div class="row">
-
-                        <div class="col-md-3 form-group">
-                            <label for="cep">CEP *</label>
-                            <input type="text" id="cep" name="cep" class="form-control" placeholder="00000-000" required />
-                        </div>
-
-                        <div class="col-md-6 form-group">
-                            <label for="logradouro">Rua/Avenida *</label>
-                            <input type="text" id="logradouro" name="logradouro" class="form-control" required />
-                        </div>
-
-                        <div class="col-md-3 form-group">
-                            <label for="numero">Número *</label>
-                            <input type="text" id="numero" name="numero" class="form-control" required />
-                        </div>
+                        <div class="col-md-3 form-group"><label for="cep">CEP *</label><input type="text" id="cep" name="Cep" required /></div>
+                        <div class="col-md-6 form-group"><label for="logradouro">Rua/Avenida *</label><input type="text" id="logradouro" name="Logradouro" required /></div>
+                        <div class="col-md-3 form-group"><label for="numero">Número *</label><input type="text" id="numero" name="Numero" required /></div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-4 form-group">
-                            <label for="bairro">Bairro *</label>
-                            <input type="text" id="bairro" name="bairro" class="form-control" required />
-                        </div>
-
-                        <div class="col-md-4 form-group">
-                            <label for="cidade">Cidade *</label>
-                            <input type="text" id="cidade" name="cidade" class="form-control" required />
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label for="estado">UF *</label>
-                            <input type="text" id="estado" name="estado" class="form-control" placeholder="SP" maxlength="2" required />
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label for="complemento">Compl.</label>
-                            <input type="text" id="complemento" name="complemento" class="form-control" />
-                        </div>
+                        <div class="col-md-4 form-group"><label for="bairro">Bairro *</label><input type="text" id="bairro" name="Bairro" required /></div>
+                        <div class="col-md-4 form-group"><label for="cidade">Cidade *</label><input type="text" id="cidade" name="Cidade" required /></div>
+                        <div class="col-md-2 form-group"><label for="estado">UF *</label><input type="text" id="estado" name="Estado" maxlength="2" required /></div>
+                        <div class="col-md-2 form-group"><label for="complemento">Compl.</label><input type="text" id="complemento" name="Complemento" /></div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-4 form-group">
-                            <label for="telefone">Telefone/WhatsApp *</label>
-                            <input type="tel" id="telefone" name="telefone" class="form-control" placeholder="(DD) 9XXXX-XXXX" required />
-                        </div>
+                        <div class="col-md-4 form-group"><label for="telefone">Telefone/WhatsApp *</label><input type="tel" id="telefone" name="Telefone" required /></div>
                     </div>
-
                     <div class="form-group">
                         <label for="observacoes">Observações</label>
-                        <textarea id="observacoes" name="observacoes" rows="4" placeholder="Descreva detalhes adicionais sobre o serviço desejado..."></textarea>
+                        <textarea id="observacoes" name="Observacoes" rows="3"></textarea>
                     </div>
-
                     <div class="form-actions">
                         <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
-                        <button type="submit" class="btn-submit">Enviar</button>
+                        <button type="submit" class="btn-submit">Enviar Solicitação</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Sucesso -->
     <div id="modalSucesso" class="modal">
         <div class="modal-content modal-sucesso">
-            <div class="modal-header">
-                <h2>Sucesso!</h2>
-                <span class="close" onclick="closeSuccessModal()">&times;</span>
-            </div>
+            <div class="modal-header"><h2>Sucesso!</h2><span class="close" onclick="closeSuccessModal()">&times;</span></div>
             <div class="modal-body text-center">
-                <div class="success-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                 <h3>Solicitação Enviada!</h3>
-                <p>Recebemos sua solicitação e entraremos em contato em breve.</p>
-                <p class="success-details">
-                    <strong>Prazo de resposta:</strong> 24 horas<br>
-                    <strong>Contato:</strong> (11) 99999-9999
-                </p>
+                <p>Recebemos sua solicitação. Entraremos em contato em breve.</p>
+                <p class="success-details"><strong>Prazo:</strong> até 24h<br><strong>Contato:</strong> (XX) XXXXX-XXXX</p>
                 <button class="btn-submit" onclick="closeSuccessModal()">Fechar</button>
             </div>
         </div>
@@ -327,54 +230,13 @@
 
     <footer class="footer-minimal">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Tough Service</h3>
-                    <p>Equipamentos e assessoria de segurança</p>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Empresa</h4>
-                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
-                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-                        <a href="#">Contato</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Suporte</h4>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Redes Sociais</h4>
-                        <div class="social-links-minimal">
-                            <a href="#" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-           
-
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
-            </div>
+            <div class="footer-bottom"><p>&copy; @DateTime.Now.Year Tough Service. Todos os direitos reservados.</p></div>
         </div>
     </footer>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Servicos.js" asp-append-version="true"></script>
 
-    <script src="~/js/Servicos.js"></script>
 </body>
 </html>

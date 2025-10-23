@@ -658,6 +658,8 @@ a.admin-card-link:active {
 
 .modal-body {
     padding: 2rem;
+    max-height: 60vh; 
+    overflow-y: auto;
 }
 
 .modal-footer {
