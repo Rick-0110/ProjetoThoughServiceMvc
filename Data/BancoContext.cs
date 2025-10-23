@@ -19,11 +19,11 @@ namespace ToughService.Data
         }
 
 
-
-        // tabela de produtos no banco de dados
         public DbSet<ProdutoModel> Produtos { get; set; }
 
           public DbSet<ApplicationUser> Usuarios { get; set; }
+
+        public DbSet<ChamadoModel> Chamados { get; set; }
     }
 
 }

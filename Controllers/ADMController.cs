@@ -7,7 +7,8 @@ using System.IO;
 using System.Threading.Tasks;
 using ToughService.Models;
 using ToughService.Repository;
-
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
 namespace ToughService.Controllers
 {
 
@@ -16,34 +17,121 @@ namespace ToughService.Controllers
     {
         private readonly IProdutoRepository _produtoRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IChamadoRepository _chamadoRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-
-        public ADMController(IProdutoRepository produtoRepository, IWebHostEnvironment webHostEnvironment)
+        public ADMController(
+       IProdutoRepository produtoRepository,
+       IWebHostEnvironment webHostEnvironment,
+       IChamadoRepository chamadoRepository,
+       UserManager<ApplicationUser> userManager)
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
+            _chamadoRepository = chamadoRepository;
+            _userManager = userManager;
         }
 
+    
         public IActionResult ADM()
         {
-
             return View();
         }
 
-        public IActionResult AdmChamados()
+       
+
+        [HttpGet]
+        public async Task<IActionResult> AdmChamados(
+            int? status, string tipo, string ordenarPor = "data-desc", string busca = null)
         {
+            try
+            {
+                var chamadosQuery = (await _chamadoRepository.GetAllChamadosAsync()).AsEnumerable();
 
-            return View();
+                // Filtros
+                if (status.HasValue && Enum.IsDefined(typeof(StatusChamadoEnum), status.Value))
+                {
+                    chamadosQuery = chamadosQuery.Where(c => (int)c.Status == status.Value);
+                }
+                if (!string.IsNullOrEmpty(tipo))
+                {
+                    chamadosQuery = chamadosQuery.Where(c => c.TipoServico.Equals(tipo, StringComparison.OrdinalIgnoreCase));
+                }
+                if (!string.IsNullOrEmpty(busca))
+                {
+                    string termoBuscaLower = busca.ToLower();
+                    chamadosQuery = chamadosQuery.Where(c =>
+                        c.Id.ToString().Contains(termoBuscaLower) ||
+                        (c.NomeCliente != null && c.NomeCliente.ToLower().Contains(termoBuscaLower)) ||
+                        (c.User?.Email != null && c.User.Email.ToLower().Contains(termoBuscaLower)) ||
+                        (c.Telefone != null && c.Telefone.Contains(termoBuscaLower)) ||
+                        (c.Cidade != null && c.Cidade.ToLower().Contains(termoBuscaLower)) ||
+                        (c.TipoServico != null && c.TipoServico.ToLower().Contains(termoBuscaLower))
+                    );
+                }
+
+                // Ordenação
+                chamadosQuery = ordenarPor?.ToLower() switch
+                {
+                    "data-asc" => chamadosQuery.OrderBy(c => c.DataSolicitacao),
+                    _ => chamadosQuery.OrderByDescending(c => c.DataSolicitacao),
+                };
+
+                // Guarda filtros para a View
+                ViewBag.FiltroStatus = status;
+                ViewBag.FiltroTipo = tipo;
+                ViewBag.FiltroOrdenarPor = ordenarPor;
+                ViewBag.FiltroBusca = busca;
+
+                var chamadosLista = chamadosQuery.ToList();
+
+                // Estatísticas
+                ViewBag.TotalChamados = chamadosLista.Count;
+                ViewBag.ChamadosNovos = chamadosLista.Count(c => c.Status == StatusChamadoEnum.Novo);
+                ViewBag.ChamadosAndamento = chamadosLista.Count(c => c.Status == StatusChamadoEnum.EmAndamento);
+                ViewBag.ChamadosFinalizados = chamadosLista.Count(c => c.Status == StatusChamadoEnum.Finalizado);
+
+                return View(chamadosLista);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO CARREGAR ADM CHAMADOS: {ex}");
+                TempData["ErroStatus"] = "Ocorreu um erro ao carregar os chamados.";
+                return View(new List<ChamadoModel>());
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AtualizarStatusChamado(int id, StatusChamadoEnum novoStatus)
+        {
+            if (id <= 0 || !Enum.IsDefined(typeof(StatusChamadoEnum), novoStatus))
+            {
+                TempData["ErroStatus"] = "Dados inválidos para atualização de status.";
+                return RedirectToAction("AdmChamados");
+            }
+            try
+            {
+                await _chamadoRepository.UpdateStatusChamadoAsync(id, novoStatus);
+                TempData["ShowSuccessMessage"] = $"Status do chamado #{id} atualizado para '{novoStatus}'!";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO ATUALIZAR STATUS (ID: {id}): {ex.Message}");
+                TempData["ErroStatus"] = $"Erro ao atualizar status: {ex.Message}";
+            }
+            return RedirectToAction("AdmChamados");
         }
 
 
+
+       
         [HttpGet]
         public async Task<IActionResult> GerenciarProdutos()
         {
             var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
             return View(listaDeProdutos);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> ListarProdutos()

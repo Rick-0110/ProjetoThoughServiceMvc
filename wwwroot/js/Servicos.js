@@ -1,111 +1,91 @@
+// Arquivo: wwwroot/js/Servicos.js
 
-// Configurar data mínima quando a página carregar
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ===== CÓDIGO PARA MOSTRAR O MODAL DE SUCESSO =====
+    // Procura pela <meta> tag que o Razor criou no <head>
+    const metaTagSucesso = document.querySelector("meta[name='show-success-modal']");
+
+    if (metaTagSucesso) {
+        console.log("Meta tag 'show-success-modal' encontrada. Abrindo modal...");
+        const modalSucesso = document.getElementById('modalSucesso');
+        if (modalSucesso) {
+            modalSucesso.style.display = 'block'; // Ou 'flex', dependendo do seu CSS
+            document.body.style.overflow = 'hidden';
+        }
+        // Remove a tag depois de usá-la
+        metaTagSucesso.remove();
+    }
+    // ===== FIM DO CÓDIGO DE SUCESSO =====
+
+
+    // Define a data mínima no campo de data (seu código original)
     const dateInput = document.getElementById('dataDesejada');
     if (dateInput) {
-        // Data mínima = amanhã
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        dateInput.min = tomorrow.toISOString().split('T')[0];
-        dateInput.value = tomorrow.toISOString().split('T')[0];
+        const minDate = tomorrow.toISOString().split('T')[0];
+        dateInput.min = minDate;
     }
-});
 
-// ===== FUNÇÕES DO MODAL =====
+}); // Fim do DOMContentLoaded
 
-// Abrir modal
+// ===== FUNÇÕES VISUAIS DO MODAL (Seu código original) =====
+
+// Função para abrir o modal de orçamento
 function openModal(tipo) {
     const modal = document.getElementById('modalOrcamento');
     const titulo = document.getElementById('modalTitle');
+    const tipoServicoInput = document.getElementById('tipoServicoHidden'); // Campo oculto
 
-    // Definir título
-    const titulos = {
-        'instalacao': 'Solicitar Orçamento - Instalação',
-        'agendamento': 'Agendar Instalação',
-        'manutencao': 'Solicitar Orçamento - Manutenção',
-        'reparo': 'Solicitar Orçamento - Reparo',
-        'suporte': 'Solicitar Orçamento - Suporte'
+    const servicosInfo = {
+        'manutencao': { titulo: 'Solicitar Orçamento - Manutenção', valor: 'Manutenção Preventiva' },
+        'reparo': { titulo: 'Solicitar Orçamento - Reparo', valor: 'Reparo Técnico' },
+        'instalacao': { titulo: 'Solicitar Orçamento - Instalação', valor: 'Instalação' },
+        'suporte': { titulo: 'Solicitar Orçamento - Suporte', valor: 'Suporte Técnico' }
     };
 
-    titulo.textContent = titulos[tipo] || 'Solicitar Orçamento';
+    const info = servicosInfo[tipo] || { titulo: 'Solicitar Orçamento', valor: tipo };
 
-    // Mostrar modal
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
+    if (titulo) {
+        titulo.textContent = info.titulo;
+    }
 
-// Fechar modal
+    if (tipoServicoInput) {
+        tipoServicoInput.value = info.valor;
+    } else {
+        console.error("Campo oculto 'tipoServicoHidden' não encontrado!");
+    }
+
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    } else {
+        console.error("Modal 'modalOrcamento' não encontrado.");
+    }
+} // Fim da função openModal
+
+// Função para fechar o modal de orçamento
 function closeModal() {
     const modal = document.getElementById('modalOrcamento');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+} // Fim da função closeModal
 
-    // Limpar formulário
-    document.getElementById('formOrcamento').reset();
-}
-
-// Fechar modal de sucesso
+// Função para fechar o modal de sucesso
 function closeSuccessModal() {
     const modal = document.getElementById('modalSucesso');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// ===== ENVIO DO FORMULÁRIO ==============
-function submitForm(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const nome = form.nomeCliente.value.trim();
-    const data = form.dataDesejada.value;
-    const tipo = form.tipoExtintor.value;
-    const quantidade = form.quantidade.value;
-
-    // Validação simples
-    if (!nome || !data || !tipo || !quantidade) {
-        alert('Por favor, preencha todos os campos obrigatórios!');
-        return;
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
+} // Fim da função closeSuccessModal
 
-    if (nome.length < 2) {
-        alert('Nome deve ter pelo menos 2 caracteres!');
-        return;
-    }
+// ===== FECHAR MODAL COM ESC OU CLIQUE FORA (Seu código original) =====
 
-    if (parseInt(quantidade) < 1) {
-        alert('Quantidade deve ser pelo menos 1!');
-        return;
-    }
-
-    // Verificar se data é futura
-    const dataSelecionada = new Date(data);
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-
-    if (dataSelecionada <= hoje) {
-        alert('Data deve ser futura!');
-        return;
-    }
-
-    // Simular envio
-    const botao = form.querySelector('.btn-submit');
-    botao.disabled = true;
-    botao.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-
-    setTimeout(() => {
-        closeModal();
-        showSuccessModal();
-    }, 1500);
-}
-
-// ===== MODAL DE SUCESSO =====
-function showSuccessModal() {
-    const modal = document.getElementById('modalSucesso');
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-
-// ===== FECHAR MODAL COM ESC OU CLIQUE FORA =====
+// Listener para a tecla ESC
 document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
         closeModal();
@@ -113,6 +93,7 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+// Listener para cliques fora dos modais
 window.addEventListener('click', function (event) {
     const modalOrcamento = document.getElementById('modalOrcamento');
     const modalSucesso = document.getElementById('modalSucesso');
@@ -120,7 +101,6 @@ window.addEventListener('click', function (event) {
     if (event.target === modalOrcamento) {
         closeModal();
     }
-
     if (event.target === modalSucesso) {
         closeSuccessModal();
     }
