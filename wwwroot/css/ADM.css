@@ -671,7 +671,27 @@ a.admin-card-link:active {
     justify-content: flex-end;
 }
 
-/* ===== PRODUCTS GRID ===== */
+.btn-view.btn-sm {
+   
+    padding: 5px 12px; 
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5; 
+    border-radius: 0.25rem; 
+    cursor: pointer; 
+    text-align: center; 
+    border: 1px solid #6c757d; 
+    background-color: transparent; 
+    color: #6c757d;
+
+    transition: all 0.2s ease-in-out;
+}
+    .btn-view.btn-sm:hover {
+        background-color: #6c757d; 
+        color: #ffffff; 
+        border-color: #6c757d; 
+    }
+
 .products-section {
     margin-top: 2rem;
 }
