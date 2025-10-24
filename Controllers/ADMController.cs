@@ -158,16 +158,14 @@ namespace ToughService.Controllers
             return Ok(produto);
         }
 
-        [HttpDelete]
-        public IActionResult DeletarProduto(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExcluirProduto(int id)
         {
-            var produto = _produtoRepository.GetProdutoByIdAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-            _produtoRepository.RemoveProdutoAsync(id);
-            return NoContent();
+         
+            await _produtoRepository.RemoveProdutoAsync(id);
+            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
+            return RedirectToAction("GerenciarProdutos");
         }
 
         [HttpPut]

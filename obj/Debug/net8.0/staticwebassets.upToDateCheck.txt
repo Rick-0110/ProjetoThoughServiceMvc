@@ -1,5 +1,4 @@
 wwwroot\css\AdicionarProdutoADM.css
-wwwroot\css\ADM.css
 wwwroot\css\AgendamentoManutencaoRecarga.css
 wwwroot\css\carrinho.css
 wwwroot\css\EsqueciMinhaSenha.css
@@ -34,7 +33,6 @@ wwwroot\IMG\sidebar.png
 wwwroot\IMG\TOUGH-SERVICE.png
 wwwroot\IMG\tough.png
 wwwroot\js\ADM.js
-wwwroot\js\AdmAdicionarProdutos.js
 wwwroot\js\AdmChamados.js
 wwwroot\js\carrinho.js
 wwwroot\js\EsqueciMinhaSenha.js
@@ -102,3 +100,5 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\ADM.css
+wwwroot\js\AdmAdicionarProdutos.js
