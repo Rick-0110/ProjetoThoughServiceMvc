@@ -6,8 +6,6 @@
 
 // Executa quando o conteúdo da página é totalmente carregado.
 document.addEventListener('DOMContentLoaded', function () {
-    // Garante que a aba 'adicionar' seja a inicial.
-    // Você pode mudar para 'listar' se quiser que a lista apareça primeiro.
     showTab('adicionar');
 });
 

@@ -37,6 +37,50 @@ body {
     padding: 0 20px;
 }
 
+.icon-btn {
+    display: inline-flex; /* Alinha o ícone no centro */
+    align-items: center;
+    justify-content: center;
+    width: 38px; /* Largura fixa */
+    height: 38px; /* Altura fixa */
+
+    border: none; /* Sem borda */
+    border-radius: 50%; /* Botão perfeitamente redondo */
+
+    font-size: 1rem; /* Tamanho do ícone */
+    color: #ffffff; /* Ícone branco (na maioria dos casos) */
+
+    cursor: pointer;
+    text-decoration: none; /* Para caso você use uma tag <a> */
+    margin: 0 4px; /* Espaçamento entre botões */
+
+    transition: all 0.2s ease-in-out;
+}
+
+    /* 2. EFEITO DE HOVER (Escurece um pouco e levanta o botão) */
+    .icon-btn:hover {
+        opacity: 0.85; /* Leve transparência */
+        transform: translateY(-2px); /* Efeito de "levantar" */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra suave */
+    }
+
+    /* ======================================= */
+    /* === BOTÃO DE EDITAR (CINZA) === */
+    /* ======================================= */
+    .icon-btn.edit-btn {
+        background-color: #6c757d; /* Cinza "Secondary" (Padrão Bootstrap) */
+        color: #ffffff; /* Ícone branco */
+    }
+
+    /* ======================================= */
+    /* === BOTÃO DE DELETAR (VERMELHO) === */
+    /* === (Combinando com seu tema) === */
+    /* ======================================= */
+    .icon-btn.delete-btn {
+        background-color: #dc3545; /* Vermelho "Danger" (Padrão Bootstrap) */
+        color: #ffffff; /* Ícone branco */
+    }
+
 /* ===== HEADER ADMINISTRATIVO ===== */
 .admin-header {
     background: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
