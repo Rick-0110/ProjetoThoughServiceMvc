@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
@@ -44,6 +44,22 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-11T17:49:05.983Z",
               "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
@@ -68,8 +84,7 @@
               "RelativeToolTip": "wwwroot\\css\\ADM.css",
               "ViewState": "AgIAADwAAAAAAAAAAAAmwE0AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-24T19:44:10.583Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T19:44:10.583Z"
             },
             {
               "$type": "Document",
@@ -81,8 +96,7 @@
               "RelativeToolTip": "Views\\ADM\\GerenciarProdutos.cshtml",
               "ViewState": "AgIAAMUAAAAAAAAAAAAswNcAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T19:41:08.612Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T19:41:08.612Z"
             },
             {
               "$type": "Document",
@@ -94,24 +108,7 @@
               "RelativeToolTip": "Views\\Carrinho\\InfoProduto.cshtml",
               "ViewState": "AgIAAIgAAAAAAAAAAAAswKMAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T19:39:17.301Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+              "WhenOpened": "2025-10-24T19:39:17.301Z"
             }
           ]
         }
