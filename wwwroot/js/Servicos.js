@@ -1,25 +1,20 @@
-// Arquivo: wwwroot/js/Servicos.js
-
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== CÓDIGO PARA MOSTRAR O MODAL DE SUCESSO =====
-    // Procura pela <meta> tag que o Razor criou no <head>
+ 
     const metaTagSucesso = document.querySelector("meta[name='show-success-modal']");
 
     if (metaTagSucesso) {
         console.log("Meta tag 'show-success-modal' encontrada. Abrindo modal...");
         const modalSucesso = document.getElementById('modalSucesso');
         if (modalSucesso) {
-            modalSucesso.style.display = 'block'; // Ou 'flex', dependendo do seu CSS
+            modalSucesso.style.display = 'block'; 
             document.body.style.overflow = 'hidden';
         }
-        // Remove a tag depois de usá-la
         metaTagSucesso.remove();
     }
-    // ===== FIM DO CÓDIGO DE SUCESSO =====
 
 
-    // Define a data mínima no campo de data (seu código original)
+
     const dateInput = document.getElementById('dataDesejada');
     if (dateInput) {
         const tomorrow = new Date();
@@ -28,11 +23,95 @@ document.addEventListener('DOMContentLoaded', function () {
         dateInput.min = minDate;
     }
 
-}); // Fim do DOMContentLoaded
 
-// ===== FUNÇÕES VISUAIS DO MODAL (Seu código original) =====
+    const cepInput = document.getElementById('cep');
+    if (cepInput) {
+        cepInput.addEventListener('blur', buscarCepPelaApi);
+    }
 
-// Função para abrir o modal de orçamento
+}); 
+
+
+
+
+async function buscarCepPelaApi() {
+    const cepInput = document.getElementById('cep');
+    const cep = cepInput.value.replace(/\D/g, ''); 
+
+    if (cep.length !== 8) {
+        limparCamposEndereco();
+        return;
+    }
+
+    setCamposEnderecoLoading(true);
+
+    try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+        if (!response.ok) {
+            throw new Error('Erro na rede ao buscar CEP.');
+        }
+
+        const data = await response.json();
+
+     
+        if (data.erro) {
+         
+            alert('CEP não encontrado. Por favor, digite o endereço manualmente.');
+            limparCamposEndereco();
+        } else {
+     
+            preencherCamposEndereco(data);
+        }
+
+    } catch (error) {
+        // 6. Erro de rede/fetch (ex: sem internet)
+        console.error('Falha ao buscar CEP:', error);
+        alert('Não foi possível buscar o CEP. Verifique sua conexão.');
+        limparCamposEndereco();
+    } finally {
+        // 7. Remove o feedback de "carregando" (mesmo se der erro)
+        setCamposEnderecoLoading(false);
+    }
+}
+
+// Função auxiliar para preencher os campos com os dados da API
+function preencherCamposEndereco(data) {
+    document.getElementById('logradouro').value = data.logradouro;
+    document.getElementById('bairro').value = data.bairro;
+    document.getElementById('cidade').value = data.localidade; // API ViaCEP usa 'localidade' para cidade
+    document.getElementById('estado').value = data.uf;
+
+    // Foca no campo "Número", que é o próximo a ser preenchido
+    document.getElementById('numero').focus();
+}
+
+// Função para limpar os campos (se o CEP for inválido)
+function limparCamposEndereco() {
+    document.getElementById('logradouro').value = '';
+    document.getElementById('bairro').value = '';
+    document.getElementById('cidade').value = '';
+    document.getElementById('estado').value = '';
+}
+
+// Função para travar/destravar campos e mostrar "Buscando..."
+function setCamposEnderecoLoading(isLoading) {
+    const campos = ['logradouro', 'bairro', 'cidade', 'estado'];
+    campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.readOnly = isLoading;
+            el.placeholder = isLoading ? 'Buscando...' : ''; 
+        }
+    });
+}
+
+
+
+
+
+
+
 function openModal(tipo) {
     const modal = document.getElementById('modalOrcamento');
     const titulo = document.getElementById('modalTitle');
@@ -63,7 +142,7 @@ function openModal(tipo) {
     } else {
         console.error("Modal 'modalOrcamento' não encontrado.");
     }
-} // Fim da função openModal
+} 
 
 // Função para fechar o modal de orçamento
 function closeModal() {
@@ -72,7 +151,7 @@ function closeModal() {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
-} // Fim da função closeModal
+} 
 
 // Função para fechar o modal de sucesso
 function closeSuccessModal() {
@@ -81,7 +160,7 @@ function closeSuccessModal() {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
-} // Fim da função closeSuccessModal
+} 
 
 // ===== FECHAR MODAL COM ESC OU CLIQUE FORA (Seu código original) =====
 
