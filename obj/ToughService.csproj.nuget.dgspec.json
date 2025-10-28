@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
+    "C:\\Users\\Aluno SENAI.C308-LAB3-001\\ProjetoThoughServiceMvc\\ToughService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\ToughService.csproj": {
+    "C:\\Users\\Aluno SENAI.C308-LAB3-001\\ProjetoThoughServiceMvc\\ToughService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "projectUniqueName": "C:\\Users\\Aluno SENAI.C308-LAB3-001\\ProjetoThoughServiceMvc\\ToughService.csproj",
         "projectName": "ToughService",
-        "projectPath": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\ToughService.csproj",
-        "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Windows\\Source\\Repos\\ProjetoThoughServiceMvc\\obj\\",
+        "projectPath": "C:\\Users\\Aluno SENAI.C308-LAB3-001\\ProjetoThoughServiceMvc\\ToughService.csproj",
+        "packagesPath": "C:\\Users\\Aluno SENAI.C308-LAB3-001\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Aluno SENAI.C308-LAB3-001\\ProjetoThoughServiceMvc\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Aluno SENAI.C308-LAB3-001\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,8 +37,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -103,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.412/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
