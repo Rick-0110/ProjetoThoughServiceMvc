@@ -70,10 +70,8 @@
                     <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
                     <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
                 }
-                else
-                {
-                    <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
-                }
+                
+           
 
                
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
@@ -81,22 +79,51 @@
              
                 <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
             </div>
+            <div class="nav-actions">
+                <div class="nav-cart">
+                    @if (!isLoggedIn)
+                    {
+                        <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">@quantidadeItensCarrinho</span>
+                        </a>
+                    }
+                </div>
 
-            <!-- Carrinho -->
-            <div class="nav-cart">
-                @if (!isLoggedIn)
+                @if (isLoggedIn)
                 {
-                    <a asp-action="Login" asp-controller="Registro" class="cart-btn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>Login</span>
-                    </a>
-                }
-                else
-                {
-                    <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">@quantidadeItensCarrinho</span>
-                    </a>
+                    <div class="profile-dropdown">
+                        <button class="profile-btn" onclick="toggleProfileDropdown()">
+                            @* Use um ícone genérico ou a foto do usuário se tiver *@
+                            <i class="fas fa-user-circle profile-icon"></i>
+                            @* <img src="/path/to/user/photo.jpg" alt="Foto Perfil" class="profile-photo"> *@
+                        </button>
+                        <div id="profileDropdownMenu" class="dropdown-menu">
+                            <div class="dropdown-header">
+                                Olá, @User.Identity.Name!
+                            </div>
+                            <a class="dropdown-item" asp-action="MeusPedidos" asp-controller="Cliente">
+                                <i class="fas fa-clipboard-list"></i> Meus Pedidos
+                            </a>
+                            <a class="dropdown-item" asp-action="Configuracoes" asp-controller="Cliente">
+                                <i class="fas fa-cog"></i> Configurações
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            @* Formulário de Logout (mais seguro que link) *@
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit" class="dropdown-item logout-item">
+                                    <i class="fas fa-sign-out-alt"></i> Sair
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 }
             </div>
 
