@@ -9,14 +9,19 @@ namespace ToughService.Repository
     {
 
         Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId);
-        //remover item do carrinho
+        Task AddItemAsync(ItemCarrinhoModel item);
         Task RemoveItemAsync(int itemId, string userId);
 
         // Atualiza a quantidade de um item
-        Task UpdateQuantidadeAsync(int itemId, int novaQuantidade, string userId);
+        Task UpdateItemAsync(ItemCarrinhoModel item);
+
+        // Busca um item específico (ex: para ver se já existe)
+        Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId);
 
         // Limpa o carrinho do usuário
         Task ClearCarrinhoAsync(string userId);
+
+
 
     }
 }

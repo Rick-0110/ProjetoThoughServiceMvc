@@ -3,28 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\carrinho\\infoproduto.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\carrinho\\infoproduto.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\views\\perfil\\perfil.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:views\\perfil\\perfil.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\carrinhocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\carrinhocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\wwwroot\\css\\minimalista.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:wwwroot\\css\\minimalista.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\wwwroot\\css\\styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:wwwroot\\css\\styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\admcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\controllers\\registrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:controllers\\registrocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\repository\\icarrinhorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:repository\\icarrinhorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\repository\\carrinhorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:repository\\carrinhorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|c:\\users\\windows\\source\\repos\\projetothoughservicemvc\\data\\bancocontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C430C939-B5C8-BDFA-6F01-0D27034970E6}|ToughService.csproj|solutionrelative:data\\bancocontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,20 +38,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAFIAAAAAAAAAAAAwwC8AAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAswIQAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-11T17:49:05.983Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "InfoProduto.cshtml",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Carrinho\\InfoProduto.cshtml",
+              "RelativeDocumentMoniker": "Views\\Carrinho\\InfoProduto.cshtml",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Carrinho\\InfoProduto.cshtml",
+              "RelativeToolTip": "Views\\Carrinho\\InfoProduto.cshtml",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAswGMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-31T20:48:04.533Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -67,65 +85,68 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "perfil.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\perfil.cshtml",
-              "RelativeDocumentMoniker": "Views\\Perfil\\perfil.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Perfil\\perfil.cshtml",
-              "RelativeToolTip": "Views\\Perfil\\perfil.cshtml",
-              "ViewState": "AgIAAI0AAAAAAAAAAAAAAJ0AAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-29T17:11:26.699Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAGUAAAAAAAAAAAAAAHwAAABKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-29T16:37:38.639Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Minimalista.css",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\Minimalista.css",
-              "RelativeDocumentMoniker": "wwwroot\\css\\Minimalista.css",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\Minimalista.css",
-              "RelativeToolTip": "wwwroot\\css\\Minimalista.css",
-              "ViewState": "AgIAAFoAAAAAAAAAAAAmwIwAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-29T16:36:45.576Z"
+              "Title": "RegistroController.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\RegistroController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RegistroController.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\RegistroController.cs",
+              "RelativeToolTip": "Controllers\\RegistroController.cs",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAAAHsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-31T20:15:37.182Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "styles.css",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\styles.css",
-              "RelativeDocumentMoniker": "wwwroot\\css\\styles.css",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\wwwroot\\css\\styles.css",
-              "RelativeToolTip": "wwwroot\\css\\styles.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-29T16:36:24.95Z"
+              "DocumentIndex": 1,
+              "Title": "CarrinhoController.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\CarrinhoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CarrinhoController.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\CarrinhoController.cs",
+              "RelativeToolTip": "Controllers\\CarrinhoController.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAA7wC4AAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-31T20:07:09.473Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "ADMController.cs",
-              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ADMController.cs",
-              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Controllers\\ADMController.cs",
-              "RelativeToolTip": "Controllers\\ADMController.cs",
-              "ViewState": "AgIAAJgAAAAAAAAAAAAuwKwAAAAJAAAAAAAAAA==",
+              "Title": "ICarrinhoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Repository\\ICarrinhoRepository.cs",
+              "RelativeDocumentMoniker": "Repository\\ICarrinhoRepository.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Repository\\ICarrinhoRepository.cs",
+              "RelativeToolTip": "Repository\\ICarrinhoRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T19:50:56.697Z"
+              "WhenOpened": "2025-10-31T19:55:55.105Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BancoContext.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Data\\BancoContext.cs",
+              "RelativeDocumentMoniker": "Data\\BancoContext.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Data\\BancoContext.cs",
+              "RelativeToolTip": "Data\\BancoContext.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-31T19:47:34.918Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CarrinhoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Repository\\CarrinhoRepository.cs",
+              "RelativeDocumentMoniker": "Repository\\CarrinhoRepository.cs",
+              "ToolTip": "C:\\Users\\Windows\\source\\repos\\ProjetoThoughServiceMvc\\Repository\\CarrinhoRepository.cs",
+              "RelativeToolTip": "Repository\\CarrinhoRepository.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAuwCUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-31T19:44:31.007Z",
+              "EditorCaption": ""
             }
           ]
         }

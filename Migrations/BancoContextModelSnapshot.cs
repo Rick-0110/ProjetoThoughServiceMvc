@@ -228,6 +228,44 @@ namespace ToughService.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjetoThoughServiceMvc.Models.ItemCarrinhoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImagemUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NomeProduto")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ItensCarrinho");
+                });
+
             modelBuilder.Entity("ProjetoThoughServiceMvc.Models.ProdutoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -279,6 +317,83 @@ namespace ToughService.Migrations
                     b.ToTable("Produtos");
                 });
 
+            modelBuilder.Entity("ToughService.Models.ChamadoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DataDesejada")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataSolicitacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NomeCliente")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoExtintor")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoServico")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chamados");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -328,6 +443,34 @@ namespace ToughService.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjetoThoughServiceMvc.Models.ItemCarrinhoModel", b =>
+                {
+                    b.HasOne("ProjetoThoughServiceMvc.Models.ProdutoModel", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetoThoughServiceMvc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ToughService.Models.ChamadoModel", b =>
+                {
+                    b.HasOne("ProjetoThoughServiceMvc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ToughService.Migrations
 {
     /// <inheritdoc />
-    public partial class MinhaPrimeiraMigration : Migration
+    public partial class CarrinhoSaveMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -229,6 +229,88 @@ namespace ToughService.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Chamados",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    NomeCliente = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DataSolicitacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DataDesejada = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    TipoServico = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TipoExtintor = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    Cep = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Logradouro = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Numero = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Bairro = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Cidade = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Estado = table.Column<string>(type: "varchar(2)", maxLength: 2, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Complemento = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Telefone = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Observacoes = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chamados", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chamados_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ItensCarrinho",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    NomeProduto = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Preco = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    ImagemUrl = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItensCarrinho", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItensCarrinho_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ItensCarrinho_Produtos_ProdutoId",
+                        column: x => x.ProdutoId,
+                        principalTable: "Produtos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -265,6 +347,21 @@ namespace ToughService.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chamados_UserId",
+                table: "Chamados",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItensCarrinho_ProdutoId",
+                table: "ItensCarrinho",
+                column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItensCarrinho_UserId",
+                table: "ItensCarrinho",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -286,13 +383,19 @@ namespace ToughService.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Produtos");
+                name: "Chamados");
+
+            migrationBuilder.DropTable(
+                name: "ItensCarrinho");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Produtos");
         }
     }
 }
