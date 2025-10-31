@@ -96,6 +96,7 @@ private readonly SignInManager<ApplicationUser> _signInManager;
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            HttpContext.Session.Remove("carrinho");
             return RedirectToAction("Login", "Registro");
         }
     }

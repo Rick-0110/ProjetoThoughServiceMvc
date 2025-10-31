@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ProjetoThoughServiceMvc.Models
 {
     public class ItemCarrinhoModel
@@ -7,6 +9,13 @@ namespace ProjetoThoughServiceMvc.Models
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
 
-        public string ImagemUrl { get; set; } 
+        public string ImagemUrl { get; set; }
+
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual ApplicationUser User { get; set; }
+
+        [ForeignKey("ProdutoId")]
+        public virtual ProdutoModel Produto { get; set; }
     }
 }
