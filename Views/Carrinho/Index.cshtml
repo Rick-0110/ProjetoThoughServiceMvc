@@ -6,8 +6,6 @@
     bool isLoggedIn = User.Identity.IsAuthenticated;
     var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
 
-    // CORREÇÃO: O preço está em item.Produto.Preco
-    // Adicionei uma verificação 'item.Produto != null' para segurança
     var subtotal = (Model != null && Model.Any()) ? Model.Sum(i => (i.Produto != null ? i.Produto.Preco : 0) * i.Quantidade) : 0m;
     var frete = 0m;
     var total = subtotal + frete;
@@ -44,7 +42,6 @@
                     }
                     else
                     {
-                        @* CORRIGIDO: O Perfil fica no PerfilController *@
                         <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
                     }
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
@@ -80,7 +77,6 @@
             <p>Revise seus produtos antes de finalizar a compra</p>
         </div>
 
-        @* Bloco para ver erros *@
         @if (TempData["SucessoCarrinho"] != null)
         {
             <div class="alert alert-success" role="alert">
@@ -98,7 +94,7 @@
             <div class="carrinho-items-section">
                 <div class="carrinho-items-header">
                     <h2 class="carrinho-items-title">Produtos</h2>
-                    @* CORREÇÃO: Usar Model.Count para contar os itens distintos *@
+             
                     <span class="carrinho-items-count">@Model.Count() itens</span>
                 </div>
 
@@ -107,31 +103,30 @@
                     {
                         @foreach (var item in Model)
                         {
-                            @* Verificação de segurança para o caso de o produto ter sido apagado *@
+                
                             if (item.Produto != null)
                             {
                                 <div class="carrinho-item">
                                     <div class="carrinho-item-image">
-                                        @* CORREÇÃO: Usar item.Produto.ImagemUrl *@
+                            
                                         <img src="@Url.Content("~/IMG/" + item.Produto.ImagemUrl)" alt="@item.Produto.Nome" class="img-produto" />
                                         <div class="quantity-badge">@item.Quantidade</div>
                                     </div>
 
                                     <div class="carrinho-item-info">
                                         <div class="item-details">
-                                            @* CORREÇÃO: Usar item.Produto.Nome *@
+                                       
                                             <h3 class="carrinho-item-name">@item.Produto.Nome</h3>
-                                            @* CORREÇÃO: Usar item.Produto.Categoria *@
+                                      
                                             <p class="carrinho-item-category">@item.Produto.Categoria.ToString()</p>
                                             <span class="quantity-label">Quantidade: <strong>@item.Quantidade</strong></span>
                                         </div>
                                         <div class="carrinho-item-prices">
-                                            @* CORREÇÃO: Usar item.Produto.Preco *@
+                                   
                                             <p class="unit-price">R$ @(item.Produto.Preco.ToString("N2", culturePtBr)) cada</p>
                                             <p class="total-price">R$ @((item.Produto.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
                                         </div>
 
-                                        @* ADICIONADO: Formulário de Remoção para cada item *@
                                         <form asp-action="RemoverDoCarrinho" asp-controller="Carrinho" method="post" class="remove-form">
                                             <input type="hidden" name="produtoId" value="@item.ProdutoId" />
                                             @Html.AntiForgeryToken()
@@ -186,7 +181,6 @@
         </div>
     </section>
 
-    @* (O seu footer continua aqui...) *@
     <footer class="footer-minimal">
         <div class="container">
             <div class="footer-content">
