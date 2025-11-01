@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ToughService.Models;
-using ProjetoThoughServiceMvc.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 

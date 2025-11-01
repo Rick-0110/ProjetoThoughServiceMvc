@@ -12,8 +12,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20251031203423_CarrinhoSaveMigration")]
-    partial class CarrinhoSaveMigration
+    [Migration("20251101185344_DropPrecoFromItemCarrinho")]
+    partial class DropPrecoFromItemCarrinho
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,17 +238,6 @@ namespace ToughService.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImagemUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("NomeProduto")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");

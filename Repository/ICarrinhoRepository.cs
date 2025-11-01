@@ -1,4 +1,4 @@
-﻿using ProjetoThoughServiceMvc.Models;
+﻿using ToughService.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ToughService.Models;

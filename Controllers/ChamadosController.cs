@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ProjetoThoughServiceMvc.Models; 
 using ToughService.Models;          
 using ToughService.Repository;    
 using System;

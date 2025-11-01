@@ -236,17 +236,6 @@ namespace ToughService.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImagemUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("NomeProduto")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 

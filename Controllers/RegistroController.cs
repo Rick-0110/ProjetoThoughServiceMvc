@@ -1,10 +1,14 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ProjetoThoughServiceMvc.Models;
 using ToughService.Models;
 using ToughService.Repository;
 using ToughService.Services;
-
+using ToughService.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ToughService.Controllers
 {
@@ -14,16 +18,16 @@ namespace ToughService.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ICaptchaService _captchaService;
         private readonly IConfiguration _configuration;
-        private readonly ICarrinhoRepository _carrinhoRepository; 
-        private readonly IHttpContextAccessor _httpContextAccessor; 
+        private readonly ICarrinhoRepository _carrinhoRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RegistroController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ICaptchaService captchaService,
             IConfiguration configuration,
-            ICarrinhoRepository carrinhoRepository, 
-            IHttpContextAccessor httpContextAccessor) 
+            ICarrinhoRepository carrinhoRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -62,10 +66,7 @@ namespace ToughService.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-
-                await MigrarCarrinhoSessaoParaBD(user.Id);
-
-
+                await MigrarCarrinhoSessaoParaBD(user.Id); 
                 return RedirectToAction("Perfil", "Perfil");
             }
 
@@ -73,7 +74,6 @@ namespace ToughService.Controllers
             {
                 ModelState.AddModelError("", error.Description);
             }
-
             return View(registro);
         }
 
@@ -82,6 +82,7 @@ namespace ToughService.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel login)
         {
@@ -93,7 +94,11 @@ namespace ToughService.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(login.Email);
-                await MigrarCarrinhoSessaoParaBD(user.Id);
+
+                if (user != null)
+                {
+                    await MigrarCarrinhoSessaoParaBD(user.Id);
+                }
 
 
                 return RedirectToAction("Perfil", "Perfil");
@@ -117,6 +122,7 @@ namespace ToughService.Controllers
             _httpContextAccessor.HttpContext.Session.Remove("Carrinho");
             return RedirectToAction("Login", "Registro");
         }
+
         private async Task MigrarCarrinhoSessaoParaBD(string userId)
         {
             var session = _httpContextAccessor.HttpContext.Session;
@@ -132,13 +138,11 @@ namespace ToughService.Controllers
 
                     if (itemExistente != null)
                     {
-                        // Se existe, soma a quantidade
                         itemExistente.Quantidade += itemSessao.Quantidade;
                         await _carrinhoRepository.UpdateItemAsync(itemExistente);
                     }
                     else
                     {
-                        // Se não existe, associa o UserId e adiciona à BD
                         itemSessao.UserId = userId;
                         await _carrinhoRepository.AddItemAsync(itemSessao);
                     }

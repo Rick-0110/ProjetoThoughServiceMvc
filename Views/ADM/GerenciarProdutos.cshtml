@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjetoThoughServiceMvc.Models.ProdutoModel>
+﻿@model IEnumerable<ToughService.Models.ProdutoModel>
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
 }
@@ -100,7 +100,7 @@
 
                         <div class="form-group">
                             <label for="imagem">Imagem do Produto</label>
-                            <input type="file" id="imagem" name="imagem" accept="image/*">
+                            <input type="file" id="imagem" name="Imagem" accept="image/*" required>
                             <small>Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
                         </div>
 

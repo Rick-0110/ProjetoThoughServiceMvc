@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProjetoThoughServiceMvc.Models;
 using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
-
+using ToughService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

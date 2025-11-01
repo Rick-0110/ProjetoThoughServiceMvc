@@ -1,5 +1,6 @@
-﻿@model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
-@using ProjetoThoughServiceMvc.Models
+﻿@model List<ToughService.Models.ProdutoModel>
+@using ToughService.Models
+@using ToughService.Extensions
 
 @{
     var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
