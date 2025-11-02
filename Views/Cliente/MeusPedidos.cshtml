@@ -1,0 +1,259 @@
+@model List<ToughService.Models.ItemCarrinhoModel>
+@using ToughService.Models
+@using ToughService.Extensions
+
+@{
+    ViewData["Title"] = "Meus Pedidos";
+    bool isLoggedIn = User.Identity.IsAuthenticated;
+    var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+    int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
+    var pedidos = ViewBag.Pedidos as System.Collections.Generic.List<dynamic> ?? new System.Collections.Generic.List<dynamic>();
+    var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" href="~/IMG/LOGO (2).png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/css/Minimalista.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar-minimal">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a asp-action="Index" asp-controller="Home" class="logo-link">
+                        <span class="logo-text">Tough Service</span>
+                    </a>
+                </div>
+
+                <div class="nav-menu">
+                    <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
+                    @if (!isLoggedIn)
+                    {
+                        <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
+                        <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
+                    }
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
+                       asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+                    <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
+                </div>
+
+                <div class="nav-actions">
+                    <div class="nav-cart">
+                        @if (!isLoggedIn)
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">@quantidadeItensCarrinho</span>
+                            </a>
+                        }
+                    </div>
+
+                    @if (isLoggedIn)
+                    {
+                        <div class="profile-dropdown">
+                            <button class="profile-btn" onclick="toggleProfileDropdown()">
+                                <i class="fas fa-user-circle profile-icon"></i>
+                            </button>
+                            <div id="profileDropdownMenu" class="dropdown-menu">
+                                <div class="dropdown-header">
+                                    Olá, @User.Identity.Name!
+                                </div>
+                                <a class="dropdown-item" asp-action="MeusPedidos" asp-controller="Cliente">
+                                    <i class="fas fa-clipboard-list"></i> Meus Pedidos
+                                </a>
+                                <a class="dropdown-item" asp-action="Perfil" asp-controller="Perfil">
+                                    <i class="fas fa-user"></i> Perfil
+                                </a>
+                                <a class="dropdown-item" asp-action="Configuracoes" asp-controller="Cliente">
+                                    <i class="fas fa-cog"></i> Configurações
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="Registro" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item logout-item">
+                                        <i class="fas fa-sign-out-alt"></i> Sair
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="mobile-menu-btn" type="button">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="pedidos-section">
+        <div class="container">
+            <div class="pedidos-header">
+                <h1><i class="fas fa-receipt"></i> Meus Pedidos</h1>
+                <p>Acompanhe seus pedidos e o status de cada compra</p>
+            </div>
+
+            @if (pedidos != null && pedidos.Count > 0)
+            {
+                <div class="pedidos-list">
+                    @foreach (dynamic pedido in pedidos)
+                    {
+                        var item = (ItemCarrinhoModel)pedido.Item;
+                        var produto = item?.Produto;
+                        var pedidoId = pedido.PedidoId?.ToString() ?? "N/A";
+                        var data = pedido.Data != null ? (DateTime)pedido.Data : DateTime.Now;
+                        var total = pedido.Total != null ? (decimal)pedido.Total : 0;
+                        var status = pedido.Status?.ToString() ?? "Pendente";
+                        var statusClass = status switch
+                        {
+                            "Entregue" => "status-entregue",
+                            "Em Trânsito" => "status-transito",
+                            "Pendente" => "status-pendente",
+                            "Cancelado" => "status-cancelado",
+                            _ => "status-pendente"
+                        };
+
+                        <div class="pedido-card">
+                            <div class="pedido-header">
+                                <div class="pedido-info">
+                                    <h3 class="pedido-id">@pedidoId</h3>
+                                    <p class="pedido-date">
+                                        <i class="fas fa-calendar"></i>
+                                        Realizado em @data.ToString("dd/MM/yyyy")
+                                    </p>
+                                </div>
+                                <span class="pedido-status @statusClass">
+                                    @status
+                                </span>
+                            </div>
+
+                            <div class="pedido-body">
+                                @if (produto != null)
+                                {
+                                    <div class="pedido-item">
+                                        <div class="pedido-item-image">
+                                            <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
+                                        </div>
+                                        <div class="pedido-item-details">
+                                            <h4>@produto.Nome</h4>
+                                            <p class="pedido-item-qty">Quantidade: <strong>@item.Quantidade</strong></p>
+                                            <p class="pedido-item-price">R$ @produto.Preco.ToString("N2", culturePtBr) cada</p>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="pedido-footer">
+                                    <div class="pedido-total">
+                                        <span class="total-label">Total:</span>
+                                        <span class="total-value">R$ @total.ToString("N2", culturePtBr)</span>
+                                    </div>
+                                    <div class="pedido-actions">
+                                        <a href="#" class="btn-action">
+                                            <i class="fas fa-eye"></i> Detalhes
+                                        </a>
+                                        <a href="#" class="btn-action">
+                                            <i class="fas fa-download"></i> Comprovante
+                                        </a>
+                                        @if (status == "Em Trânsito" || status == "Entregue")
+                                        {
+                                            <a href="#" class="btn-action">
+                                                <i class="fas fa-truck"></i> Rastrear
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="pedidos-empty">
+                    <div class="empty-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h3>Nenhum pedido encontrado</h3>
+                    <p>Você ainda não realizou nenhum pedido. Comece a comprar agora!</p>
+                    <a asp-action="Index" asp-controller="Home" class="btn-continuar-comprando">
+                        <i class="fas fa-shopping-bag"></i> Continuar Comprando
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Footer Minimalista -->
+    <footer class="footer-minimal">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Tough Service</h3>
+                    <p>Equipamentos e assessoria de segurança</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Empresa</h4>
+                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
+                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
+                        <a href="#">Contato</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Suporte</h4>
+                        <a href="#">FAQ</a>
+                        <a href="#">Política de Privacidade</a>
+                        <a href="#">Termos de Uso</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Redes Sociais</h4>
+                        <div class="social-links-minimal">
+                            <a href="https://www.instagram.com/tough_service?utm_source=ig_web_button_share_sheet&igsh=MW1hdjNwZHoyZ2NsMw==" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/MinimalistaPrincipal.js"></script>
+    <script src="~/js/scripts.js"></script>
+</body>
+</html>
+

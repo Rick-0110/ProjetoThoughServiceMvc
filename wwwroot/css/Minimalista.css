@@ -996,3 +996,333 @@ body {
     outline: 2px solid var(--primary-red);
     outline-offset: 2px;
 }
+
+/* ===== SEÇÃO MEUS PEDIDOS ===== */
+.pedidos-section {
+    padding: var(--space-20) 0;
+    background: var(--gray-50);
+    min-height: 70vh;
+}
+
+.pedidos-header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+}
+
+.pedidos-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.pedidos-header h1 i {
+    color: var(--primary-red);
+}
+
+.pedidos-header p {
+    font-size: 1.1rem;
+    color: var(--gray-600);
+}
+
+.pedidos-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pedido-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.pedido-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(to right, rgba(220, 38, 38, 0.02), transparent);
+}
+
+.pedido-info {
+    flex: 1;
+}
+
+.pedido-id {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.pedido-date {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.pedido-date i {
+    color: var(--primary-red);
+}
+
+.pedido-status {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-entregue {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-transito {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.status-pendente {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.status-cancelado {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.pedido-body {
+    padding: var(--space-6);
+}
+
+.pedido-item {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.pedido-item:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.pedido-item-image {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--gray-100);
+}
+
+.pedido-item-image img {
+    width: 100%;
+    height: 15vh;
+    object-fit: cover;
+}
+
+.pedido-item-details {
+    flex: 1;
+}
+
+.pedido-item-details h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.pedido-item-qty {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-2);
+}
+
+.pedido-item-price {
+    color: var(--primary-red);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-6);
+    border-top: 2px solid var(--gray-200);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.pedido-total {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.total-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-red);
+}
+
+.pedido-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--gray-100);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+}
+
+.btn-action:hover {
+    background: var(--primary-red);
+    color: var(--white);
+    border-color: var(--primary-red);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn-action i {
+    font-size: 0.85rem;
+}
+
+.pedidos-empty {
+    text-align: center;
+    padding: var(--space-20) var(--space-4);
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto var(--space-6);
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(127, 29, 29, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon i {
+    font-size: 4rem;
+    color: var(--primary-red);
+}
+
+.pedidos-empty h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+}
+
+.pedidos-empty p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-6);
+    font-size: 1rem;
+}
+
+.btn-continuar-comprando {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    background: var(--gradient-red);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-continuar-comprando:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: var(--white);
+}
+
+/* Responsividade para pedidos */
+@media (max-width: 768px) {
+    .pedidos-header h1 {
+        font-size: 2rem;
+    }
+
+    .pedido-header {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .pedido-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pedido-actions {
+        justify-content: stretch;
+    }
+
+    .btn-action {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .pedido-item {
+        flex-direction: column;
+    }
+
+    .pedido-item-image {
+        width: 100%;
+        height: 200px;
+    }
+}
