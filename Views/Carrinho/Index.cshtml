@@ -1,20 +1,15 @@
-@model List<ProjetoThoughServiceMvc.Models.ItemCarrinhoModel>
-
-
+@model List<ToughService.Models.ItemCarrinhoModel>
 
 @{
     ViewData["Title"] = "Carrinho de Compras";
-    var quantidadeItensCarrinho = Model?.Count ?? 0;
-
+    var quantidadeItensCarrinho = Model?.Sum(i => i.Quantidade) ?? 0;
     bool isLoggedIn = User.Identity.IsAuthenticated;
-
     var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
 
-    var subtotal = (Model?.Sum(i => (i.Preco / 1m) * i.Quantidade)) ?? 0m;
+    var subtotal = (Model != null && Model.Any()) ? Model.Sum(i => (i.Produto != null ? i.Produto.Preco : 0) * i.Quantidade) : 0m;
     var frete = 0m;
     var total = subtotal + frete;
 }
-
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -26,29 +21,20 @@
 
     <link href="~/css/Minimalista.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/carrinho.css" />
-    <link rel="stylesheet" href="~/css/Minimalista.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
     <header>
         <nav class="navbar-minimal">
             <div class="nav-container">
-                <!-- Logo -->
                 <div class="nav-logo">
                     <a asp-action="Index" asp-controller="Home" class="logo-link">
-
                         <img src="~/IMG/LOGO (2).png" alt="" width="60vh">
                     </a>
                 </div>
-
-
-                <!-- Menu Principal -->
                 <div class="nav-menu">
                     <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">Home</a>
-
-
                     @if (!isLoggedIn)
                     {
                         <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
@@ -56,17 +42,12 @@
                     }
                     else
                     {
-                        <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
+                        <a asp-action="Perfil" asp-controller="Perfil" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
                     }
-
-
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
                        asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-
                     <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
                 </div>
-
-                <!-- Carrinho -->
                 <div class="nav-cart">
                     @if (!isLoggedIn)
                     {
@@ -83,18 +64,12 @@
                         </a>
                     }
                 </div>
-
-                <!-- Menu Mobile -->
                 <button class="mobile-menu-btn" type="button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </nav>
     </header>
-
-
 
     <section class="carrinho-main">
         <div class="carrinho-header">
@@ -102,11 +77,25 @@
             <p>Revise seus produtos antes de finalizar a compra</p>
         </div>
 
+        @if (TempData["SucessoCarrinho"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SucessoCarrinho"]
+            </div>
+        }
+        @if (TempData["ErroCarrinho"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErroCarrinho"]
+            </div>
+        }
+
         <div class="carrinho-layout">
             <div class="carrinho-items-section">
                 <div class="carrinho-items-header">
                     <h2 class="carrinho-items-title">Produtos</h2>
-                    <span class="carrinho-items-count">@quantidadeItensCarrinho itens</span>
+             
+                    <span class="carrinho-items-count">@Model.Count() itens</span>
                 </div>
 
                 <div class="carrinho-items">
@@ -114,36 +103,44 @@
                     {
                         @foreach (var item in Model)
                         {
-                            <div class="carrinho-item">
-                                <div class="carrinho-item-image">
-                                    <img src="@Url.Content("~/IMG/" + item.ImagemUrl)" alt="@item.NomeProduto" class="img-produto" />
-                                    <div class="quantity-badge">@item.Quantidade</div>
-                                </div>
+                
+                            if (item.Produto != null)
+                            {
+                                <div class="carrinho-item">
+                                    <div class="carrinho-item-image">
+                            
+                                        <img src="@Url.Content("~/IMG/" + item.Produto.ImagemUrl)" alt="@item.Produto.Nome" class="img-produto" />
+                                        <div class="quantity-badge">@item.Quantidade</div>
+                                    </div>
 
-                                <div class="carrinho-item-info">
-                                    <div class="item-details">
-                                        <h3 class="carrinho-item-name">@item.NomeProduto</h3>
-                                        <p class="carrinho-item-category">Equipamento de Segurança</p>
-
-                                        <div class="quantity-controls">
+                                    <div class="carrinho-item-info">
+                                        <div class="item-details">
+                                       
+                                            <h3 class="carrinho-item-name">@item.Produto.Nome</h3>
+                                      
+                                            <p class="carrinho-item-category">@item.Produto.Categoria.ToString()</p>
                                             <span class="quantity-label">Quantidade: <strong>@item.Quantidade</strong></span>
                                         </div>
-                                    </div>
+                                        <div class="carrinho-item-prices">
+                                   
+                                            <p class="unit-price">R$ @(item.Produto.Preco.ToString("N2", culturePtBr)) cada</p>
+                                            <p class="total-price">R$ @((item.Produto.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
+                                        </div>
 
-                                    <div class="carrinho-item-prices">
-                                        <p class="unit-price">R$ @(item.Preco.ToString("N2", culturePtBr)) cada</p>
-                                        <p class="total-price">R$ @((item.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
+                                        <form asp-action="RemoverDoCarrinho" asp-controller="Carrinho" method="post" class="remove-form">
+                                            <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-remove-item" title="Remover item"><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         }
                     }
                     else
                     {
                         <div class="carrinho-vazio">
-                            <div class="carrinho-vazio-icon">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
+                            <div class="carrinho-vazio-icon"><i class="fas fa-shopping-cart"></i></div>
                             <h3>Seu carrinho está vazio</h3>
                             <p>Adicione produtos para começar sua compra</p>
                             <a class="btn btn-primary" asp-action="Index" asp-controller="Home">Continuar Comprando</a>
@@ -154,35 +151,29 @@
 
             <div class="carrinho-resumo">
                 <h2 class="carrinho-resumo-title">Resumo do Pedido</h2>
-
                 <div class="resumo-item">
                     <span class="resumo-label">Subtotal (@quantidadeItensCarrinho itens)</span>
                     <span class="resumo-value">R$ @subtotal.ToString("N2", culturePtBr)</span>
                 </div>
-
                 <div class="resumo-item">
                     <span class="resumo-label">Frete</span>
                     <span class="resumo-value">R$ @frete.ToString("N2", culturePtBr)</span>
                 </div>
-
                 <div class="resumo-total">
                     <span class="resumo-total-label">Total</span>
                     <span class="resumo-total-value">R$ @total.ToString("N2", culturePtBr)</span>
                 </div>
-
                 <div class="carrinho-actions">
                     <a class="btn-continuar" asp-action="Index" asp-controller="Home">
-                        <i class="fas fa-arrow-left me-2"></i>
-                        Continuar Comprando
+                        <i class="fas fa-arrow-left me-2"></i> Continuar Comprando
                     </a>
                     <a class="btn-finalizar" href="#">
-                        <i class="fas fa-credit-card me-2"></i>
-                        Finalizar Compra
+                        <i class="fas fa-credit-card me-2"></i> Finalizar Compra
                     </a>
-                    <form asp-action="Limpar" method="post">
+                    <form asp-action="ClearCarrinho" asp-controller="Carrinho" method="post">
+                        @Html.AntiForgeryToken()
                         <button type="submit" class="btn-limpar">
-                            <i class="fas fa-trash me-2"></i>
-                            Limpar Carrinho
+                            <i class="fas fa-trash me-2"></i> Limpar Carrinho
                         </button>
                     </form>
                 </div>
@@ -190,7 +181,6 @@
         </div>
     </section>
 
-    <!-- Footer Minimalista -->
     <footer class="footer-minimal">
         <div class="container">
             <div class="footer-content">
@@ -198,7 +188,6 @@
                     <h3>Tough Service</h3>
                     <p>Equipamentos e assessoria de segurança</p>
                 </div>
-
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Empresa</h4>
@@ -206,77 +195,24 @@
                         <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
                         <a href="#">Contato</a>
                     </div>
-
                     <div class="footer-column">
                         <h4>Suporte</h4>
                         <a href="#">FAQ</a>
                         <a href="#">Política de Privacidade</a>
                         <a href="#">Termos de Uso</a>
                     </div>
-
                     <div class="footer-column">
                         <h4>Redes Sociais</h4>
                         <div class="social-links-minimal">
                             <a href="https://www.instagram.com/tough_service?utm_source=ig_web_button_share_sheet&igsh=MW1hdjNwZHoyZ2NsMw==" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
-    <!-- Footer Minimalista -->
-    <footer class="footer-minimal">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Tough Service</h3>
-                    <p>Equipamentos e assessoria de segurança</p>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Empresa</h4>
-                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
-                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-                        <a href="#">Contato</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Suporte</h4>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Redes Sociais</h4>
-                        <div class="social-links-minimal">
-                            <a href="#" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="footer-bottom">
                 <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
             </div>
@@ -284,7 +220,5 @@
     </footer>
 
     <script src="~/js/MinimalistaPrincipal.js"></script>
-    <script src="~/js/carrinho-modern.js"></script>
 </body>
-
 </html>

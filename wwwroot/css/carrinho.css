@@ -18,6 +18,47 @@ body {
 /* Header */
 
 /* Main Content */
+
+.remove-form {
+    display: inline-block; 
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.btn-remove-item {
+    background-color: #dc3545;
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 5px; 
+}
+
+  
+    .btn-remove-item:hover {
+        background-color: #c82333; 
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    }
+
+
+    .btn-remove-item:active {
+        background-color: #bd2130; 
+        transform: translateY(0); 
+        box-shadow: none; 
+    }
+
+   
+    .btn-remove-item i {
+        font-size: 1.1rem; 
+    }
+
 .carrinho-main {
     max-width: 1400px;
     margin: 2rem auto;

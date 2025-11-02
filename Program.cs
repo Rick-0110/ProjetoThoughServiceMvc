@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProjetoThoughServiceMvc.Models;
 using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
-
+using ToughService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +24,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
+builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
 

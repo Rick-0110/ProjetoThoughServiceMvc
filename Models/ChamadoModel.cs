@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using ToughService.Models;
-using ProjetoThoughServiceMvc.Models;
 
 namespace ToughService.Models
 {

@@ -8,7 +8,7 @@ public class ProdutoCreateViewModel
     public string Nome { get; set; }
 
     // Propriedade para receber o UPLOAD DA IMAGEM do formulário.
-    public IFormFile? Imagem { get; set; }
+    public IFormFile Imagem { get; set; }
 
     [Required(ErrorMessage = "A categoria é obrigatória.")]
     public string Categoria { get; set; } 

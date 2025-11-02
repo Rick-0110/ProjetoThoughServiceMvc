@@ -1,17 +1,32 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-public static class SessionExtensions
+using System.Text.Json;
+
+
+namespace ToughService.Extensions
 {
-    public static void SetObject(this ISession session, string key, object value)
+    public static class SessionExtensions
     {
-        session.SetString(key, JsonConvert.SerializeObject(value));
-    }
+        // Método para SALVAR um objeto na sessão
+        public static void SetObject<T>(this ISession session, string key, T value)
+        {
+            // CORREÇÃO: Usando o nome completo e explícito
+            var jsonString = System.Text.Json.JsonSerializer.Serialize(value);
+            session.SetString(key, jsonString);
+        }
 
-    public static T GetObject<T>(this ISession session, string key)
-    {
-        var value = session.GetString(key);
+        // Método para LER um objeto da sessão
+        public static T GetObject<T>(this ISession session, string key)
+        {
+            var jsonString = session.GetString(key);
 
-        return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
+            if (string.IsNullOrEmpty(jsonString))
+            {
+                return default(T);
+            }
+
+            // CORREÇÃO: Usando o nome completo e explícito
+            return System.Text.Json.JsonSerializer.Deserialize<T>(jsonString);
+        }
     }
 }
-
