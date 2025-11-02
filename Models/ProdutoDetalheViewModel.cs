@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoThoughServiceMvc.Models;
+using ToughService.Models;
 
 namespace ToughService.Models
 {
