@@ -1,17 +1,15 @@
 using ToughService.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace ToughService.Repository
-{
-    public interface ICarrinhoRepository
+    namespace ToughService.Repository
     {
-        Task<List<CarrinhoItem>> ObterItensPorUsuarioAsync(string userId);
-        Task<CarrinhoItem> AdicionarItemAsync(CarrinhoItem item);
-        Task<bool> RemoverItensPorUsuarioAsync(string userId);
-        Task<CarrinhoItem> AtualizarQuantidadeAsync(int itemId, int quantidade);
-        Task<bool> RemoverItemAsync(int itemId);
+        public interface ICarrinhoRepository
+        {
+            // Métodos que o CarrinhoController (novo) espera
+            Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId);
+            Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId);
+            Task AddItemAsync(ItemCarrinhoModel item);
+            Task UpdateItemAsync(ItemCarrinhoModel item);
+            Task RemoveItemAsync(int produtoId, string userId);
+            Task ClearCarrinhoAsync(string userId);
+        }
     }
-}
-
-

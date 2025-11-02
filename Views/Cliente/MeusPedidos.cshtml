@@ -152,12 +152,12 @@
                                 {
                                     <div class="pedido-item">
                                         <div class="pedido-item-image">
-                                            <img src="@Url.Content("~/IMG/" + (item.ImagemUrl ?? "placeholder.png"))" alt="@item.NomeProduto" />
+                                            <img src="@Url.Content("~/IMG/" + (item.Produto.ImagemUrl ?? "placeholder.png"))" alt="@item.Produto.Nome" />
                                         </div>
                                         <div class="pedido-item-details">
-                                            <h4>@item.NomeProduto</h4>
+                                            <h4>@item.Produto.Nome</h4>
                                             <p class="pedido-item-qty">Quantidade: <strong>@item.Quantidade</strong></p>
-                                            <p class="pedido-item-price">R$ @item.Preco.ToString("N2", culturePtBr) cada</p>
+                                            <p class="pedido-item-price">R$ @item.Produto.Preco.ToString("N2", culturePtBr) cada</p>
                                         </div>
                                     </div>
                                 }

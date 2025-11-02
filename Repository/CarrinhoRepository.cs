@@ -1,10 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ToughService.Models; 
 using ToughService.Data;
-using ToughService.Models;
-
+using System.Collections.Generic;
 namespace ToughService.Repository
 {
     public class CarrinhoRepository : ICarrinhoRepository
@@ -16,79 +13,60 @@ namespace ToughService.Repository
             _context = context;
         }
 
-        public async Task<List<CarrinhoItem>> ObterItensPorUsuarioAsync(string userId)
+        // Implementa o método GetCarrinhoByUserIdAsync
+        public async Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId)
         {
-            return await _context.CarrinhoItems
-                .Where(c => c.UserId == userId)
-                .OrderByDescending(c => c.DataAdicionado)
-                .ToListAsync();
+            // Usa o .Include para evitar o erro "Unknown column"
+            return await _context.ItensCarrinho
+                                 .Include(i => i.Produto)
+                                 .Where(i => i.UserId == userId)
+                                 .ToListAsync();
         }
 
-        public async Task<CarrinhoItem> AdicionarItemAsync(CarrinhoItem item)
+        // Implementa o método GetItemAsync
+        public async Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId)
         {
-            // Verifica se o item já existe no carrinho do usuário
-            var itemExistente = await _context.CarrinhoItems
-                .FirstOrDefaultAsync(c => c.UserId == item.UserId && c.ProdutoId == item.ProdutoId);
+            return await _context.ItensCarrinho
+                                 .FirstOrDefaultAsync(i => i.ProdutoId == produtoId && i.UserId == userId);
+        }
 
-            if (itemExistente != null)
+        // Implementa o método AddItemAsync
+        public async Task AddItemAsync(ItemCarrinhoModel item)
+        {
+            _context.ItensCarrinho.Add(item);
+            await _context.SaveChangesAsync();
+        }
+
+        // Implementa o método UpdateItemAsync
+        public async Task UpdateItemAsync(ItemCarrinhoModel item)
+        {
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        // Implementa o método RemoveItemAsync
+        public async Task RemoveItemAsync(int produtoId, string userId)
+        {
+            var item = await GetItemAsync(produtoId, userId);
+            if (item != null)
             {
-                // Atualiza a quantidade se o item já existe
-                itemExistente.Quantidade += item.Quantidade;
-                _context.CarrinhoItems.Update(itemExistente);
+                _context.ItensCarrinho.Remove(item);
                 await _context.SaveChangesAsync();
-                return itemExistente;
-            }
-            else
-            {
-                // Adiciona novo item
-                await _context.CarrinhoItems.AddAsync(item);
-                await _context.SaveChangesAsync();
-                return item;
             }
         }
 
-        public async Task<bool> RemoverItensPorUsuarioAsync(string userId)
+        // Implementa o método ClearCarrinhoAsync
+        public async Task ClearCarrinhoAsync(string userId)
         {
-            var itens = await _context.CarrinhoItems
-                .Where(c => c.UserId == userId)
-                .ToListAsync();
+            var itens = await _context.ItensCarrinho
+                                      .Where(i => i.UserId == userId)
+                                      .ToListAsync();
 
             if (itens.Any())
             {
-                _context.CarrinhoItems.RemoveRange(itens);
+                _context.ItensCarrinho.RemoveRange(itens);
                 await _context.SaveChangesAsync();
-                return true;
             }
-
-            return false;
-        }
-
-        public async Task<CarrinhoItem> AtualizarQuantidadeAsync(int itemId, int quantidade)
-        {
-            var item = await _context.CarrinhoItems.FindAsync(itemId);
-            if (item != null)
-            {
-                item.Quantidade = quantidade;
-                _context.CarrinhoItems.Update(item);
-                await _context.SaveChangesAsync();
-                return item;
-            }
-
-            return null;
-        }
-
-        public async Task<bool> RemoverItemAsync(int itemId)
-        {
-            var item = await _context.CarrinhoItems.FindAsync(itemId);
-            if (item != null)
-            {
-                _context.CarrinhoItems.Remove(item);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
         }
     }
 }
-

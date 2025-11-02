@@ -32,11 +32,8 @@ namespace ToughService.Controllers
                 return RedirectToAction("Login", "Registro");
             }
 
-            // Buscar itens do carrinho da sessão
             var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
 
-            // Preparar dados dos pedidos (simulação)
-            // Em uma implementação futura, você pode criar uma tabela de Pedidos
             var pedidosList = new System.Collections.Generic.List<dynamic>();
             
             for (int i = 0; i < carrinho.Count; i++)
@@ -49,9 +46,8 @@ namespace ToughService.Controllers
                     pedido["PedidoId"] = $"PED-{item.Id:D6}-{i}";
                     pedido["Item"] = item;
                     pedido["Data"] = System.DateTime.Now.AddDays(-i);
-                    pedido["Total"] = item.Preco * item.Quantidade;
+                    pedido["Total"] = item.Produto.Preco * item.Quantidade;
                     
-                    // Status variado para demonstração
                     if (i % 3 == 0)
                         pedido["Status"] = "Entregue";
                     else if (i % 3 == 1)
@@ -72,7 +68,6 @@ namespace ToughService.Controllers
         [HttpGet]
         public IActionResult Configuracoes()
         {
-            // Implementação futura para configurações do cliente
             return RedirectToAction("Perfil", "Perfil");
         }
     }

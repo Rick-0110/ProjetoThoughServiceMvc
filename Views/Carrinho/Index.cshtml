@@ -10,7 +10,7 @@
 
     var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
 
-    var subtotal = (Model?.Sum(i => (i.Preco / 1m) * i.Quantidade)) ?? 0m;
+    var subtotal = (Model?.Sum(i => (i.Produto.Preco / 1m) * i.Quantidade)) ?? 0m;
     var frete = 0m;
     var total = subtotal + frete;
 }
@@ -116,13 +116,13 @@
                         {
                             <div class="carrinho-item">
                                 <div class="carrinho-item-image">
-                                    <img src="@Url.Content("~/IMG/" + item.ImagemUrl)" alt="@item.NomeProduto" class="img-produto" />
+                                    <img src="@Url.Content("~/IMG/" + item.Produto.ImagemUrl)" alt="@item.Produto.Nome" class="img-produto" />
                                     <div class="quantity-badge">@item.Quantidade</div>
                                 </div>
 
                                 <div class="carrinho-item-info">
                                     <div class="item-details">
-                                        <h3 class="carrinho-item-name">@item.NomeProduto</h3>
+                                        <h3 class="carrinho-item-name">@item.Produto.Nome</h3>
                                         <p class="carrinho-item-category">Equipamento de Segurança</p>
 
                                         <div class="quantity-controls">
@@ -131,8 +131,8 @@
                                     </div>
 
                                     <div class="carrinho-item-prices">
-                                        <p class="unit-price">R$ @(item.Preco.ToString("N2", culturePtBr)) cada</p>
-                                        <p class="total-price">R$ @((item.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
+                                        <p class="unit-price">R$ @(item.Produto.Preco.ToString("N2", culturePtBr)) cada</p>
+                                        <p class="total-price">R$ @((item.Produto.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
                                     </div>
                                 </div>
                             </div>
