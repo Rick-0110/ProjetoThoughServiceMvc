@@ -48,7 +48,7 @@ namespace ToughService.Controllers
             }
 
             // Preparar dados dos pedidos (simulação)
-            // Em uma implementação futura, você pode criar uma tabela de Pedidos
+            // Em uma implementação futura,pode criar uma tabela de Pedidos
             var pedidosList = new System.Collections.Generic.List<dynamic>();
             
             for (int i = 0; i < carrinho.Count; i++)
