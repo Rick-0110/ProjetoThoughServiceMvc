@@ -91,27 +91,30 @@
             </div>
             <p class="lead">@Model.Produto.Descricao</p>
 
-            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                <input type="hidden" name="id" value="@Model.Produto.Id" />
-               
-                <input type="hidden" name="preco" value="@Model.Produto.Preco.ToString("F2")" />
-                
-                <label for="quantidade">Quantidade:</label>
-                <input class="form-control mb-3" name="quantidade" type="number" value="1" min="1" style="max-width: 100px;" />
-                @if (isLoggedIn)
-                    {
-                <button type="submit" class="btn btn-outline-dark" >
-                    <i class="bi-cart-fill me-1"></i>
-                    Adicionar ao Carrinho
-                </button>
-               }else{
-             <a asp-controller="Registro" asp-action="Login" class="btn btn-outline-dark">
-         <i class="bi-cart-fill me-1"></i>
-             Faça login para adicionar ao Carrinho
-            </a>
+                    <form asp-controller="Carrinho" asp-action="AdicionarAoCarrinho" method="post">
 
-               }
-            </form>
+                        <input type="hidden" name="produtoId" value="@Model.Produto.Id" />
+
+                        <label for="quantidade">Quantidade:</label>
+                        <input class="form-control mb-3" id="quantidade" name="quantidade" type="number" value="1" min="1" style="max-width: 100px;" />
+
+                        @Html.AntiForgeryToken()
+
+                        @if (isLoggedIn)
+                        {
+                            <button type="submit" class="btn btn-outline-dark">
+                                <i class="bi-cart-fill me-1"></i>
+                                Adicionar ao Carrinho
+                            </button>
+                        }
+                        else
+                        {
+                            <a asp-controller="Registro" asp-action="Login" class="btn btn-outline-dark">
+                                <i class="bi-cart-fill me-1"></i>
+                                Faça login para adicionar ao Carrinho
+                            </a>
+                        }
+                    </form>
 
         </div>
     </div>
