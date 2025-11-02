@@ -1,12 +1,10 @@
-@using ToughService.Extensions
 @using ToughService.Models
-@using ToughService.Models 
 
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     bool isLoggedIn = User.Identity.IsAuthenticated;
     var session = HttpContextAccessor.HttpContext.Session;
-    var carrinho = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+    var carrinho = session.GetObject<List<ToughService.Models.ItemCarrinhoModel>>("Carrinho") ?? new List<ToughService.Models.ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
 }
 

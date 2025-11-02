@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ProjetoThoughServiceMvc.Models;
+using ToughService.Models;
 using ToughService.Extensions;
 using ToughService.Repository;
 

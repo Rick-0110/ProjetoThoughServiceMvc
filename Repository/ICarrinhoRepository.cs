@@ -1,27 +1,17 @@
-﻿using ToughService.Data;
+using ToughService.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ToughService.Models;
 
 namespace ToughService.Repository
 {
     public interface ICarrinhoRepository
     {
-
-        Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId);
-        Task AddItemAsync(ItemCarrinhoModel item);
-        Task RemoveItemAsync(int itemId, string userId);
-
-        // Atualiza a quantidade de um item
-        Task UpdateItemAsync(ItemCarrinhoModel item);
-
-        // Busca um item específico (ex: para ver se já existe)
-        Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId);
-
-        // Limpa o carrinho do usuário
-        Task ClearCarrinhoAsync(string userId);
-
-
-
+        Task<List<CarrinhoItem>> ObterItensPorUsuarioAsync(string userId);
+        Task<CarrinhoItem> AdicionarItemAsync(CarrinhoItem item);
+        Task<bool> RemoverItensPorUsuarioAsync(string userId);
+        Task<CarrinhoItem> AtualizarQuantidadeAsync(int itemId, int quantidade);
+        Task<bool> RemoverItemAsync(int itemId);
     }
 }
+
+

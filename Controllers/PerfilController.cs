@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToughService.Models;
 
-[Authorize] 
+[Authorize] // Garante que só usuários autenticados podem acessar
 public class PerfilController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;

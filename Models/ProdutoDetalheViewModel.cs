@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
-
 namespace ToughService.Models
 {
     public class ProdutoDetalheViewModel

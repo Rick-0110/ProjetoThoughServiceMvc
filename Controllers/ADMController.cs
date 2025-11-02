@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Mvc;
+using ToughService.Models;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using ToughService.Models;
 using ToughService.Repository;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
-
 namespace ToughService.Controllers
 {
 
@@ -19,7 +18,7 @@ namespace ToughService.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IChamadoRepository _chamadoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-  
+
         public ADMController(
        IProdutoRepository produtoRepository,
        IWebHostEnvironment webHostEnvironment,
@@ -201,18 +200,13 @@ namespace ToughService.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] 
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {
-            
             if (!ModelState.IsValid)
             {
-                TempData["ErroFormProduto"] = "Dados inválidos.";
                 var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
-                return View("GerenciarProdutos", listaDeProdutos); 
+                return View("GerenciarProdutos", listaDeProdutos);
             }
-
-            throw new Exception("TESTE: O MÉTODO AdicionarProdutoADM FOI CHAMADO");
 
             CategoriaEnum categoriaConvertida;
             bool conversaoBemSucedida = Enum.TryParse<CategoriaEnum>(model.Categoria, true, out categoriaConvertida);
@@ -220,29 +214,11 @@ namespace ToughService.Controllers
             if (!conversaoBemSucedida)
             {
                 ModelState.AddModelError("Categoria", "Categoria inválida.");
-                TempData["ErroFormProduto"] = "Categoria inválida.";
                 var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
                 return View("GerenciarProdutos", listaDeProdutos);
             }
 
-            string nomeUnicoFicheiro;
-
-            if (model.Imagem != null && model.Imagem.Length > 0)
-            { 
-                string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
-                nomeUnicoFicheiro = Guid.NewGuid().ToString() + "_" + model.Imagem.FileName;
-                string caminhoCompleto = Path.Combine(pastaUploads, nomeUnicoFicheiro);
-
-                using (var fileStream = new FileStream(caminhoCompleto, FileMode.Create))
-                {
-                    await model.Imagem.CopyToAsync(fileStream);
-                }
-            }
-            else
-            {
-                nomeUnicoFicheiro = "placeholder.jpg";
-            }
-          
+            // Criação do novoProduto a partir do model recebido
             var novoProduto = new ProdutoModel
             {
                 Nome = model.Nome,
@@ -253,17 +229,16 @@ namespace ToughService.Controllers
                 Marca = model.Marca,
                 Quantidade = model.Quantidade,
                 Peso = model.Peso,
-                Ativo = model.Ativo,
-                ImagemUrl = nomeUnicoFicheiro 
+                Ativo = model.Ativo
             };
 
             await _produtoRepository.AddProdutoAsync(novoProduto);
 
-            TempData["SucessoFormProduto"] = "Produto adicionado com sucesso!";
+         
             return RedirectToAction("GerenciarProdutos");
         }
 
-
+        // Crie esta nova Action [HttpPost] para lidar com a atualização do produto.
         [HttpPost]
         public async Task<IActionResult> AtualizarProduto(ProdutoModel model)
         {

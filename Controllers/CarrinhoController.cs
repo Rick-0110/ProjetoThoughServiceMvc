@@ -1,261 +1,198 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ToughService.Models;
-using ToughService.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using ToughService.Data;
+using ToughService.Models;
 using ToughService.Extensions;
-
+using ToughService.Repository;
 
 namespace ToughService.Controllers
 {
+    
     public class CarrinhoController : Controller
     {
-        private readonly ICarrinhoRepository _carrinhoRepository;
         private readonly IProdutoRepository _produtoRepository;
+        private readonly ICarrinhoRepository _carrinhoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public CarrinhoController(
+            IProdutoRepository produtoRepository, 
             ICarrinhoRepository carrinhoRepository,
-            IProdutoRepository produtoRepository,
-            UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            UserManager<ApplicationUser> userManager)
         {
-            _carrinhoRepository = carrinhoRepository;
             _produtoRepository = produtoRepository;
+            _carrinhoRepository = carrinhoRepository;
             _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            List<ItemCarrinhoModel> carrinho;
-            var session = _httpContextAccessor.HttpContext.Session;
 
-            if (User.Identity.IsAuthenticated)
+    
+
+        
+        private const string CarrinhoSessionKey = "Carrinho";
+
+        
+        public IActionResult Index()
+        {
+            
+           var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
+
+           
+            var subtotal = 0m;
+            foreach (var item in carrinho)
             {
-                var user = await _userManager.GetUserAsync(User);
-                carrinho = await _carrinhoRepository.GetCarrinhoByUserIdAsync(user.Id);
+                subtotal += item.Preco * item.Quantidade;
+            }
+
+            var frete = 0m;
+
+            if (subtotal > 100)
+            {
+                frete = 0; 
             }
             else
             {
-                carrinho = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
-
-                if (carrinho.Any())
-                {
-                    foreach (var item in carrinho)
-                    {
-                        if (item.Produto == null)
-                        {
-                            item.Produto = await _produtoRepository.GetProdutoByIdAsync(item.ProdutoId);
-                        }
-
-    
-                    }
-                }
+                frete = 10; 
             }
+            var total = subtotal + frete;
 
-            decimal total = 0;
-            if (carrinho != null && carrinho.Any())
-            {
-                total = carrinho.Sum(item => (item.Produto?.Preco ?? 0) * item.Quantidade);
-            }
-            ViewBag.TotalCarrinho = total;
+            ViewBag.Subtotal = subtotal;
+            ViewBag.Frete = frete;
+            ViewBag.Total = total;
 
             return View(carrinho);
         }
 
-        [Route("Carrinho/InfoProduto/{id}")] 
-        [HttpGet]
+
+
+
+     
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Adicionar(int id, int quantidade)
+        {
+                 if (!User.Identity.IsAuthenticated)
+            {
+        return RedirectToAction("Login", "Registro");
+    }
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+            if (produto == null)
+            {
+                return NotFound("Produto não encontrado.");
+            }
+
+            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>(CarrinhoSessionKey) ?? new List<ItemCarrinhoModel>();
+
+            var itemExistente = carrinho.FirstOrDefault(i => i.Id == id);
+            int quantidadeFinal;
+            
+            if (itemExistente != null)
+            {
+                itemExistente.Quantidade += quantidade;
+                quantidadeFinal = itemExistente.Quantidade;
+            }
+            else
+            {
+                carrinho.Add(new ItemCarrinhoModel
+                {
+                    Id = produto.Id,
+                    NomeProduto = produto.Nome,
+                    Preco = produto.Preco,
+                    Quantidade = quantidade,
+                    ImagemUrl = produto.ImagemUrl
+                });
+                quantidadeFinal = quantidade;
+            }
+
+            HttpContext.Session.SetObject(CarrinhoSessionKey, carrinho);
+
+            // Salvar também no banco de dados se o usuário estiver autenticado
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    // Buscar item existente no banco
+                    var itensBanco = await _carrinhoRepository.ObterItensPorUsuarioAsync(userId);
+                    var itemBanco = itensBanco.FirstOrDefault(i => i.ProdutoId == id);
+                    
+                    if (itemBanco != null)
+                    {
+                        // Atualizar quantidade no banco para corresponder à sessão
+                        await _carrinhoRepository.AtualizarQuantidadeAsync(itemBanco.Id, quantidadeFinal);
+                    }
+                    else
+                    {
+                        // Adicionar novo item no banco
+                        var carrinhoItem = new CarrinhoItem
+                        {
+                            UserId = userId,
+                            ProdutoId = produto.Id,
+                            NomeProduto = produto.Nome,
+                            Preco = produto.Preco,
+                            Quantidade = quantidadeFinal,
+                            ImagemUrl = produto.ImagemUrl,
+                            DataAdicionado = DateTime.Now
+                        };
+                        
+                        await _carrinhoRepository.AdicionarItemAsync(carrinhoItem);
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
+       
+}
+
+
         public async Task<IActionResult> InfoProduto(int id)
         {
-            if (id <= 0)
-            {
+         
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+
+            if (produto == null)
                 return NotFound();
-            }
 
-            var produtoPrincipal = await _produtoRepository.GetProdutoByIdAsync(id);
-
-            if (produtoPrincipal == null)
-            {
-                TempData["Erro"] = "Produto não encontrado.";
-                return RedirectToAction("Index", "Home");
-            }
-
-            var todosOsProdutos = await _produtoRepository.GetAllProdutosAsync();
-            var produtosRelacionados = todosOsProdutos
-                .Where(p => p.Categoria == produtoPrincipal.Categoria && p.Id != id)
+            var todosProdutos = await _produtoRepository.GetAllProdutosAsync();
+            var outrosProdutos = todosProdutos
+                .Where(p => p.Id != id)
                 .Take(4)
                 .ToList();
 
-            var viewModel = new ToughService.Models.ProdutoDetalheViewModel
+            var viewModel = new ProdutoDetalheViewModel
             {
-                Produto = produtoPrincipal,
-                OutrosProdutos = produtosRelacionados
+                Produto = produto,
+                OutrosProdutos = outrosProdutos
             };
 
             return View(viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdicionarAoCarrinho(int produtoId, int quantidade = 1)
-        {
-            try
-            {
-                if (_produtoRepository == null)
-                {
-                    throw new Exception("_produtoRepository está NULO. Verifique o 'AddScoped' no Program.cs.");
-                }
 
-                var produto = await _produtoRepository.GetProdutoByIdAsync(produtoId);
-                if (produto == null)
-                {
-                    TempData["ErroCarrinho"] = "Produto não encontrado.";
-                    return Redirect(Request.Headers["Referer"].ToString() ?? "/");
-                }
 
-                if (User.Identity.IsAuthenticated)
-                {
-                    if (_userManager == null)
-                    {
-                        throw new Exception("_userManager está NULO. Verifique o 'AddDefaultIdentity' no Program.cs.");
-                    }
-                    var user = await _userManager.GetUserAsync(User);
 
-                    if (_carrinhoRepository == null)
-                    {
-                        throw new Exception("_carrinhoRepository está NULO. Verifique o 'AddScoped' no Program.cs.");
-                    }
-                    var itemExistente = await _carrinhoRepository.GetItemAsync(produtoId, user.Id);
 
-                    if (itemExistente != null)
-                    {
-                        itemExistente.Quantidade += quantidade;
-                        await _carrinhoRepository.UpdateItemAsync(itemExistente);
-                    }
-                    else
-                    {
-                        var novoItem = new ItemCarrinhoModel
-                        {
-                            ProdutoId = produtoId,
-                            Quantidade = quantidade,
-                            UserId = user.Id
-                        };
-                        await _carrinhoRepository.AddItemAsync(novoItem);
-                    }
-                }
-                else
-                {
-                    if (_httpContextAccessor == null || _httpContextAccessor.HttpContext == null)
-                    {
-                        throw new Exception("_httpContextAccessor está NULO. Verifique 'AddHttpContextAccessor' no Program.cs.");
-                    }
-                    if (_httpContextAccessor.HttpContext.Session == null)
-                    {
-                        throw new Exception("A SESSÃO (Session) está NULA. Verifique 'app.UseSession()' no Program.cs.");
-                    }
-
-                    var session = _httpContextAccessor.HttpContext.Session;
-                    var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
-
-                    var itemExistente = carrinhoSessao.FirstOrDefault(i => i.ProdutoId == produtoId);
-
-                    if (itemExistente != null)
-                    {
-                        itemExistente.Quantidade += quantidade;
-                    }
-                    else
-                    {
-                        carrinhoSessao.Add(new ItemCarrinhoModel
-                        {
-                            ProdutoId = produtoId,
-                            Quantidade = quantidade
-                        });
-                    }
-                    session.SetObject("Carrinho", carrinhoSessao);
-                }
-
-                TempData["SucessoCarrinho"] = $"'{produto.Nome}' adicionado ao carrinho!";
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                string erroReal = ex.Message;
-
-                if (ex.InnerException != null)
-                {
-                    erroReal = ex.InnerException.Message;
-                }
-
-                TempData["ErroCarrinho"] = $"ERRO 500 (DbUpdate): {erroReal}";
-                return RedirectToAction("Index");
-            }
-        }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoverDoCarrinho(int produtoId)
+        public async Task<IActionResult> Limpar()
         {
+            // Limpar da sessão
+            HttpContext.Session.Remove(CarrinhoSessionKey);
+
+            // Limpar também do banco de dados se o usuário estiver autenticado
             if (User.Identity.IsAuthenticated)
             {
-                var user = await _userManager.GetUserAsync(User);
-                await _carrinhoRepository.RemoveItemAsync(produtoId, user.Id);
-            }
-            else
-            {
-                var session = _httpContextAccessor.HttpContext.Session;
-                var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho");
-                if (carrinhoSessao != null)
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    var itemParaRemover = carrinhoSessao.FirstOrDefault(i => i.ProdutoId == produtoId);
-                    if (itemParaRemover != null)
-                    {
-                        carrinhoSessao.Remove(itemParaRemover);
-                        session.SetObject("Carrinho", carrinhoSessao);
-                    }
-                }
-            }
-
-            TempData["SucessoCarrinho"] = "Item removido do carrinho.";
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AtualizarQuantidade(int produtoId, int novaQuantidade)
-        {
-            if (novaQuantidade <= 0)
-            {
-                return await RemoverDoCarrinho(produtoId);
-            }
-
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var itemExistente = await _carrinhoRepository.GetItemAsync(produtoId, user.Id);
-
-                if (itemExistente != null)
-                {
-                    itemExistente.Quantidade = novaQuantidade;
-                    await _carrinhoRepository.UpdateItemAsync(itemExistente);
-                }
-            }
-            else
-            {
-                var session = _httpContextAccessor.HttpContext.Session;
-                var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho");
-                if (carrinhoSessao != null)
-                {
-                    var itemExistente = carrinhoSessao.FirstOrDefault(i => i.ProdutoId == produtoId);
-                    if (itemExistente != null)
-                    {
-                        itemExistente.Quantidade = novaQuantidade;
-                        session.SetObject("Carrinho", carrinhoSessao);
-                    }
+                    await _carrinhoRepository.RemoverItensPorUsuarioAsync(userId);
                 }
             }
 

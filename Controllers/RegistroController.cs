@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ToughService.Models;
-using ToughService.Repository;
 using ToughService.Services;
 using ToughService.Extensions;
-using System.Collections.Generic;
+using ToughService.Repository;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ToughService.Controllers
 {
@@ -19,22 +17,19 @@ namespace ToughService.Controllers
         private readonly ICaptchaService _captchaService;
         private readonly IConfiguration _configuration;
         private readonly ICarrinhoRepository _carrinhoRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RegistroController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ICaptchaService captchaService,
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            ICaptchaService captchaService, 
             IConfiguration configuration,
-            ICarrinhoRepository carrinhoRepository,
-            IHttpContextAccessor httpContextAccessor)
+            ICarrinhoRepository carrinhoRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _captchaService = captchaService;
             _configuration = configuration;
             _carrinhoRepository = carrinhoRepository;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -45,7 +40,7 @@ namespace ToughService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registro(RegistroModel registro, CancellationToken cancellationToken)
+        public async Task<IActionResult> Registro(RegistroModel registro,CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return View(registro);
@@ -59,6 +54,7 @@ namespace ToughService.Controllers
                 Email = registro.Email,
                 Nome = registro.Nome,
                 CpfCnpj = registro.CpfCnpj,
+               
             };
 
             var result = await _userManager.CreateAsync(user, registro.Senha);
@@ -66,14 +62,14 @@ namespace ToughService.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                await MigrarCarrinhoSessaoParaBD(user.Id); 
                 return RedirectToAction("Perfil", "Perfil");
             }
 
-            foreach (var error in result.Errors)
+            foreach(var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
+
             return View(registro);
         }
 
@@ -93,13 +89,24 @@ namespace ToughService.Controllers
 
             if (result.Succeeded)
             {
+                // Carregar carrinho do banco de dados para a sessão
                 var user = await _userManager.FindByEmailAsync(login.Email);
-
                 if (user != null)
                 {
-                    await MigrarCarrinhoSessaoParaBD(user.Id);
-                }
+                    var carrinhoItems = await _carrinhoRepository.ObterItensPorUsuarioAsync(user.Id);
+                    
+                    // Converter CarrinhoItem para ItemCarrinhoModel (modelo da sessão)
+                    var carrinhoSessao = carrinhoItems.Select(ci => new ItemCarrinhoModel
+                    {
+                        Id = ci.ProdutoId,
+                        NomeProduto = ci.NomeProduto,
+                        Preco = ci.Preco,
+                        Quantidade = ci.Quantidade,
+                        ImagemUrl = ci.ImagemUrl
+                    }).ToList();
 
+                    HttpContext.Session.SetObject("Carrinho", carrinhoSessao);
+                }
 
                 return RedirectToAction("Perfil", "Perfil");
             }
@@ -114,41 +121,47 @@ namespace ToughService.Controllers
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            _httpContextAccessor.HttpContext.Session.Remove("Carrinho");
-            return RedirectToAction("Login", "Registro");
-        }
-
-        private async Task MigrarCarrinhoSessaoParaBD(string userId)
-        {
-            var session = _httpContextAccessor.HttpContext.Session;
-            var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho");
-
-            if (carrinhoSessao != null && carrinhoSessao.Any())
+            if (User.Identity.IsAuthenticated)
             {
-                var dbCarrinho = await _carrinhoRepository.GetCarrinhoByUserIdAsync(userId);
-
-                foreach (var itemSessao in carrinhoSessao)
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    var itemExistente = dbCarrinho.FirstOrDefault(i => i.ProdutoId == itemSessao.ProdutoId);
-
-                    if (itemExistente != null)
+                    // Salvar carrinho da sessão no banco de dados antes de fazer logout
+                    var carrinhoSessao = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+                    
+                    if (carrinhoSessao.Any())
                     {
-                        itemExistente.Quantidade += itemSessao.Quantidade;
-                        await _carrinhoRepository.UpdateItemAsync(itemExistente);
-                    }
-                    else
-                    {
-                        itemSessao.UserId = userId;
-                        await _carrinhoRepository.AddItemAsync(itemSessao);
+                        // Limpar carrinho antigo do banco
+                        await _carrinhoRepository.RemoverItensPorUsuarioAsync(userId);
+                        
+                        // Salvar cada item do carrinho no banco
+                        foreach (var item in carrinhoSessao)
+                        {
+                            var carrinhoItem = new CarrinhoItem
+                            {
+                                UserId = userId,
+                                ProdutoId = item.Id,
+                                NomeProduto = item.NomeProduto,
+                                Preco = item.Preco,
+                                Quantidade = item.Quantidade,
+                                ImagemUrl = item.ImagemUrl,
+                                DataAdicionado = DateTime.Now
+                            };
+                            
+                            await _carrinhoRepository.AdicionarItemAsync(carrinhoItem);
+                        }
                     }
                 }
-                session.Remove("Carrinho");
             }
+
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Registro");
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿@model List<ProjetoThoughServiceMvc.Models.ProdutoModel>
-@using ProjetoThoughServiceMvc.Models
+﻿@model List<ToughService.Models.ProdutoModel>
 
 @{
-    var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+    var carrinho = Context.Session.GetObject<List<ToughService.Models.ItemCarrinhoModel>>("Carrinho") ?? new List<ToughService.Models.ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
     var isLoggedIn = ViewBag.IsLoggedIn ?? false;
     

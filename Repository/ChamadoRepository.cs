@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ToughService.Data;     // <-- VERIFIQUE O NAMESPACE DO SEU DBCONTEXT
 using System;
 using System.Collections.Generic;
 using System.Linq;

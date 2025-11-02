@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ToughService.Models;
 using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
-using ToughService.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 var app = builder.Build();
 
-//Inicializar o banco de dados e criar o usuário Admin
+//Inicializar o banco de dados e criar o usuï¿½rio Admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -84,7 +85,7 @@ app.MapControllerRoute(
 app.Run();
 
 
-//método auxiliar para cirar o admin roles
+//mï¿½todo auxiliar para cirar o admin roles
 
 async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
 {
@@ -95,21 +96,21 @@ async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager, RoleM
         Console.WriteLine(">>> Papel 'Admin' criado com sucesso.");
     }
 
-    // Etapa 2: Pega os dados da configuração
+    // Etapa 2: Pega os dados da configuraï¿½ï¿½o
     string adminEmail = configuration["AdminUser:Email"];
     string adminPassword = configuration["AdminUser:Password"];
 
     if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
     {
-        Console.WriteLine(">>> AVISO: Email ou senha do administrador não configurados.");
+        Console.WriteLine(">>> AVISO: Email ou senha do administrador nï¿½o configurados.");
         return;
     }
 
-    // Etapa 3: Verifica se o usuário já existe
+    // Etapa 3: Verifica se o usuï¿½rio jï¿½ existe
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)
     {
-        Console.WriteLine($">>> Usuário admin '{adminEmail}' não encontrado. Tentando criar...");
+        Console.WriteLine($">>> Usuï¿½rio admin '{adminEmail}' nï¿½o encontrado. Tentando criar...");
         adminUser = new ApplicationUser
         {
             UserName = adminEmail,
@@ -117,28 +118,28 @@ async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager, RoleM
             EmailConfirmed = true
         };
 
-        // Tenta criar o usuário e captura o resultado
+        // Tenta criar o usuï¿½rio e captura o resultado
         IdentityResult result = await userManager.CreateAsync(adminUser, adminPassword);
 
-        // Se a criação falhou, imprime os erros detalhados no console
+        // Se a criaï¿½ï¿½o falhou, imprime os erros detalhados no console
         if (!result.Succeeded)
         {
             Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            Console.WriteLine("!!!   ERRO AO CRIAR USUÁRIO ADMIN   !!!");
+            Console.WriteLine("!!!   ERRO AO CRIAR USUï¿½RIO ADMIN   !!!");
             foreach (var error in result.Errors)
             {
-                Console.WriteLine($"- CÓDIGO: {error.Code}, DESCRIÇÃO: {error.Description}");
+                Console.WriteLine($"- Cï¿½DIGO: {error.Code}, DESCRIï¿½ï¿½O: {error.Description}");
             }
             Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             return;
         }
-        Console.WriteLine($">>> Usuário admin '{adminEmail}' criado com sucesso.");
+        Console.WriteLine($">>> Usuï¿½rio admin '{adminEmail}' criado com sucesso.");
     }
 
-    // Etapa 4: Adiciona o usuário ao papel "Admin"
+    // Etapa 4: Adiciona o usuï¿½rio ao papel "Admin"
     if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
     {
         await userManager.AddToRoleAsync(adminUser, "Admin");
-        Console.WriteLine($">>> Usuário admin '{adminEmail}' adicionado ao papel 'Admin'.");
+        Console.WriteLine($">>> Usuï¿½rio admin '{adminEmail}' adicionado ao papel 'Admin'.");
     }
 }

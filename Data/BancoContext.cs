@@ -20,11 +20,11 @@ namespace ToughService.Data
 
         public DbSet<ProdutoModel> Produtos { get; set; }
 
-          public DbSet<ApplicationUser> Usuarios { get; set; }
+        public DbSet<ApplicationUser> Usuarios { get; set; }
 
         public DbSet<ChamadoModel> Chamados { get; set; }
 
-        public DbSet<ItemCarrinhoModel> ItensCarrinho { get; set; }
+        public DbSet<CarrinhoItem> CarrinhoItems { get; set; }
     }
 
 }

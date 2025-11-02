@@ -1,13 +1,11 @@
 @model ToughService.Models.ApplicationUser
-@using ToughService.Models
-@using ToughService.Extensions
 
 @{
     bool isLoggedIn = User.Identity.IsAuthenticated;
 
 }
 @{
-    var carrinho = Context.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+    var carrinho = Context.Session.GetObject<List<ToughService.Models.ItemCarrinhoModel>>("Carrinho") ?? new List<ToughService.Models.ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
     bool usuarioEhAdmin = ViewBag.UsuarioEhAdmin ?? false;
 }

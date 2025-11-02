@@ -12,8 +12,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20251101190950_CorrecaoDefinitivaDoCarrinho")]
-    partial class CorrecaoDefinitivaDoCarrinho
+    [Migration("20251102181844_AdicionarCarrinhoItems")]
+    partial class AdicionarCarrinhoItems
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -231,6 +231,45 @@ namespace ToughService.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ToughService.Models.CarrinhoItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataAdicionado")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ImagemUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NomeProduto")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CarrinhoItems");
+                });
+
             modelBuilder.Entity("ToughService.Models.ChamadoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -306,33 +345,6 @@ namespace ToughService.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Chamados");
-                });
-
-            modelBuilder.Entity("ToughService.Models.ItemCarrinhoModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ItensCarrinho");
                 });
 
             modelBuilder.Entity("ToughService.Models.ProdutoModel", b =>
@@ -437,30 +449,22 @@ namespace ToughService.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ToughService.Models.ChamadoModel", b =>
+            modelBuilder.Entity("ToughService.Models.CarrinhoItem", b =>
                 {
-                    b.HasOne("ToughService.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ToughService.Models.ItemCarrinhoModel", b =>
-                {
-                    b.HasOne("ToughService.Models.ProdutoModel", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ToughService.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Produto");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ToughService.Models.ChamadoModel", b =>
+                {
+                    b.HasOne("ToughService.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
