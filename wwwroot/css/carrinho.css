@@ -393,7 +393,7 @@ body {
     }
 
 .btn-finalizar {
-    background: linear-gradient(135deg, #8a0404, #610202);
+    background: green;
     color: white;
     box-shadow: 0 8px 25px rgba(138, 4, 4, 0.3);
 }
