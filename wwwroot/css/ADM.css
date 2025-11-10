@@ -36,6 +36,9 @@ body {
     margin: 0 auto;
     padding: 0 20px;
 }
+.container-produtos {
+    display: flex;
+}
 
 .icon-btn {
     display: inline-flex; /* Alinha o ícone no centro */

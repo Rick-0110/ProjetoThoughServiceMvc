@@ -133,7 +133,9 @@
                                 <div class="product-card-minimal">
                                     <div class="product-image">
                                         <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
+                                        <div class="container-produtos">
                                         <div class="product-overlay">
+                                            
                                             <button class="icon-btn edit-btn"
                                                     onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"
                                                     title="Editar">
@@ -146,6 +148,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                        </div>
                                         </div>
                                     </div>
                                     <div class="product-info">

@@ -69,10 +69,7 @@
                     <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
                     <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
                 }
-                else
-                {
-                    <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
-                }
+               
 
                
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
@@ -110,11 +107,14 @@
                             <div class="dropdown-header">
                                 Olá, @User.Identity.Name!
                             </div>
+                            <a class="dropdown-item" asp-action="Perfil" asp-controller="Perfil">
+                                <i class="fas fa-user"></i> Perfil
+                            </a>
                             <a class="dropdown-item" asp-action="MeusPedidos" asp-controller="Cliente">
                                 <i class="fas fa-clipboard-list"></i> Meus Pedidos
                             </a>
-                            <a class="dropdown-item" asp-action="Perfil" asp-controller="Perfil">
-                                <i class="fas fa-user"></i> Perfil
+                            <a class="dropdown-item" asp-action="MeusChamados" asp-controller="Cliente">
+                                <i class="fas fa-clipboard-list"></i> Meus Chamados
                             </a>
                             <a class="dropdown-item" asp-action="Configuracoes" asp-controller="Cliente">
                                 <i class="fas fa-cog"></i> Configurações
@@ -140,15 +140,15 @@
     </nav>
 
     <!-- Hero Section Minimalista -->
-    <header class="bg-dark py-5" height="200px">
-        <div class="container px-4 px-lg-5 my-2"> 
+    <header class="bg-dark py-5" height="300px">
+        <div class="container px-4 px-lg-5 my-1">
             <div class="text-center text-white">
                 <img src="IMG/LOGO (2).png" height="200px"  class="LogoThough" />
                 <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANÇA LTDA</p>
                 <div class="hero-features">
                     <span class="feature-badge">✓ Certificado ISO</span>
                     <span class="feature-badge">✓ Entrega Rápida</span>
-                    <span class="feature-badge">✓ Suporte 24/5</span>
+                    <span class="feature-badge">✓ Suporte 24/7</span>
                 </div>
             </div>
             </div>
