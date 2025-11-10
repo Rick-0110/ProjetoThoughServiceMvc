@@ -1,6 +1,7 @@
 # Tough Service (Projeto Tough Service) 🚀
 
-![Tough Service Logo]([httpsCaminho/Para/Sua/Logo.png](https://www.econodata.com.br/consulta-empresa/28185366000100-tough-service-extintores-equipamentos-e-assessoria-de-seguranca-ltda)) 
+![Tough Service Logo]([<img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/23fa410c-e703-4b0a-a569-71715f903882" />
+)) 
 Projeto de aplicação web completa para a "Tough Service", uma empresa de equipamentos e serviços de segurança contra incêndio. A plataforma combina um **E-commerce** para venda de produtos (extintores, etc.) com um **Sistema de Orçamentos e Chamados** para serviços de manutenção.
 
 Este projeto foi desenvolvido como um portfólio de ponta-a-ponta, utilizando a stack .NET (ASP.NET Core MVC, Entity Framework Core) e MySQL.
