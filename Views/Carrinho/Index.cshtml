@@ -54,10 +54,7 @@
                         <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
                         <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
                     }
-                    else
-                    {
-                        <a asp-action="Index" asp-controller="Home" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Perfil" ? "active" : "")">Perfil</a>
-                    }
+                   
 
 
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
@@ -67,20 +64,51 @@
                 </div>
 
                 <!-- Carrinho -->
-                <div class="nav-cart">
-                    @if (!isLoggedIn)
+                <div class="nav-actions">
+                    <div class="nav-cart">
+                        @if (!isLoggedIn)
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">@quantidadeItensCarrinho</span>
+                            </a>
+                        }
+                    </div>
+
+                    @if (isLoggedIn)
                     {
-                        <a asp-action="Login" asp-controller="Registro" class="cart-btn">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">@quantidadeItensCarrinho</span>
-                        </a>
+                        <div class="profile-dropdown">
+                            <button class="profile-btn" onclick="toggleProfileDropdown()">
+                                <i class="fas fa-user-circle profile-icon"></i>
+                            </button>
+                            <div id="profileDropdownMenu" class="dropdown-menu">
+                                <div class="dropdown-header">
+                                    Olá, @User.Identity.Name!
+                                </div>
+                                <a class="dropdown-item" asp-action="MeusPedidos" asp-controller="Cliente">
+                                    <i class="fas fa-clipboard-list"></i> Meus Pedidos
+                                </a>
+                                <a class="dropdown-item" asp-action="Perfil" asp-controller="Perfil">
+                                    <i class="fas fa-user"></i> Perfil
+                                </a>
+                                <a class="dropdown-item" asp-action="Configuracoes" asp-controller="Cliente">
+                                    <i class="fas fa-cog"></i> Configurações
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="Registro" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item logout-item">
+                                        <i class="fas fa-sign-out-alt"></i> Sair
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     }
                 </div>
 
@@ -285,6 +313,7 @@
 
     <script src="~/js/MinimalistaPrincipal.js"></script>
     <script src="~/js/carrinho-modern.js"></script>
+    <script src="~/js/scripts.js"></script>
 </body>
 
 </html>

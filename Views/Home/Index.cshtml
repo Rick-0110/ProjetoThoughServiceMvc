@@ -69,10 +69,7 @@
                     <a asp-action="Registro" asp-controller="Registro" class="nav-link">Registro</a>
                     <a asp-action="Login" asp-controller="Registro" class="nav-link">Login</a>
                 }
-                else
-                {
-                    <a asp-action="Perfil" asp-controller="Perfil" class="nav-link">Perfil</a>
-                }
+               
 
                
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
@@ -141,7 +138,7 @@
 
     <!-- Hero Section Minimalista -->
     <header class="bg-dark py-5" height="300px">
-        <div class="container px-4 px-lg-5 my-5">
+        <div class="container px-4 px-lg-5 my-1">
             <div class="text-center text-white">
                 <img src="IMG/LOGO (2).png" height="200px"  class="LogoThough" />
                 <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANÇA LTDA</p>

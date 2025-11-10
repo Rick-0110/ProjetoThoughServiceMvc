@@ -57,21 +57,26 @@
                     <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
                 </div>
 
-                <div class="nav-cart">
-                    @if (!isLoggedIn)
-                    {
-                        <a asp-action="Login" asp-controller="Registro" class="cart-btn">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">@quantidadeItensCarrinho</span>
-                        </a>
+                <div class="nav-actions">
+                    <div class="nav-cart">
+                        @if (!isLoggedIn)
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="cart-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-controller="Carrinho" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">@quantidadeItensCarrinho</span>
+                            </a>
+                        }
+                    </div>
 
+                    @if (isLoggedIn)
+                    {
                         <div class="profile-dropdown">
                             <button class="profile-btn" onclick="toggleProfileDropdown()">
                                 <i class="fas fa-user-circle profile-icon"></i>
@@ -91,7 +96,6 @@
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <form asp-controller="Registro" asp-action="Logout" method="post">
-                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="dropdown-item logout-item">
                                         <i class="fas fa-sign-out-alt"></i> Sair
                                     </button>
