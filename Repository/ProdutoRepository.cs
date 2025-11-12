@@ -47,22 +47,18 @@ namespace ToughService.Repository
             return true;
         }
 
-        public async Task<IEnumerable<ProdutoModel>> SearchProdutosAsync(string termobusca)
+        public async Task<IEnumerable<ProdutoModel>> SearchProdutosAsync(string termoBusca)
         {
-            if (string.IsNullOrEmpty(termobusca))
-            {
-                return await GetAllProdutosAsync();
-            }
+            var termoBuscaLower = termoBusca.ToLower();
 
-            var termoBuscaLower = termobusca.ToLower();
+            var todosProdutos = await _context.Produtos.ToListAsync();
 
-            return await _context.Produtos
-                .Where(p =>
-                    p.Nome.ToLower().Contains(termoBuscaLower) ||
-                    p.Sku.ToLower().Contains(termoBuscaLower) ||
-                    (p.Categoria.HasValue && p.Categoria.ToString().ToLower().Contains(termoBuscaLower))
-                )
-                .ToListAsync();
+            var resultados = todosProdutos
+                    .Where(p => (p.Nome != null && p.Nome.ToLower().Contains(termoBuscaLower)) ||
+                                (p.Sku != null && p.Sku.ToLower().Contains(termoBuscaLower)) ||
+                                (p.Categoria.HasValue && p.Categoria.ToString().ToLower().Contains(termoBuscaLower)));
+
+            return resultados.ToList();
         }
 
         public async Task<ProdutoModel> UpdateProdutoAsync(ProdutoModel produto)
