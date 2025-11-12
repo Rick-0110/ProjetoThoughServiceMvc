@@ -1,6 +1,7 @@
 # Tough Service (Projeto Tough Service) 🚀
 
-![Tough Service Logo]([<img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/23fa410c-e703-4b0a-a569-71715f903882" />
+![Tough Service Logo]
+([<img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/23fa410c-e703-4b0a-a569-71715f903882" />
 )) 
 Projeto de aplicação web completa para a "Tough Service", uma empresa de equipamentos e serviços de segurança contra incêndio. A plataforma combina um **E-commerce** para venda de produtos (extintores, etc.) com um **Sistema de Orçamentos e Chamados** para serviços de manutenção.
 
@@ -94,6 +95,6 @@ A plataforma é dividida em várias áreas-chave para atender tanto os clientes 
 
 ## 👨‍💻 Autor
 
-Feito por **[Seu Nome Aqui]** (Rick-0110).
+Feito por **[Henrique Matos]** (Rick-0110).
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Rick-0110)
