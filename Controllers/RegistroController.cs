@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
-using ToughService.Repository; // <-- OBRIGATÓRIO
+using ToughService.Repository; 
 using ToughService.Services;
 using ToughService.Extensions;
 
@@ -16,7 +16,6 @@ namespace ToughService.Controllers
         private readonly ICarrinhoRepository _carrinhoRepository; 
         private readonly IHttpContextAccessor _httpContextAccessor; 
 
-        // Construtor completo
         public RegistroController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -43,24 +42,6 @@ namespace ToughService.Controllers
         [HttpPost]
         public async Task<IActionResult> Registro(RegistroModel registro, CancellationToken cancellationToken)
         {
-            // CAMINHO DE ERRO 1
-            if (!ModelState.IsValid)
-            {
-                ViewData["SiteKey"] = _configuration["Captcha:SiteKey"];
-                return View(registro);
-            }
-
-            var captchaToken = Request.Form["g-recaptcha-response"];
-            var captchaValido = await _captchaService.VerifyCaptchaAsync(captchaToken, cancellationToken);
-
-
-            if (!captchaValido)
-            {
-                ModelState.AddModelError("", "A verificação do CAPTCHA falhou. Por favor, tente novamente.");
-                ViewData["SiteKey"] = _configuration["Captcha:SiteKey"];
-                return View(registro);
-            }
-
             var user = new ApplicationUser
             {
                 UserName = registro.Email,
