@@ -1,3 +1,6 @@
+@{
+    Layout = null;
+}
 @model ToughService.Models.RegistroModel
 
 <!DOCTYPE html>
@@ -73,11 +76,13 @@
         </div>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/js/registro.js"></script>
+
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <partial name="_ValidationScriptsPartial" />
+
 </body>
 </html>
