@@ -15,13 +15,16 @@ namespace ToughService.Controllers
     {
         private readonly IProdutoRepository _produtoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IChamadoRepository _chamadoRepository;
 
         public ClienteController(
             IProdutoRepository produtoRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IChamadoRepository chamadoRepository)
         {
             _produtoRepository = produtoRepository;
             _userManager = userManager;
+            _chamadoRepository = chamadoRepository;
         }
 
         [HttpGet]
@@ -64,6 +67,22 @@ namespace ToughService.Controllers
 
             return View(carrinho);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> MeusServicos()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var chamados = await _chamadoRepository.GetChamadosByUserIdAsync(userId);
+            return View(chamados);
+
+        }
+
 
         [HttpGet]
         public IActionResult Configuracoes()

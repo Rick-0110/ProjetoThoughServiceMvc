@@ -1,4 +1,4 @@
-@model List<ToughService.Models.ChamadoModel>
+﻿@model List<ToughService.Models.ChamadoModel>
 @using ToughService.Models
 
 @{
@@ -8,6 +8,7 @@
 
 @section Styles {
     <link href="~/css/meus-servicos.css" rel="stylesheet" />
+
 }
 
 <div class="servicos-container">
@@ -239,15 +240,5 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        function expandirDetalhes(id) {
-            const card = document.querySelector(`.servico-card[data-id="${id}"]`);
-            if (card) {
-                const body = card.querySelector('.servico-card-body');
-                body.classList.toggle('expanded');
-            }
-        }
-    </script>
-}
+
 
