@@ -47,16 +47,12 @@ namespace ToughService.Controllers
         public async Task<IActionResult> Buscar(string busca)
         {
          
+            ViewBag.TermoBuscado = busca;
+
             var produtos = await _produtoRepository.SearchProdutosAsync(busca);
 
-           
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var usuario = await _userManager.FindByIdAsync(userId);
 
-        
-            ViewBag.IsLoggedIn = usuario != null;
-
-            return View("Index", produtos);
+            return View("ResultadoBusca", produtos);
         }
 
 

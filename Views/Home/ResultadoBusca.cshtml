@@ -1,33 +1,17 @@
 ﻿@model List<ToughService.Models.ProdutoModel>
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = $"Busca por '{ViewBag.TermoBuscado}'";
 }
-
-<header class="bg-dark py-5" height="300px">
-    <div class="container px-2 px-lg-5 my-0">
-        <div class="text-center text-white">
-           <title>Home - Tough Service</title>
-            <img src="IMG/LOGO (2).png" height="200px" class="LogoThough" />
-            <p class="lead fw-normal text-white-50 mb-0">EQUIPAMENTOS E ASSESSORIA DE SEGURANÇA LTDA</p>
-            <div class="hero-features">
-                <span class="feature-badge">✓ Certificado ISO</span>
-                <span class="feature-badge">✓ Entrega Rápida</span>
-                <span class="feature-badge">✓ Suporte 24/7</span>
-            </div>
-        </div>
-    </div>
-</header>
 
 <section class="products-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Nossos Produtos</h2>
-            <p class="section-subtitle">Equipamentos de segurança com qualidade certificada</p>
+            <h2 class="section-title">Resultados para "@ViewBag.TermoBuscado"</h2>
         </div>
 
         <div class="products-grid">
-            @if (Model != null && Model.Count > 0)
+            @if (Model != null && Model.Any())
             {
                 @foreach (var produto in Model)
                 {
@@ -40,7 +24,7 @@
                                 </a>
                                 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                                 {
-                                    <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
+                                    <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza?');" class="admin-form">
                                         <input type="hidden" name="id" value="@produto.Id" />
                                         <button type="submit" class="delete-btn">
                                             <i class="fas fa-trash"></i>
@@ -61,7 +45,7 @@
             {
                 <div class="no-products">
                     <i class="fas fa-box-open"></i>
-                    <p>Nenhum produto disponível no momento.</p>
+                    <p>Nenhum produto encontrado para "@ViewBag.TermoBuscado".</p>
                 </div>
             }
         </div>
