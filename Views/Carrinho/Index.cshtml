@@ -70,8 +70,21 @@
                                         <p class="unit-price">R$ @(item.Produto.Preco.ToString("N2", culturePtBr)) cada</p>
                                         <p class="total-price">R$ @((item.Produto.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
                                     </div>
+                                    <form asp-action="RemoverDoCarrinho" asp-controller="Carrinho" method="post" class="remove-form">
+
+                                        <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn-remove-item" title="Remover item">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                 </div>
+
                             </div>
+
+
                         }
                     }
                     else
@@ -115,7 +128,7 @@
                         <i class="fas fa-credit-card me-2"></i>
                         Finalizar Compra
                     </a>
-                    <form asp-action="Limpar" method="post">
+                    <form asp-action="ClearCarrinho" method="post">
                         <button type="submit" class="btn-limpar">
                             <i class="fas fa-trash me-2"></i>
                             Limpar Carrinho
