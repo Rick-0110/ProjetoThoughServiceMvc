@@ -1,0 +1,253 @@
+@model List<ToughService.Models.ChamadoModel>
+@using ToughService.Models
+
+@{
+    ViewData["Title"] = "Meus Serviços";
+    var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
+}
+
+@section Styles {
+    <link href="~/css/meus-servicos.css" rel="stylesheet" />
+}
+
+<div class="servicos-container">
+    <div class="container">
+        <div class="servicos-header">
+            <h1><i class="fas fa-briefcase"></i> Meus Serviços</h1>
+            <p>Acompanhe suas solicitações de serviço e o status de cada uma</p>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="servicos-list">
+                @foreach (var chamado in Model.OrderByDescending(c => c.DataSolicitacao))
+                {
+                    var statusClass = chamado.Status switch
+                    {
+                        StatusChamadoEnum.Novo => "status-novo",
+                        StatusChamadoEnum.EmAndamento => "status-andamento",
+                        StatusChamadoEnum.Finalizado => "status-finalizado",
+                        _ => "status-novo"
+                    };
+
+                    var statusText = chamado.Status switch
+                    {
+                        StatusChamadoEnum.Novo => "Novo",
+                        StatusChamadoEnum.EmAndamento => "Em Andamento",
+                        StatusChamadoEnum.Finalizado => "Finalizado",
+                        _ => "Novo"
+                    };
+
+                    var statusIcon = chamado.Status switch
+                    {
+                        StatusChamadoEnum.Novo => "fa-clock",
+                        StatusChamadoEnum.EmAndamento => "fa-spinner",
+                        StatusChamadoEnum.Finalizado => "fa-check-circle",
+                        _ => "fa-clock"
+                    };
+
+                    <div class="servico-card" data-id="@chamado.Id">
+                        <div class="servico-card-header">
+                            <div class="servico-info">
+                                <h3 class="servico-id">
+                                    <i class="fas fa-hashtag"></i>
+                                    Solicitação #@chamado.Id
+                                </h3>
+                                <p class="servico-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Solicitado em @chamado.DataSolicitacao.ToString("dd/MM/yyyy 'às' HH:mm", culturePtBr)
+                                </p>
+                            </div>
+                            <span class="servico-status @statusClass">
+                                <i class="fas @statusIcon"></i>
+                                @statusText
+                            </span>
+                        </div>
+
+                        <div class="servico-card-body">
+                            <div class="servico-details-grid">
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Tipo de Serviço</span>
+                                        <span class="detail-value">@chamado.TipoServico</span>
+                                    </div>
+                                </div>
+
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-fire-extinguisher"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Tipo de Extintor</span>
+                                        <span class="detail-value">@chamado.TipoExtintor</span>
+                                    </div>
+                                </div>
+
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Quantidade</span>
+                                        <span class="detail-value">@chamado.Quantidade unidade(s)</span>
+                                    </div>
+                                </div>
+
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Data Desejada</span>
+                                        <span class="detail-value">@chamado.DataDesejada.ToString("dd/MM/yyyy", culturePtBr)</span>
+                                    </div>
+                                </div>
+
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Endereço</span>
+                                        <span class="detail-value">
+                                            @chamado.Logradouro, @chamado.Numero
+                                            @if (!string.IsNullOrEmpty(chamado.Complemento))
+                                            {
+                                                <span> - @chamado.Complemento</span>
+                                            }
+                                            <br />
+                                            @chamado.Bairro, @chamado.Cidade - @chamado.Estado
+                                            <br />
+                                            CEP: @chamado.Cep
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="servico-detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Telefone</span>
+                                        <span class="detail-value">@chamado.Telefone</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(chamado.Observacoes))
+                            {
+                                <div class="servico-observacoes">
+                                    <div class="observacoes-header">
+                                        <i class="fas fa-comment-alt"></i>
+                                        <span>Observações</span>
+                                    </div>
+                                    <p>@chamado.Observacoes</p>
+                                </div>
+                            }
+
+                            <!-- Timeline de Status -->
+                            <div class="servico-timeline">
+                                <div class="timeline-header">
+                                    <i class="fas fa-history"></i>
+                                    <span>Andamento</span>
+                                </div>
+                                <div class="timeline-steps">
+                                    <div class="timeline-step @(chamado.Status >= StatusChamadoEnum.Novo ? "active" : "")">
+                                        <div class="timeline-step-icon">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="timeline-step-content">
+                                            <span class="timeline-step-title">Solicitação Criada</span>
+                                            <span class="timeline-step-date">@chamado.DataSolicitacao.ToString("dd/MM/yyyy", culturePtBr)</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-step @(chamado.Status >= StatusChamadoEnum.EmAndamento ? "active" : "")">
+                                        <div class="timeline-step-icon">
+                                            <i class="fas fa-cog"></i>
+                                        </div>
+                                        <div class="timeline-step-content">
+                                            <span class="timeline-step-title">Em Andamento</span>
+                                            <span class="timeline-step-date">
+                                                @if (chamado.Status >= StatusChamadoEnum.EmAndamento)
+                                                {
+                                                    <text>Em processamento</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>Pendente</text>
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-step @(chamado.Status >= StatusChamadoEnum.Finalizado ? "active" : "")">
+                                        <div class="timeline-step-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="timeline-step-content">
+                                            <span class="timeline-step-title">Finalizado</span>
+                                            <span class="timeline-step-date">
+                                                @if (chamado.Status >= StatusChamadoEnum.Finalizado)
+                                                {
+                                                    <text>Concluído</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>Pendente</text>
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="servico-card-footer">
+                            <div class="servico-actions">
+                                <button class="btn-action" onclick="expandirDetalhes(@chamado.Id)">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Ver Mais Detalhes
+                                </button>
+                                <a href="tel:@chamado.Telefone" class="btn-action btn-call">
+                                    <i class="fas fa-phone"></i>
+                                    Ligar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="servicos-empty">
+                <div class="empty-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h3>Nenhuma solicitação encontrada</h3>
+                <p>Você ainda não realizou nenhuma solicitação de serviço. Comece agora!</p>
+                <a asp-action="Servicos" asp-controller="Servicos" class="btn-solicitar-servico">
+                    <i class="fas fa-plus-circle"></i>
+                    Solicitar Serviço
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function expandirDetalhes(id) {
+            const card = document.querySelector(`.servico-card[data-id="${id}"]`);
+            if (card) {
+                const body = card.querySelector('.servico-card-body');
+                body.classList.toggle('expanded');
+            }
+        }
+    </script>
+}
+
