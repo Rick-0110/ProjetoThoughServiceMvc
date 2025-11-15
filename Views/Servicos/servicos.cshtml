@@ -1,12 +1,19 @@
 ﻿@using ToughService.Models
 
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+
+@{
+    ViewData["Title"] = "Serviços";
+    var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
+}
 @{
     bool isLoggedIn = User.Identity.IsAuthenticated;
     var session = HttpContextAccessor.HttpContext.Session;
     var carrinho = session.GetObject<List<ToughService.Models.ItemCarrinhoModel>>("Carrinho") ?? new List<ToughService.Models.ItemCarrinhoModel>();
     int quantidadeItensCarrinho = carrinho.Sum(i => i.Quantidade);
 }
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
