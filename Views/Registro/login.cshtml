@@ -47,10 +47,11 @@
                         <input asp-for="Email" placeholder="Email" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
-                    <div class="grupo-entrada">
+                    <div class="grupo-entrada campo-senha-container">
                         <i class="fas fa-lock"></i>
-                        <input asp-for="Senha" type="password" placeholder="Senha" />
+                        <input asp-for="Senha" type="password" id="senhaInput" placeholder="Senha" />
                         <span asp-validation-for="Senha" class="text-danger"></span>
+                        <i class="fas fa-eye-slash toggle-senha" id="toggleSenha"></i>
                     </div>
                     <button type="submit" class="botao-entrar">
                         <i class="fas fa-sign-in-alt"></i>
