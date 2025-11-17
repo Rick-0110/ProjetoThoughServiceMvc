@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-   
+
     <title>@ViewData["Title"] - Tough Service</title>
     <link rel="icon" href="~/IMG/LOGO (2).png" />
 
@@ -52,7 +52,7 @@
                     {
                         <a asp-action="ADM" asp-controller="ADM" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ADM" ? "active" : "")">Admin</a>
                     }
-                   
+
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Servicos" ? "active" : "")"
                        asp-action="Servicos" asp-controller="Servicos">Serviços</a>
                     <a asp-action="Sobre" asp-controller="Home" class="nav-link">Sobre</a>
@@ -102,7 +102,7 @@
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <form asp-controller="Registro" asp-action="Logout" method="post">
-                                    <button type="submit" class="dropdown-item logout-item">
+                                    **@Html.AntiForgeryToken()** <button type="submit" class="dropdown-item logout-item">
                                         <i class="fas fa-sign-out-alt"></i> Sair
                                     </button>
                                 </form>
