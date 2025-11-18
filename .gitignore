@@ -6,7 +6,8 @@
 # Arquivos de Build/Compilação (NÃO COMPARTILHAR)
 **/bin/
 **/obj/
-
+**/appsettings.*.user
+**/secrets.json
 # Logs e caches (NÃO COMPARTILHAR)
 *.log
 *.cache
