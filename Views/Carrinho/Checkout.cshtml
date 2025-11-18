@@ -1,0 +1,330 @@
+@{
+    ViewData["Title"] = "Finalizar Compra";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+}
+
+<div class="checkout-page" data-page="checkout">
+    <header class="checkout-header">
+        <div class="checkout-badge">
+            <span class="badge-step is-active" data-step="1">Carrinho</span>
+            <span class="badge-divider"></span>
+            <span class="badge-step is-active" data-step="2">Entrega</span>
+            <span class="badge-divider"></span>
+            <span class="badge-step" data-step="3">Pagamento</span>
+            <span class="badge-divider"></span>
+            <span class="badge-step" data-step="4">Confirmação</span>
+        </div>
+        <div class="checkout-title">
+            <h1>Finalize a sua compra</h1>
+            <p>Revise seus dados, escolha a forma de pagamento e confirme o pedido.</p>
+        </div>
+    </header>
+
+    <div class="checkout-content">
+        <main class="checkout-main">
+            <section class="card-block">
+                <div class="block-heading">
+                    <div class="block-title">
+                        <span class="icon-circle">
+                            <i class="fas fa-user-check"></i>
+                        </span>
+                        <div>
+                            <h2>Dados do comprador</h2>
+                            <p>Use os dados da sua conta ou edite conforme necessário.</p>
+                        </div>
+                    </div>
+                    <button class="btn-link" type="button">Editar perfil</button>
+                </div>
+
+                <div class="block-grid two-cols">
+                    <div class="input-field">
+                        <label for="checkoutName">Nome completo</label>
+                        <input id="checkoutName" type="text" placeholder="Ex: Mariana Souza" autocomplete="name" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutDocument">CPF / CNPJ</label>
+                        <input id="checkoutDocument" type="text" placeholder="000.000.000-00" autocomplete="off" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutEmail">E-mail</label>
+                        <input id="checkoutEmail" type="email" placeholder="voce@email.com" autocomplete="email" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutPhone">Telefone</label>
+                        <input id="checkoutPhone" type="tel" placeholder="(11) 99999-0000" autocomplete="tel" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-block">
+                <div class="block-heading">
+                    <div class="block-title">
+                        <span class="icon-circle">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        <div>
+                            <h2>Entrega</h2>
+                            <p>Escolha um endereço existente ou cadastre um novo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="address-list" id="addressList">
+                    <article class="address-card is-selected" data-address-id="home">
+                        <header>
+                            <h3>Casa</h3>
+                            <span class="pill">Principal</span>
+                        </header>
+                        <p>Rua das Flores, 123 - Centro, São Paulo/SP</p>
+                        <p>CEP: 01010-010</p>
+                        <div class="address-actions">
+                            <button type="button" class="btn-link">Editar</button>
+                            <button type="button" class="btn-link text-danger">Excluir</button>
+                        </div>
+                    </article>
+
+                    <article class="address-card" data-address-id="office">
+                        <header>
+                            <h3>Escritório</h3>
+                        </header>
+                        <p>Av. Paulista, 1578 - Bela Vista, São Paulo/SP</p>
+                        <p>CEP: 01310-200</p>
+                        <div class="address-actions">
+                            <button type="button" class="btn-link">Editar</button>
+                            <button type="button" class="btn-link text-danger">Excluir</button>
+                        </div>
+                    </article>
+
+                    <button type="button" class="btn-outline" id="addAddressButton">
+                        <i class="fas fa-plus"></i>
+                        Adicionar novo endereço
+                    </button>
+                </div>
+
+                <div class="block-grid three-cols">
+                    <div class="input-field">
+                        <label for="checkoutCep">CEP</label>
+                        <input id="checkoutCep" type="text" placeholder="00000-000" inputmode="numeric" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutEstado">Estado</label>
+                        <select id="checkoutEstado">
+                            <option value="">Selecione</option>
+                            <option>SP</option>
+                            <option>RJ</option>
+                            <option>MG</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutCidade">Cidade</label>
+                        <input id="checkoutCidade" type="text" placeholder="Cidade" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutEndereco">Endereço</label>
+                        <input id="checkoutEndereco" type="text" placeholder="Rua, avenida, etc." />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutNumero">Número</label>
+                        <input id="checkoutNumero" type="text" placeholder="Nº" />
+                    </div>
+                    <div class="input-field">
+                        <label for="checkoutComplemento">Complemento</label>
+                        <input id="checkoutComplemento" type="text" placeholder="Apto, bloco, referência" />
+                    </div>
+                </div>
+
+                <div class="shipping-options" id="shippingOptions">
+                    <label class="shipping-card is-selected">
+                        <input type="radio" name="shipping" value="express" checked />
+                        <div>
+                            <strong>Entrega Expressa</strong>
+                            <span>Chega amanhã</span>
+                        </div>
+                        <span class="shipping-price">R$ 29,90</span>
+                    </label>
+
+                    <label class="shipping-card">
+                        <input type="radio" name="shipping" value="standard" />
+                        <div>
+                            <strong>Entrega Padrão</strong>
+                            <span>3-5 dias úteis</span>
+                        </div>
+                        <span class="shipping-price">R$ 12,90</span>
+                    </label>
+
+                    <label class="shipping-card">
+                        <input type="radio" name="shipping" value="pickup" />
+                        <div>
+                            <strong>Retirar na loja</strong>
+                            <span>Grátis • Disponível em 2h</span>
+                        </div>
+                        <span class="shipping-price">R$ 0,00</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="card-block">
+                <div class="block-heading">
+                    <div class="block-title">
+                        <span class="icon-circle">
+                            <i class="fas fa-credit-card"></i>
+                        </span>
+                        <div>
+                            <h2>Pagamento</h2>
+                            <p>Selecione a forma de pagamento de sua preferência.</p>
+                        </div>
+                    </div>
+                    <div class="card-badges">
+                        <span class="pill">Ambiente seguro</span>
+                        <span class="pill">SSL 256 bits</span>
+                    </div>
+                </div>
+
+                <div class="payment-tabs" id="paymentTabs">
+                    <button type="button" data-payment="card" class="payment-tab is-active">
+                        <i class="fas fa-credit-card"></i>
+                        Cartão
+                    </button>
+                    <button type="button" data-payment="pix" class="payment-tab">
+                        <i class="fas fa-qrcode"></i>
+                        Pix
+                    </button>
+                    <button type="button" data-payment="boleto" class="payment-tab">
+                        <i class="fas fa-barcode"></i>
+                        Boleto
+                    </button>
+                </div>
+
+                <div class="payment-panels">
+                    <div class="payment-panel is-visible" data-payment-panel="card">
+                        <div class="block-grid two-cols">
+                            <div class="input-field">
+                                <label for="cardNumber">Número do cartão</label>
+                                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" inputmode="numeric" />
+                            </div>
+                            <div class="input-field">
+                                <label for="cardName">Nome impresso</label>
+                                <input id="cardName" type="text" placeholder="Como está no cartão" />
+                            </div>
+                            <div class="input-field">
+                                <label for="cardExpiration">Validade</label>
+                                <input id="cardExpiration" type="text" placeholder="MM/AA" inputmode="numeric" />
+                            </div>
+                            <div class="input-field">
+                                <label for="cardCvv">CVV</label>
+                                <input id="cardCvv" type="password" placeholder="***" inputmode="numeric" />
+                            </div>
+                        </div>
+                        <div class="installments">
+                            <label for="installmentsSelect">Parcelamento</label>
+                            <select id="installmentsSelect">
+                                <option>1x de R$ 1.250,00 sem juros</option>
+                                <option>2x de R$ 625,00 sem juros</option>
+                                <option>3x de R$ 416,67 sem juros</option>
+                                <option>6x de R$ 222,34 com juros</option>
+                            </select>
+                        </div>
+                        <label class="checkbox-control">
+                            <input type="checkbox" id="saveCard" />
+                            <span>Salvar cartão para compras futuras</span>
+                        </label>
+                    </div>
+
+                    <div class="payment-panel" data-payment-panel="pix">
+                        <div class="pix-panel">
+                            <p>O QR Code será gerado após clicar em “Confirmar pedido”.</p>
+                            <ul>
+                                <li>Pagamento instantâneo, sem taxas adicionais.</li>
+                                <li>O pedido é liberado em poucos minutos.</li>
+                                <li>Você receberá instruções por e-mail.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="payment-panel" data-payment-panel="boleto">
+                        <div class="boleto-panel">
+                            <p>O boleto terá vencimento em 3 dias úteis.</p>
+                            <ul>
+                                <li>Confirmação pode levar até 2 dias úteis.</li>
+                                <li>O documento será enviado por e-mail.</li>
+                                <li>Você poderá imprimir ou pagar via internet banking.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="checkout-sidebar">
+            <section class="card-block sticky-summary">
+                <div class="summary-header">
+                    <h3>Resumo do pedido</h3>
+                    <button type="button" class="btn-link">Editar itens</button>
+                </div>
+                <ul class="summary-items">
+                    <li>
+                        <div>
+                            <strong>Extintor CO₂ 6kg</strong>
+                            <span>Qtd 2 · SKU 45892</span>
+                        </div>
+                        <span>R$ 1.200,00</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Kit sinalização</strong>
+                            <span>Qtd 1 · SKU 98231</span>
+                        </div>
+                        <span>R$ 350,00</span>
+                    </li>
+                </ul>
+                <div class="summary-coupon">
+                    <input type="text" id="couponInput" placeholder="Possui cupom?" />
+                    <button type="button" id="applyCouponButton">Aplicar</button>
+                </div>
+                <dl class="summary-totals">
+                    <div>
+                        <dt>Subtotal</dt>
+                        <dd>R$ 1.550,00</dd>
+                    </div>
+                    <div>
+                        <dt>Entrega</dt>
+                        <dd id="summaryShipping">R$ 29,90</dd>
+                    </div>
+                    <div>
+                        <dt>Descontos</dt>
+                        <dd class="text-success" id="summaryDiscounts">- R$ 0,00</dd>
+                    </div>
+                </dl>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong id="summaryTotal">R$ 1.579,90</strong>
+                </div>
+                <button type="button" class="btn-primary btn-full" id="confirmOrderButton">
+                    Confirmar pedido
+                    <i class="fas fa-lock"></i>
+                </button>
+                <p class="summary-safe-text">
+                    <i class="fas fa-shield-alt"></i>
+                    Pagamento criptografado e protegido.
+                </p>
+            </section>
+
+            <section class="card-block reassurance">
+                <h4>Por que comprar com a Tough Service?</h4>
+                <ul>
+                    <li><i class="fas fa-undo"></i> Troca garantida em 30 dias</li>
+                    <li><i class="fas fa-headset"></i> Suporte humano 24/7</li>
+                    <li><i class="fas fa-certificate"></i> Produtos certificados</li>
+                </ul>
+            </section>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/checkout.js" asp-append-version="true"></script>
+}
+

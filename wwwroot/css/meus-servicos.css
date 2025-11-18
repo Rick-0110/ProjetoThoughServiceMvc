@@ -103,6 +103,22 @@
 .servico-date i {
     color: var(--gray-400);
 }
+.servico-card .servico-card-body {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: all 0.4s ease-in-out; 
+}
+    .servico-card .servico-card-body.expanded {
+        max-height: 1000px; 
+        padding-top: 20px;
+        padding-bottom: 20px;
+        border-top: 1px solid #eee;
+    }
+        .servico-card .servico-card-body.expanded + .servico-card-footer .btn-action .fa-chevron-down {
+            transform: rotate(180deg);
+        }
 
 /* ===== STATUS ===== */
 .servico-status {
@@ -347,6 +363,7 @@
     font-weight: 600;
     color: var(--gray-900);
     font-size: 1rem;
+    gap: var(--space-2);
 }
 
 .timeline-step.active .timeline-step-title {

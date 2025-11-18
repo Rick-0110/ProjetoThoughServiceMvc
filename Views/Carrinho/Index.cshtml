@@ -70,8 +70,21 @@
                                         <p class="unit-price">R$ @(item.Produto.Preco.ToString("N2", culturePtBr)) cada</p>
                                         <p class="total-price">R$ @((item.Produto.Preco * item.Quantidade).ToString("N2", culturePtBr))</p>
                                     </div>
+                                    <form asp-action="RemoverDoCarrinho" asp-controller="Carrinho" method="post" class="remove-form">
+
+                                        <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn-remove-item" title="Remover item">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                 </div>
+
                             </div>
+
+
                         }
                     }
                     else
@@ -111,11 +124,11 @@
                         <i class="fas fa-arrow-left me-2"></i>
                         Continuar Comprando
                     </a>
-                    <a class="btn-finalizar" href="#">
+                    <a class="btn-finalizar" asp-action="Checkout" asp-controller="Carrinho">
                         <i class="fas fa-credit-card me-2"></i>
                         Finalizar Compra
                     </a>
-                    <form asp-action="Limpar" method="post">
+                    <form asp-action="ClearCarrinho" method="post">
                         <button type="submit" class="btn-limpar">
                             <i class="fas fa-trash me-2"></i>
                             Limpar Carrinho
@@ -126,98 +139,8 @@
         </div>
     </section>
 
-    <!-- Footer Minimalista -->
-    <footer class="footer-minimal">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Tough Service</h3>
-                    <p>Equipamentos e assessoria de segurança</p>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Empresa</h4>
-                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
-                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-                        <a href="#">Contato</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Suporte</h4>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Redes Sociais</h4>
-                        <div class="social-links-minimal">
-                            <a href="https://www.instagram.com/tough_service?utm_source=ig_web_button_share_sheet&igsh=MW1hdjNwZHoyZ2NsMw==" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
-    <!-- Footer Minimalista -->
-    <footer class="footer-minimal">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Tough Service</h3>
-                    <p>Equipamentos e assessoria de segurança</p>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Empresa</h4>
-                        <a asp-action="Sobre" asp-controller="Home">Sobre</a>
-                        <a asp-action="Servicos" asp-controller="Servicos">Serviços</a>
-                        <a href="#">Contato</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Suporte</h4>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-
-                    <div class="footer-column">
-                        <h4>Redes Sociais</h4>
-                        <div class="social-links-minimal">
-                            <a href="#" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 Tough Service. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
+ 
+ 
 
     <script src="~/js/MinimalistaPrincipal.js"></script>
     <script src="~/js/carrinho-modern.js"></script>

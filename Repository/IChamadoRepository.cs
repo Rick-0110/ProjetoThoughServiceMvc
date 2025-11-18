@@ -1,6 +1,4 @@
 ﻿using ToughService.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ToughService.Repository
 {
@@ -15,6 +13,7 @@ namespace ToughService.Repository
      
         Task UpdateStatusChamadoAsync(int chamadoId, StatusChamadoEnum novoStatus);
 
-       
+        Task<List<ChamadoModel>> GetChamadosByUserIdAsync(string userId);
+
     }
 }

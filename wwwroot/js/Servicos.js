@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+Ôªødocument.addEventListener('DOMContentLoaded', function () {
 
  
     const metaTagSucesso = document.querySelector("meta[name='show-success-modal']");
@@ -57,7 +57,7 @@ async function buscarCepPelaApi() {
      
         if (data.erro) {
          
-            alert('CEP n„o encontrado. Por favor, digite o endereÁo manualmente.');
+            alert('CEP n√£o encontrado. Por favor, digite o endere√ßo manualmente.');
             limparCamposEndereco();
         } else {
      
@@ -67,7 +67,7 @@ async function buscarCepPelaApi() {
     } catch (error) {
         // 6. Erro de rede/fetch (ex: sem internet)
         console.error('Falha ao buscar CEP:', error);
-        alert('N„o foi possÌvel buscar o CEP. Verifique sua conex„o.');
+        alert('N√£o foi poss√≠vel buscar o CEP. Verifique sua conex√£o.');
         limparCamposEndereco();
     } finally {
         // 7. Remove o feedback de "carregando" (mesmo se der erro)
@@ -75,18 +75,18 @@ async function buscarCepPelaApi() {
     }
 }
 
-// FunÁ„o auxiliar para preencher os campos com os dados da API
+// Fun√ß√£o auxiliar para preencher os campos com os dados da API
 function preencherCamposEndereco(data) {
     document.getElementById('logradouro').value = data.logradouro;
     document.getElementById('bairro').value = data.bairro;
     document.getElementById('cidade').value = data.localidade; // API ViaCEP usa 'localidade' para cidade
     document.getElementById('estado').value = data.uf;
 
-    // Foca no campo "N˙mero", que È o prÛximo a ser preenchido
+    // Foca no campo "N√∫mero", que √© o pr√≥ximo a ser preenchido
     document.getElementById('numero').focus();
 }
 
-// FunÁ„o para limpar os campos (se o CEP for inv·lido)
+// Fun√ß√£o para limpar os campos (se o CEP for inv√°lido)
 function limparCamposEndereco() {
     document.getElementById('logradouro').value = '';
     document.getElementById('bairro').value = '';
@@ -94,7 +94,7 @@ function limparCamposEndereco() {
     document.getElementById('estado').value = '';
 }
 
-// FunÁ„o para travar/destravar campos e mostrar "Buscando..."
+// Fun√ß√£o para travar/destravar campos e mostrar "Buscando..."
 function setCamposEnderecoLoading(isLoading) {
     const campos = ['logradouro', 'bairro', 'cidade', 'estado'];
     campos.forEach(id => {
@@ -118,13 +118,13 @@ function openModal(tipo) {
     const tipoServicoInput = document.getElementById('tipoServicoHidden'); // Campo oculto
 
     const servicosInfo = {
-        'manutencao': { titulo: 'Solicitar OrÁamento - ManutenÁ„o', valor: 'ManutenÁ„o Preventiva' },
-        'reparo': { titulo: 'Solicitar OrÁamento - Reparo', valor: 'Reparo TÈcnico' },
-        'instalacao': { titulo: 'Solicitar OrÁamento - InstalaÁ„o', valor: 'InstalaÁ„o' },
-        'suporte': { titulo: 'Solicitar OrÁamento - Suporte', valor: 'Suporte TÈcnico' }
+        'manutencao': { titulo: 'Solicitar Or√ßamento - Manuten√ß√£o', valor: 'Manuten√ß√£o Preventiva' },
+        'reparo': { titulo: 'Solicitar Or√ßamento - Reparo', valor: 'Reparo T√©cnico' },
+        'instalacao': { titulo: 'Solicitar Or√ßamento - Instala√ß√£o', valor: 'Instala√ß√£o' },
+        'suporte': { titulo: 'Solicitar Or√ßamento - Suporte', valor: 'Suporte T√©cnico' }
     };
 
-    const info = servicosInfo[tipo] || { titulo: 'Solicitar OrÁamento', valor: tipo };
+    const info = servicosInfo[tipo] || { titulo: 'Solicitar Or√ßamento', valor: tipo };
 
     if (titulo) {
         titulo.textContent = info.titulo;
@@ -133,18 +133,18 @@ function openModal(tipo) {
     if (tipoServicoInput) {
         tipoServicoInput.value = info.valor;
     } else {
-        console.error("Campo oculto 'tipoServicoHidden' n„o encontrado!");
+        console.error("Campo oculto 'tipoServicoHidden' n√£o encontrado!");
     }
 
     if (modal) {
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
     } else {
-        console.error("Modal 'modalOrcamento' n„o encontrado.");
+        console.error("Modal 'modalOrcamento' n√£o encontrado.");
     }
 } 
 
-// FunÁ„o para fechar o modal de orÁamento
+// Fun√ß√£o para fechar o modal de or√ßamento
 function closeModal() {
     const modal = document.getElementById('modalOrcamento');
     if (modal) {
@@ -153,7 +153,7 @@ function closeModal() {
     }
 } 
 
-// FunÁ„o para fechar o modal de sucesso
+// Fun√ß√£o para fechar o modal de sucesso
 function closeSuccessModal() {
     const modal = document.getElementById('modalSucesso');
     if (modal) {
@@ -162,7 +162,7 @@ function closeSuccessModal() {
     }
 } 
 
-// ===== FECHAR MODAL COM ESC OU CLIQUE FORA (Seu cÛdigo original) =====
+// ===== FECHAR MODAL COM ESC OU CLIQUE FORA (Seu c√≥digo original) =====
 
 // Listener para a tecla ESC
 document.addEventListener('keydown', function (event) {

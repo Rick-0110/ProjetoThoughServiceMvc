@@ -186,5 +186,12 @@ namespace ToughService.Controllers
             TempData["SucessoCarrinho"] = "Carrinho limpo com sucesso.";
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult Checkout()
+        {
+            return View();
+        }
+
     }
 }
