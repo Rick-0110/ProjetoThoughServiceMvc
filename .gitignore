@@ -13,8 +13,8 @@
 *.cache
 
 # Configurações de desenvolvimento local (NÃO COMPARTILHAR - CONTÉM SEGREDOS)
+appsettings.Staging.json
 appsettings.Development.json
-
 # Arquivos de sistema operacional (NÃO COMPARTILHAR)
 Thumbs.db
 .DS_Store
