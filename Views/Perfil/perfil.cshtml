@@ -1,8 +1,13 @@
 @model ToughService.Models.ApplicationUser
 
 @{
-    bool isLoggedIn = User.Identity.IsAuthenticated;
+    ViewData["Title"] = "Perfil";
+    var culturePtBr = new System.Globalization.CultureInfo("pt-BR");
+}
 
+@{
+    bool isLoggedIn = User.Identity.IsAuthenticated;
+    
 }
 @{
     var carrinho = Context.Session.GetObject<List<ToughService.Models.ItemCarrinhoModel>>("Carrinho") ?? new List<ToughService.Models.ItemCarrinhoModel>();

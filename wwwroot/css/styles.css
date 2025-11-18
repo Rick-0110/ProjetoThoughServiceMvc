@@ -1827,7 +1827,21 @@ progress {
 }
 
 header.bg-dark {
-    background: linear-gradient(135deg, #000 0%, #8B0000 100%) !important;
+    background: linear-gradient(135deg, #610202 0%, #2d0101 50%, #1a0000 100%) !important;
+    background-size: 200% 200%;
+    animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 @media (min-width: 1400px) {
