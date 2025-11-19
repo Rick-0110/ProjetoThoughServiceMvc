@@ -138,6 +138,7 @@
                                 <div class="product-card-minimal">
                                     <div class="product-image">
                                         <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
+                                       <div class="container-gerenciar-produtos">
                                         <div class="container-produtos">
                                         <div class="product-overlay">
                                             
@@ -146,7 +147,7 @@
                                                     title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-
+                                                </div>
                                             <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
                                                 <input type="hidden" name="id" value="@produto.Id" />
                                                 <button type="submit" class="icon-btn delete-btn" title="Excluir">
