@@ -16,6 +16,8 @@ namespace ToughService.Controllers.Api
             _produtoRepository = produtoRepository;
         }
 
+
+
         [HttpGet("disponivel/{id:int}")]
         public async Task<IActionResult> GetEstoque(int id)
         {
@@ -50,6 +52,32 @@ namespace ToughService.Controllers.Api
             return Ok(new
             {
                 mensagem = "Estoque atualizado com sucesso!",
+                produtoId = produto.Id,
+                novaQuantidade = produto.Quantidade
+            });
+        }
+
+        [HttpPost("baixar")]
+        public async Task<IActionResult> DarBaixa([FromBody] EstoqueBaixaDto dto)
+        {
+            if (dto == null)
+                return BadRequest("Dados inválidos.");
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(dto.ProdutoId);
+
+            if (produto == null)
+                return NotFound(new { mensagem = "Produto não encontrado." });
+
+            if (produto.Quantidade < dto.QuantidadeBaixa)
+                return BadRequest(new { mensagem = "Estoque insuficiente!" });
+
+            produto.Quantidade -= dto.QuantidadeBaixa;
+
+            await _produtoRepository.UpdateProdutoAsync(produto);
+
+            return Ok(new
+            {
+                mensagem = "Baixa de estoque realizada!",
                 produtoId = produto.Id,
                 novaQuantidade = produto.Quantidade
             });

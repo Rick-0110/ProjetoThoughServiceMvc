@@ -14,10 +14,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers(); // Necessário para API
+builder.Services.AddControllers(); 
 
 // ------------------------------------
-// Swagger (NÃO ADICIONAR MAIS NADA AQUI)
+// Swagger 
 // ------------------------------------
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
