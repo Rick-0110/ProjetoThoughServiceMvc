@@ -1,6 +1,4 @@
-﻿
-
-using ToughService.Models;
+﻿using ToughService.Models;
 
 namespace ToughService.Repository
 {
