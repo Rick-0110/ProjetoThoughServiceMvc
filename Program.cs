@@ -5,13 +5,26 @@ using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
+// ------------------------------------
+// Serviços base
+// ------------------------------------
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers(); // Necessário para API
+
+// ------------------------------------
+// Swagger (NÃO ADICIONAR MAIS NADA AQUI)
+// ------------------------------------
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// ------------------------------------
+// Sessão
+// ------------------------------------
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -19,26 +32,37 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// ------------------------------------
+// Repositórios
+// ------------------------------------
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
-builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
+builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 
+// ------------------------------------
+// Banco de dados
+// ------------------------------------
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
 
 builder.Services.AddDbContext<BancoContext>(opt =>
     opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
+// ------------------------------------
+// Identity
+// ------------------------------------
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<BancoContext>();
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<BancoContext>();
 
 var app = builder.Build();
 
-//Inicializar o banco de dados e criar o usu�rio Admin
+// ------------------------------------
+// Criar usuário admin (seed)
+// ------------------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -49,29 +73,36 @@ using (var scope = app.Services.CreateScope())
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = services.GetRequiredService<IConfiguration>();
 
-
         await SeedRolesAndAdminUser(userManager, roleManager, configuration);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Um erro ocorreu ao popular o banco de dados!!!");
+        logger.LogError(ex, "Erro ao popular o banco de dados!");
     }
 }
 
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-        app.UseHsts();
-    }
+// ------------------------------------
+// Middlewares
+// ------------------------------------
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -81,33 +112,33 @@ app.MapControllerRoute(
 
 app.Run();
 
-
-//m�todo auxiliar para cirar o admin roles
-
-async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+// ------------------------------------
+// Seed do Admin
+// ------------------------------------
+async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager,
+                                 RoleManager<IdentityRole> roleManager,
+                                 IConfiguration configuration)
 {
-    // Etapa 1: Cria o papel "Admin"
     if (!await roleManager.RoleExistsAsync("Admin"))
     {
         await roleManager.CreateAsync(new IdentityRole("Admin"));
-        Console.WriteLine(">>> Papel 'Admin' criado com sucesso.");
+        Console.WriteLine(">>> Papel Admin criado.");
     }
 
-    // Etapa 2: Pega os dados da configura��o
     string adminEmail = configuration["AdminUser:Email"];
     string adminPassword = configuration["AdminUser:Password"];
 
     if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
     {
-        Console.WriteLine(">>> AVISO: Email ou senha do administrador n�o configurados.");
+        Console.WriteLine(">>> Email ou senha do admin não configurados.");
         return;
     }
 
-    // Etapa 3: Verifica se o usu�rio j� existe
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
     if (adminUser == null)
     {
-        Console.WriteLine($">>> Usu�rio admin '{adminEmail}' n�o encontrado. Tentando criar...");
+        Console.WriteLine(">>> Criando usuário admin...");
         adminUser = new ApplicationUser
         {
             UserName = adminEmail,
@@ -115,28 +146,20 @@ async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager, RoleM
             EmailConfirmed = true
         };
 
-        // Tenta criar o usu�rio e captura o resultado
-        IdentityResult result = await userManager.CreateAsync(adminUser, adminPassword);
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
 
-        // Se a cria��o falhou, imprime os erros detalhados no console
         if (!result.Succeeded)
         {
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            Console.WriteLine("!!!   ERRO AO CRIAR USU�RIO ADMIN   !!!");
-            foreach (var error in result.Errors)
-            {
-                Console.WriteLine($"- C�DIGO: {error.Code}, DESCRI��O: {error.Description}");
-            }
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("Erro ao criar admin:");
+            foreach (var err in result.Errors)
+                Console.WriteLine($"- {err.Code}: {err.Description}");
             return;
         }
-        Console.WriteLine($">>> Usu�rio admin '{adminEmail}' criado com sucesso.");
     }
 
-    // Etapa 4: Adiciona o usu�rio ao papel "Admin"
     if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
     {
         await userManager.AddToRoleAsync(adminUser, "Admin");
-        Console.WriteLine($">>> Usu�rio admin '{adminEmail}' adicionado ao papel 'Admin'.");
+        Console.WriteLine(">>> Admin adicionado ao papel Admin.");
     }
 }

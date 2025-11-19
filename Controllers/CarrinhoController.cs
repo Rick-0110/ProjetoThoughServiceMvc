@@ -2,11 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models; 
-using ToughService.Models;
 using ToughService.Repository;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ToughService.Extensions; 
 
 namespace ToughService.Controllers
