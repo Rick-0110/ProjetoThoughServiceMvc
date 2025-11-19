@@ -1,4 +1,4 @@
-﻿namespace ToughService.Dtos
+﻿namespace ToughService.Dtos.Estoque
 {
     public class EstoqueBaixoDto
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToughService.Repository;
-using ToughService.Dtos;
+using ToughService.Dtos.Estoque;
 
 
 namespace ToughService.Controllers.Api
