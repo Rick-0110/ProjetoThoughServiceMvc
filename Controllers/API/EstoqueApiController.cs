@@ -83,7 +83,38 @@ namespace ToughService.Controllers.Api
             });
         }
 
+        [HttpGet("baixo")]
+        public async Task<IActionResult> EstoqueBaixo([FromQuery] int limite = 5)
+        {
+            var produtos = await _produtoRepository.GetAllProdutosAsync();
 
+            var criticos = produtos
+                .Where(p => p.Quantidade <= limite)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.Quantidade
+                })
+                .ToList();
+
+            return Ok(criticos);
+        }
+
+
+
+        [HttpGet("lista")]
+        public async Task<IActionResult> ListarEstoque()
+        {
+                       var produtos = await _produtoRepository.GetAllProdutosAsync();
+            var lista = produtos.Select(p => new
+            {
+                p.Id,
+                p.Nome,
+                p.Quantidade
+            });
+            return Ok(lista);
+        }
 
     }
 }
