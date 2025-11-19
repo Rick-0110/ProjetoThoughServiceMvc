@@ -25,5 +25,6 @@ namespace ToughService.Models
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
+       
     }
 }

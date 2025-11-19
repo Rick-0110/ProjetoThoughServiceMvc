@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ToughService.Dtos;
 using ToughService.Repository;
 
 
@@ -26,5 +27,38 @@ namespace ToughService.Controllers.Api
             return Ok(itens);
 
         }
+
+        [HttpPost("adicionar")]
+        public async Task<IActionResult> AddItem([FromBody] CarrinhoItemAddDto dto)
+        {
+            if (dto == null)
+                return BadRequest("Dados inválidos.");
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(dto.ProdutoId);
+
+            if (produto == null)
+                return NotFound("Produto não encontrado.");
+
+            var userId = User?.Identity?.IsAuthenticated == true
+            ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            : null;
+
+            if (userId == null)
+                return Unauthorized("Usuário não autenticado.");
+
+            await _carrinhoRepository.AddToCarrinhoAsync(
+                dto.ProdutoId,
+                dto.Quantidade,
+                userId
+            );
+
+            return Ok(new
+            {
+                mensagem = "Item adicionado ao carrinho!",
+                produtoId = dto.ProdutoId,
+                quantidade = dto.Quantidade,
+                usuario = userId
+            });
+        }
     }
-}
+    }

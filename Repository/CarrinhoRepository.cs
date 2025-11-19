@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ToughService.Models; 
 using ToughService.Data;
-using System.Collections.Generic;
+using ToughService.Models;
+
 namespace ToughService.Repository
 {
     public class CarrinhoRepository : ICarrinhoRepository
@@ -13,41 +13,62 @@ namespace ToughService.Repository
             _context = context;
         }
 
-        // Implementa o método GetCarrinhoByUserIdAsync
         public async Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId)
         {
-            // Usa o .Include para evitar o erro "Unknown column"
             return await _context.ItensCarrinho
-                                 .Include(i => i.Produto)
-                                 .Where(i => i.UserId == userId)
-                                 .ToListAsync();
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
         }
 
-        // Implementa o método GetItemAsync
         public async Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId)
         {
             return await _context.ItensCarrinho
-                                 .FirstOrDefaultAsync(i => i.ProdutoId == produtoId && i.UserId == userId);
+                .FirstOrDefaultAsync(c => c.ProdutoId == produtoId && c.UserId == userId);
         }
 
-        // Implementa o método AddItemAsync
+        public async Task AddToCarrinhoAsync(int produtoId, int quantidade, string usuarioId = null)
+        {
+            var item = await GetItemAsync(produtoId, usuarioId);
+
+            if (item == null)
+            {
+                // Buscar dados do produto
+                var produto = await _context.Produtos.FindAsync(produtoId);
+                if (produto == null)
+                    throw new Exception("Produto não encontrado.");
+
+                item = new ItemCarrinhoModel
+                {
+                    ProdutoId = produtoId,
+                    Quantidade = quantidade,
+                    UserId = usuarioId
+                };
+
+                await AddItemAsync(item);
+            }
+            else
+            {
+                item.Quantidade += quantidade;
+                await UpdateItemAsync(item);
+            }
+        }
+
         public async Task AddItemAsync(ItemCarrinhoModel item)
         {
             _context.ItensCarrinho.Add(item);
             await _context.SaveChangesAsync();
         }
 
-        // Implementa o método UpdateItemAsync
         public async Task UpdateItemAsync(ItemCarrinhoModel item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            _context.ItensCarrinho.Update(item);
             await _context.SaveChangesAsync();
         }
 
-        // Implementa o método RemoveItemAsync
         public async Task RemoveItemAsync(int produtoId, string userId)
         {
             var item = await GetItemAsync(produtoId, userId);
+
             if (item != null)
             {
                 _context.ItensCarrinho.Remove(item);
@@ -55,18 +76,11 @@ namespace ToughService.Repository
             }
         }
 
-        // Implementa o método ClearCarrinhoAsync
         public async Task ClearCarrinhoAsync(string userId)
         {
-            var itens = await _context.ItensCarrinho
-                                      .Where(i => i.UserId == userId)
-                                      .ToListAsync();
-
-            if (itens.Any())
-            {
-                _context.ItensCarrinho.RemoveRange(itens);
-                await _context.SaveChangesAsync();
-            }
+            var itens = _context.ItensCarrinho.Where(c => c.UserId == userId);
+            _context.ItensCarrinho.RemoveRange(itens);
+            await _context.SaveChangesAsync();
         }
     }
 }

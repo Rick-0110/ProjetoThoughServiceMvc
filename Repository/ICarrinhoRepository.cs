@@ -7,6 +7,8 @@ using ToughService.Models;
             // Métodos que o CarrinhoController (novo) espera
             Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId);
             Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId);
+            Task AddToCarrinhoAsync(int produtoId, int quantidade, string usuarioId = null);
+
             Task AddItemAsync(ItemCarrinhoModel item);
             Task UpdateItemAsync(ItemCarrinhoModel item);
             Task RemoveItemAsync(int produtoId, string userId);
