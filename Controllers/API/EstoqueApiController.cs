@@ -116,5 +116,29 @@ namespace ToughService.Controllers.Api
             return Ok(lista);
         }
 
+
+        [HttpPut("atualizar")]
+        public async Task<IActionResult> AtualizarEstoque([FromBody] EstoqueAtualizacaoDto dto)
+        {
+            if(dto == null)
+                return BadRequest("Dados inválidos.");
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(dto.ProdutoId);
+
+            if (produto == null)
+                return NotFound(new { mensagem = "Produto não encontrado." });
+
+            produto.Quantidade = dto.NovaQuantidade;
+
+            await _produtoRepository.UpdateProdutoAsync(produto);
+
+            return Ok(new
+            {
+                mensagem = "Estoque atualizado com sucesso!",
+                produtoId = produto.Id,
+                novaQuantidade = produto.Quantidade
+            });
+        }
+
     }
 }
