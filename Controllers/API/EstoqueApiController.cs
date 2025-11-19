@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToughService.Repository;
 using ToughService.Dtos;
-using System.Threading.Tasks;
+
 
 namespace ToughService.Controllers.Api
 {
@@ -58,7 +58,7 @@ namespace ToughService.Controllers.Api
         }
 
         [HttpPost("baixar")]
-        public async Task<IActionResult> DarBaixa([FromBody] EstoqueBaixaDto dto)
+        public async Task<IActionResult> DarBaixa([FromBody] EstoqueBaixoDto dto)
         {
             if (dto == null)
                 return BadRequest("Dados inválidos.");
@@ -82,5 +82,8 @@ namespace ToughService.Controllers.Api
                 novaQuantidade = produto.Quantidade
             });
         }
+
+
+
     }
 }
