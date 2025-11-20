@@ -16,14 +16,17 @@ namespace ToughService.Repository
         public async Task<List<ItemCarrinhoModel>> GetCarrinhoByUserIdAsync(string userId)
         {
             return await _context.ItensCarrinho
-                .Where(c => c.UserId == userId)
-                .ToListAsync();
+           .Include(c => c.Produto)
+           .Where(c => c.UserId == userId)
+           .ToListAsync();
         }
 
         public async Task<ItemCarrinhoModel> GetItemAsync(int produtoId, string userId)
         {
             return await _context.ItensCarrinho
-                .FirstOrDefaultAsync(c => c.ProdutoId == produtoId && c.UserId == userId);
+            .Include(c => c.Produto)
+            .FirstOrDefaultAsync(c => c.ProdutoId == produtoId && c.UserId == userId);
+
         }
 
         public async Task AddToCarrinhoAsync(int produtoId, int quantidade, string usuarioId = null)
