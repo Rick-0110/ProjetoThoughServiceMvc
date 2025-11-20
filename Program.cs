@@ -38,6 +38,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
+builder.Services.AddScoped<ICheckoutViewModelBuilder, CheckoutViewModelBuilder>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 
 // ------------------------------------
