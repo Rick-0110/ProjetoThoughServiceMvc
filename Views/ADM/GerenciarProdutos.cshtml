@@ -4,6 +4,7 @@
 
 
 @model IEnumerable<ToughService.Models.ProdutoModel>
+
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
 }
@@ -54,74 +55,76 @@
             <div id="tab-adicionar" class="tab-content active">
                 <div class="form-section">
                     <h2>Adicionar Novo Produto</h2>
-                    <form id="form-adicionar-produto" enctype="multipart/form-data" onsubmit="submitProduct(event)">
+
+                    <form asp-action="AdicionarProdutoADM" asp-controller="ADM" method="post" enctype="multipart/form-data">
                         <div class="form-grid">
+
                             <div class="form-group">
                                 <label for="nome">Nome do Produto *</label>
-                                <input type="text" id="nome" name="nome" required>
+                                <input type="text" id="nome" name="Nome" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="sku">Código do Produto (SKU)</label>
-                                <input type="text" id="sku" name="sku" placeholder="Ex: EXT-001">
+                                <input type="text" id="sku" name="Sku" placeholder="Ex: EXT-001">
                             </div>
 
                             <div class="form-group">
                                 <label for="categoria">Categoria *</label>
-                                <select id="categoria" name="categoria" required>
+                                <select id="categoria" name="CategoriaId" required>
                                     <option value="">Selecione uma categoria</option>
-                                    <option value="extintores">Extintores</option>
-                                    <option value="sistemas-fixos">Sistemas Fixos</option>
-                                    <option value="detecao">Sistemas de Detecção</option>
-                                    <option value="acessorios">Acessórios</option>
+                                    <option value="1">Extintores</option>
+                                    <option value="2">Sistemas Fixos</option>
+                                    <option value="3">Sistemas de Detecção</option>
+                                    <option value="4">Acessórios</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="marca">Marca</label>
-                                <input type="text" id="marca" name="marca" placeholder="Digite a marca do produto">
+                                <input type="text" id="marca" name="Marca" placeholder="Digite a marca do produto">
                             </div>
 
                             <div class="form-group">
                                 <label for="preco">Preço (R$) *</label>
-                                <input type="number" id="preco" name="preco" step="0.01" min="0" required>
+                                <input type="number" id="preco" name="Preco" step="0.01" min="0" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="quantidade">Quantidade em Estoque *</label>
-                                <input type="number" id="quantidade" name="quantidade" min="0" required>
+                                <input type="number" id="quantidade" name="Quantidade" min="0" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="peso">Peso (kg)</label>
-                                <input type="number" id="peso" name="peso" step="0.01" min="0" placeholder="Ex: 1.5">
+                                <input type="number" id="peso" name="Peso" step="0.01" min="0" placeholder="Ex: 1.5">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="descricao">Descrição *</label>
-                            <textarea id="descricao" name="descricao" rows="4" required></textarea>
+                            <textarea id="descricao" name="Descricao" rows="4" required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="imagem">Imagem do Produto</label>
-                            <input type="file" id="imagem" name="imagem" accept="image/*">
+                            <input type="file" id="imagem" name="Imagem" accept="image/*">
                             <small>Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
                         </div>
 
                         <div class="form-group form-group-checkbox">
-                            <input type="checkbox" id="ativo" name="ativo" checked>
-                            <label for="ativo">Produto Ativo (visível no site)</label>
+                            <input type="checkbox" id="ativo" name="Ativo" checked> <label for="ativo">Produto Ativo (visível no site)</label>
                         </div>
 
                         <div class="form-actions">
                             <button type="reset" class="btn-secondary">Limpar</button>
-                            <button class="fas fa-plus" type="submit">New Produto</button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-plus"></i> Adicionar produto
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-
             <!-- Tab: Listar Produtos -->
             <div id="tab-listar" class="tab-content">
                 <div class="products-section">

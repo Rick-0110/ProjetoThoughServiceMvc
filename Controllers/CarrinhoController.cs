@@ -186,7 +186,7 @@ namespace ToughService.Controllers
         [HttpGet]
         public IActionResult Checkout()
         {
-            return View();
+            return RedirectToAction("Index", "Checkout");
         }
 
     }

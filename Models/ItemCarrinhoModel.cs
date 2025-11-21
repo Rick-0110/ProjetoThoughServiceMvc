@@ -12,7 +12,10 @@ namespace ToughService.Models
         [Required]
         public int Quantidade { get; set; }
 
-     
+
+        public decimal PrecoUnitario { get; set; }
+
+
         [Required]
         public int ProdutoId { get; set; }
 
@@ -25,5 +28,6 @@ namespace ToughService.Models
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
+       
     }
 }

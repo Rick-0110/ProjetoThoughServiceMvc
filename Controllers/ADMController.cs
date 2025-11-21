@@ -194,6 +194,13 @@ namespace ToughService.Controllers
             return Ok(updatedProduto);
         }
 
+
+        [HttpGet]
+        public IActionResult AdicionarProdutoADM()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {

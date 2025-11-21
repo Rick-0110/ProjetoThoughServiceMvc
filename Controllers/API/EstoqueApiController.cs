@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToughService.Repository;
-using ToughService.Dtos;
-using System.Threading.Tasks;
+using ToughService.Dtos.Estoque;
+
 
 namespace ToughService.Controllers.Api
 {
@@ -15,6 +15,8 @@ namespace ToughService.Controllers.Api
         {
             _produtoRepository = produtoRepository;
         }
+
+
 
         [HttpGet("disponivel/{id:int}")]
         public async Task<IActionResult> GetEstoque(int id)
@@ -54,5 +56,89 @@ namespace ToughService.Controllers.Api
                 novaQuantidade = produto.Quantidade
             });
         }
+
+        [HttpPost("baixar")]
+        public async Task<IActionResult> DarBaixa([FromBody] EstoqueBaixoDto dto)
+        {
+            if (dto == null)
+                return BadRequest("Dados inválidos.");
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(dto.ProdutoId);
+
+            if (produto == null)
+                return NotFound(new { mensagem = "Produto não encontrado." });
+
+            if (produto.Quantidade < dto.QuantidadeBaixa)
+                return BadRequest(new { mensagem = "Estoque insuficiente!" });
+
+            produto.Quantidade -= dto.QuantidadeBaixa;
+
+            await _produtoRepository.UpdateProdutoAsync(produto);
+
+            return Ok(new
+            {
+                mensagem = "Baixa de estoque realizada!",
+                produtoId = produto.Id,
+                novaQuantidade = produto.Quantidade
+            });
+        }
+
+        [HttpGet("baixo")]
+        public async Task<IActionResult> EstoqueBaixo([FromQuery] int limite = 5)
+        {
+            var produtos = await _produtoRepository.GetAllProdutosAsync();
+
+            var criticos = produtos
+                .Where(p => p.Quantidade <= limite)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.Quantidade
+                })
+                .ToList();
+
+            return Ok(criticos);
+        }
+
+
+
+        [HttpGet("lista")]
+        public async Task<IActionResult> ListarEstoque()
+        {
+                       var produtos = await _produtoRepository.GetAllProdutosAsync();
+            var lista = produtos.Select(p => new
+            {
+                p.Id,
+                p.Nome,
+                p.Quantidade
+            });
+            return Ok(lista);
+        }
+
+
+        [HttpPut("atualizar")]
+        public async Task<IActionResult> AtualizarEstoque([FromBody] EstoqueAtualizacaoDto dto)
+        {
+            if(dto == null)
+                return BadRequest("Dados inválidos.");
+
+            var produto = await _produtoRepository.GetProdutoByIdAsync(dto.ProdutoId);
+
+            if (produto == null)
+                return NotFound(new { mensagem = "Produto não encontrado." });
+
+            produto.Quantidade = dto.NovaQuantidade;
+
+            await _produtoRepository.UpdateProdutoAsync(produto);
+
+            return Ok(new
+            {
+                mensagem = "Estoque atualizado com sucesso!",
+                produtoId = produto.Id,
+                novaQuantidade = produto.Quantidade
+            });
+        }
+
     }
 }

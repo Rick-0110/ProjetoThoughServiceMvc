@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using ToughService.Data;
 using ToughService.Models;
 using ToughService.Repository;
 
@@ -43,16 +41,22 @@ namespace ToughService.Controllers
 
 
         [HttpGet]
-        
         public async Task<IActionResult> Buscar(string busca)
         {
          
             ViewBag.TermoBuscado = busca;
 
+            if (busca == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             var produtos = await _produtoRepository.SearchProdutosAsync(busca);
 
 
             return View("ResultadoBusca", produtos);
+
+           
         }
 
 
