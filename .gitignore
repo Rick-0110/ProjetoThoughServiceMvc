@@ -4,13 +4,13 @@
 *.suo
 
 # Arquivos de Build/Compilação
-**/bin/
-**/obj/
+
 packages/ # Pacotes do NuGet
 *.pdb
 *.orig
 *.lock.json # Arquivos de lock do build
-
+**/bin/
+**/obj/
 # Arquivos de Configuração Local e Segredos
 **/appsettings.*.user
 **/secrets.json
