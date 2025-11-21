@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using ToughService.Models;
+using ToughService.Models.ModelCheckout;
 
 namespace ToughService.Services
 {

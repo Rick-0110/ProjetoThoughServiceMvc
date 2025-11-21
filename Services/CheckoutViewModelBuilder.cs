@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ToughService.Extensions;
 using ToughService.Models;
+using ToughService.Models.ModelCheckout;
 using ToughService.Repository;
 
 namespace ToughService.Services

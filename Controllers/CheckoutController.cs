@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ToughService.Models;
+using ToughService.Models.ModelCheckout;
 using ToughService.Services;
 
 namespace ToughService.Controllers

@@ -1,4 +1,4 @@
-namespace ToughService.Models
+namespace ToughService.Models.ModelCheckout
 {
     public class CheckoutAddressViewModel
     {

@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using ToughService.Repository;
-using System.Linq;
 using Microsoft.AspNetCore.Identity;
 namespace ToughService.Controllers
 {
@@ -197,6 +192,13 @@ namespace ToughService.Controllers
             produtoExistente.Ativo = produto.Ativo;
             var updatedProduto = _produtoRepository.UpdateProdutoAsync(produtoExistente);
             return Ok(updatedProduto);
+        }
+
+
+        [HttpGet]
+        public IActionResult AdicionarProdutoADM()
+        {
+            return View();
         }
 
         [HttpPost]

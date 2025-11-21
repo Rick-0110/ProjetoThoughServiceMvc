@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ToughService.Models
+namespace ToughService.Models.ModelCheckout
 {
     public class CheckoutViewModel
     {
