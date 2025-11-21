@@ -283,3 +283,48 @@ function showCheckoutToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 2500);
 }
+
+//API viacep
+function setupCepLookup() {
+    document.getElementById('CheckoutCep').addEventListener('blur', function () {
+        const cep = this.value.replace(/\D/g, ''); 
+
+        if (cep.length !== 8) {
+            clearAddressFields();
+            return;
+        }
+
+
+        setAddressFieldsDisabled(true);
+
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                setAddressFieldsDisabled(false); 
+
+                if (!data.erro) {
+                   
+                    document.getElementById('CheckoutEndereco').value = data.logradouro;
+                    document.getElementById('CheckoutCidade').value = data.localidade;
+                    document.getElementById('CheckoutEstado').value = data.uf;
+        
+
+                    document.getElementById('CheckoutNumero').focus();
+                    showCheckoutToast(`Endereço encontrado: ${data.logradouro}, ${data.localidade}-${data.uf}`, 'info');
+
+                } else {
+                    alert('CEP não encontrado. Preencha o endereço manualmente.');
+                    clearAddressFields();
+                    document.getElementById('CheckoutEndereco').focus();
+                }
+            })
+            .catch(error => {
+                setAddressFieldsDisabled(false);
+                console.error('Erro na consulta do CEP:', error);
+                showCheckoutToast('Erro ao consultar o CEP. Preencha manualmente.', 'error');
+                clearAddressFields();
+            });
+    });
+}
