@@ -32,7 +32,12 @@ namespace ToughService.Controllers
             return View();
         }
 
-       
+        [HttpGet]
+        public IActionResult GerenciarPedidos()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> AdmChamados(
