@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
 using ToughService.Repository;
-using Microsoft.AspNetCore.Identity;
 namespace ToughService.Controllers
 {
 
@@ -12,17 +17,20 @@ namespace ToughService.Controllers
         private readonly IProdutoRepository _produtoRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IChamadoRepository _chamadoRepository;
+        private readonly IPedidoRepository _pedidoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public ADMController(
-       IProdutoRepository produtoRepository,
-       IWebHostEnvironment webHostEnvironment,
-       IChamadoRepository chamadoRepository,
-       UserManager<ApplicationUser> userManager)
+            IProdutoRepository produtoRepository,
+            IWebHostEnvironment webHostEnvironment,
+            IChamadoRepository chamadoRepository,
+            IPedidoRepository pedidoRepository,
+            UserManager<ApplicationUser> userManager)
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
             _chamadoRepository = chamadoRepository;
+            _pedidoRepository = pedidoRepository;
             _userManager = userManager;
         }
 
@@ -33,9 +41,90 @@ namespace ToughService.Controllers
         }
 
         [HttpGet]
-        public IActionResult GerenciarPedidos()
+        public async Task<IActionResult> GerenciarPedidos(
+            int? status,
+            string ordenarPor = "data-desc",
+            string? busca = null)
         {
-            return View();
+            try
+            {
+                var todosPedidos = (await _pedidoRepository.GetAllPedidosAsync()).ToList();
+
+                IEnumerable<PedidoModel> pedidosFiltrados = todosPedidos;
+
+                if (status.HasValue && Enum.IsDefined(typeof(StatusPedidoEnum), status.Value))
+                {
+                    pedidosFiltrados = pedidosFiltrados.Where(p => (int)p.Status == status.Value);
+                    ViewBag.FiltroStatus = status.Value;
+                }
+                else
+                {
+                    ViewBag.FiltroStatus = null;
+                }
+
+                if (!string.IsNullOrWhiteSpace(busca))
+                {
+                    var termo = busca.Trim().ToLowerInvariant();
+                    pedidosFiltrados = pedidosFiltrados.Where(p =>
+                        p.Id.ToString().Contains(termo, StringComparison.OrdinalIgnoreCase) ||
+                        (!string.IsNullOrWhiteSpace(p.NomeCliente) && p.NomeCliente.ToLowerInvariant().Contains(termo)) ||
+                        (!string.IsNullOrWhiteSpace(p.EmailCliente) && p.EmailCliente.ToLowerInvariant().Contains(termo)) ||
+                        (!string.IsNullOrWhiteSpace(p.TelefoneCliente) && p.TelefoneCliente.Contains(termo)) ||
+                        (!string.IsNullOrWhiteSpace(p.Cidade) && p.Cidade.ToLowerInvariant().Contains(termo)));
+                }
+
+                pedidosFiltrados = ordenarPor?.ToLowerInvariant() switch
+                {
+                    "data-asc" => pedidosFiltrados.OrderBy(p => p.DataPedido),
+                    "total-desc" => pedidosFiltrados.OrderByDescending(p => p.Total),
+                    "total-asc" => pedidosFiltrados.OrderBy(p => p.Total),
+                    _ => pedidosFiltrados.OrderByDescending(p => p.DataPedido)
+                };
+
+                var listaParaView = pedidosFiltrados.ToList();
+
+                ViewBag.FiltroOrdenarPor = ordenarPor;
+                ViewBag.FiltroBusca = busca;
+
+                ViewBag.TotalPedidos = todosPedidos.Count;
+                ViewBag.PedidosPendentes = todosPedidos.Count(p => p.Status == StatusPedidoEnum.Pendente);
+                ViewBag.PedidosConfirmados = todosPedidos.Count(p => p.Status == StatusPedidoEnum.Confirmado);
+                ViewBag.PedidosEnviados = todosPedidos.Count(p => p.Status == StatusPedidoEnum.Enviado);
+                ViewBag.PedidosEntregues = todosPedidos.Count(p => p.Status == StatusPedidoEnum.Entregue);
+                ViewBag.TotalVendas = todosPedidos.Sum(p => p.Total);
+
+                return View(listaParaView);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO CARREGAR PEDIDOS: {ex}");
+                TempData["ErroStatus"] = "Ocorreu um erro ao carregar os pedidos.";
+                return View(new List<PedidoModel>());
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AtualizarStatusPedido(int id, StatusPedidoEnum novoStatus)
+        {
+            if (id <= 0 || !Enum.IsDefined(typeof(StatusPedidoEnum), novoStatus))
+            {
+                TempData["ErroStatus"] = "Dados inválidos para atualização de status.";
+                return RedirectToAction(nameof(GerenciarPedidos));
+            }
+
+            try
+            {
+                await _pedidoRepository.UpdateStatusPedidoAsync(id, novoStatus);
+                TempData["ShowSuccessMessage"] = $"Status do pedido #{id} atualizado para '{novoStatus}'.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO ATUALIZAR STATUS DO PEDIDO (ID: {id}): {ex.Message}");
+                TempData["ErroStatus"] = $"Erro ao atualizar status do pedido: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(GerenciarPedidos));
         }
 
 

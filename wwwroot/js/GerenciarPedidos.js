@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     setupModalActionButtons();
     setupModalCloseListeners();
 });
@@ -15,14 +15,9 @@ function openDetailsModal(buttonElement) {
     if (!modal || !detailsContainer || !modalIdSpan || !statusFormIdInput) return;
 
     const data = pedidoItem.dataset;
+    const formatCurrency = createCurrencyFormatter();
 
     modalIdSpan.textContent = data.id || 'N/A';
-    
-    // Formatar valores monetários
-    const formatCurrency = (value) => {
-        const num = parseFloat(value) || 0;
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
-    };
 
     detailsContainer.innerHTML = `
         <div class="chamado-details-grid">
@@ -67,32 +62,23 @@ function openDetailsModal(buttonElement) {
             </div>
         </div>`;
 
-    // Carregar itens do pedido
-    setTimeout(() => loadPedidoItens(data.id), 100);
+    renderPedidoItens(data.itens);
 
     statusFormIdInput.value = data.id || '0';
     const currentStatusEnum = parseInt(data.statusenum, 10);
     const actionButtons = modal.querySelectorAll('.btn-status-action');
 
-    // Lógica para mostrar botões baseado no status atual
     actionButtons.forEach(btn => {
         const nextStatus = parseInt(btn.dataset.nextStatus, 10);
         btn.style.display = 'none';
 
-        // Pendente (0) -> pode confirmar ou cancelar
         if (currentStatusEnum === 0) {
             if (nextStatus === 1 || nextStatus === 5) btn.style.display = 'inline-block';
-        }
-        // Confirmado (1) -> pode preparar, enviar ou cancelar
-        else if (currentStatusEnum === 1) {
+        } else if (currentStatusEnum === 1) {
             if (nextStatus === 2 || nextStatus === 3 || nextStatus === 5) btn.style.display = 'inline-block';
-        }
-        // Em Preparação (2) -> pode enviar ou cancelar
-        else if (currentStatusEnum === 2) {
+        } else if (currentStatusEnum === 2) {
             if (nextStatus === 3 || nextStatus === 5) btn.style.display = 'inline-block';
-        }
-        // Enviado (3) -> pode marcar como entregue
-        else if (currentStatusEnum === 3) {
+        } else if (currentStatusEnum === 3) {
             if (nextStatus === 4) btn.style.display = 'inline-block';
         }
     });
@@ -101,26 +87,20 @@ function openDetailsModal(buttonElement) {
     document.body.style.overflow = 'hidden';
 }
 
-function loadPedidoItens(pedidoId) {
-    const pedidoItem = document.querySelector(`[data-id="${pedidoId}"]`);
+function renderPedidoItens(itensJson) {
     const itensContainer = document.getElementById('pedidoItensList');
-    
-    if (!itensContainer || !pedidoItem) return;
+    if (!itensContainer) return;
 
     try {
-        const itensJson = pedidoItem.dataset.itens;
         if (!itensJson) {
             itensContainer.innerHTML = '<p>Nenhum item encontrado.</p>';
             return;
         }
 
         const itens = JSON.parse(itensJson);
-        const formatCurrency = (value) => {
-            const num = parseFloat(value) || 0;
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
-        };
+        const formatCurrency = createCurrencyFormatter();
 
-        if (itens.length === 0) {
+        if (!Array.isArray(itens) || itens.length === 0) {
             itensContainer.innerHTML = '<p>Nenhum item encontrado.</p>';
             return;
         }
@@ -128,7 +108,7 @@ function loadPedidoItens(pedidoId) {
         let html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
         html += '<thead><tr style="background: #f5f5f5;"><th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Produto</th><th style="padding: 10px; text-align: center; border-bottom: 2px solid #ddd;">Qtd</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Preço Unit.</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Subtotal</th></tr></thead>';
         html += '<tbody>';
-        
+
         itens.forEach(item => {
             html += `<tr style="border-bottom: 1px solid #eee;">
                 <td style="padding: 10px;">${item.ProdutoNome || 'N/A'}</td>
@@ -137,13 +117,20 @@ function loadPedidoItens(pedidoId) {
                 <td style="padding: 10px; text-align: right; font-weight: bold;">${formatCurrency(item.Subtotal || 0)}</td>
             </tr>`;
         });
-        
+
         html += '</tbody></table>';
         itensContainer.innerHTML = html;
     } catch (error) {
         console.error('Erro ao carregar itens do pedido:', error);
         itensContainer.innerHTML = '<p>Erro ao carregar itens do pedido.</p>';
     }
+}
+
+function createCurrencyFormatter() {
+    return (value) => {
+        const num = parseFloat(value) || 0;
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
+    };
 }
 
 function closeModal() {
