@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ToughService.Models;
 using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 
 // ------------------------------------
 // Swagger 
@@ -59,6 +61,38 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<BancoContext>();
+
+// ------------------------------------
+// AUTENTICAÇÃO GOOGLE
+// ------------------------------------
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/Registro/Login";
+})
+.AddGoogle(options =>
+{
+
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+        ?? throw new InvalidOperationException("ClientId do Google não configurado.");
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+        ?? throw new InvalidOperationException("ClientSecret do Google não configurado.");
+
+
+    options.CallbackPath = "/signin-google";
+
+
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
+
+
+    options.SaveTokens = true;
+});
 
 var app = builder.Build();
 

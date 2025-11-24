@@ -77,6 +77,54 @@ body {
     animation: fadeIn 0.8s ease-out;
 }
 
+.separador {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #888;
+}
+
+    .separador hr {
+        flex-grow: 1;
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 0 10px;
+    }
+
+    .separador span {
+        padding: 0 10px;
+        font-size: 0.9em;
+    }
+
+/* Estilização do Botão Google */
+.botao-google {
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #444;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .botao-google:hover {
+        background-color: #f0f0f0;
+    }
+
+    .botao-google i {
+        margin-right: 10px;
+        font-size: 1.2em;
+        color: #db4437; /* Cor do Google */
+    }
+
 @keyframes fadeIn {
     from {
         opacity: 0;

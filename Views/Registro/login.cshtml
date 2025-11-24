@@ -62,6 +62,20 @@
                         <a asp-action="Registro" asp-controller="Registro">Criar conta</a>
                     </div>
                 </form>
+
+                <div class="separador">
+                    <hr />
+                    <span>ou entre com</span>
+                    <hr />
+                </div>
+
+                <form asp-action="ExternalLogin" asp-controller="Registro" method="post" class="form-externo">
+                    <input type="hidden" name="provider" value="Google" />
+                    <button type="submit" class="botao-google">
+                        <i class="fab fa-google"></i>
+                        Entrar com Google
+                    </button>
+                </form>
             </div>
         </div>
     }
