@@ -60,5 +60,40 @@ namespace ToughService.Controllers.Api
                 usuario = userId
             });
         }
+
+        [HttpDelete("remover/{produtoId}")]
+        public async Task<IActionResult> RemoveItem(int produtoId)
+        {
+            var userId = User?.Identity?.IsAuthenticated == true
+            ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            : null;
+            if (userId == null)
+                return Unauthorized("Usuário não autenticado.");
+            await _carrinhoRepository.RemoveItemAsync(produtoId, userId);
+            return Ok(new
+            {
+                mensagem = "Item removido do carrinho!",
+                produtoId = produtoId,
+                usuario = userId
+            });
+        }
+        [HttpPost("finalizar")]
+        public async Task<IActionResult> FinalizarCompra()
+        {
+            var userId = User?.Identity?.IsAuthenticated == true
+            ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            : null;
+            if (userId == null)
+                return Unauthorized("Usuário não autenticado.");
+            await _carrinhoRepository.ClearCarrinhoAsync(userId);
+            return Ok(new
+            {
+                mensagem = "Compra finalizada e carrinho limpo!",
+                usuario = userId
+            });
+        }
+
+
+
     }
-    }
+}
