@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,10 @@ namespace ToughService.Models
         public string Descricao { get; set; }
 
         public string ImagemUrl { get; set; } = string.Empty;
-           public string Nome { get; set; }
+
+        [Required(ErrorMessage = "O nome é obrigatório.")]
+        [StringLength(100)]
+        public string Nome { get; set; }
 
         public int CategoriaId { get; set; }
         public CategoriaEnum? Categoria { get; set; }

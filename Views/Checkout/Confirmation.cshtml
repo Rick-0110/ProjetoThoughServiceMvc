@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Pedido confirmado";
+    var orderId = ViewData["OrderId"];
+}
+
+<section class="checkout-confirmation">
+    <div class="confirmation-card">
+        <h1>Pedido confirmado!</h1>
+        <p>Recebemos seu pedido <strong>#@orderId</strong>. Enviamos um e-mail com todos os detalhes.</p>
+
+        <a asp-controller="Home" asp-action="Index" class="btn-primary">
+            Voltar para a loja
+        </a>
+    </div>
+</section>
+

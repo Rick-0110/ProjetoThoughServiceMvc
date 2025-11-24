@@ -3,25 +3,24 @@
 *.user
 *.suo
 
-# Arquivos de Build/Compilação (NÃO COMPARTILHAR)
+# Arquivos de Build/Compilação
+
+packages/ # Pacotes do NuGet
+*.pdb
+*.orig
+*.lock.json # Arquivos de lock do build
 **/bin/
 **/obj/
+# Arquivos de Configuração Local e Segredos
 **/appsettings.*.user
 **/secrets.json
-# Logs e caches (NÃO COMPARTILHAR)
+appsettings.Staging.json
+appsettings.Development.json
+
+# Logs e Caches Diversos
 *.log
 *.cache
 
-# Configurações de desenvolvimento local (NÃO COMPARTILHAR - CONTÉM SEGREDOS)
-appsettings.Staging.json
-appsettings.Development.json
-# Arquivos de sistema operacional (NÃO COMPARTILHAR)
+# Arquivos de sistema operacional (Mac/Windows)
 Thumbs.db
 .DS_Store
-
-# -------------------------------------------------------------------
-# Arquivos que DEVEM ser compartilhados (NÃO IGNORAR):
-#
-# appsettings.json (Contém a estrutura de configuração)
-# properties/launchSettings.json (Contém as configurações de execução da equipe)
-# -------------------------------------------------------------------

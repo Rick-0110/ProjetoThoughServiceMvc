@@ -1,0 +1,255 @@
+@{
+    Layout = null;
+}
+
+@model IEnumerable<ToughService.Models.PedidoModel>
+@using ToughService.Models
+
+@{
+    ViewData["Title"] = "Gerenciar Pedidos";
+
+    int? currentStatus = ViewBag.FiltroStatus;
+    string currentOrdenarPor = ViewBag.FiltroOrdenarPor ?? "data-desc";
+    string currentBusca = ViewBag.FiltroBusca;
+
+    string FormatDate(DateTime date) => date.ToString("dd/MM/yyyy");
+    string FormatDateTime(DateTime date) => date.ToString("dd/MM/yyyy HH:mm");
+    var culture = new System.Globalization.CultureInfo("pt-BR");
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Área Administrativa</title>
+    <link rel="stylesheet" href="~/css/ADM.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="~/IMG/LOGO (2).png" alt="Tough Service" class="logo">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+            <div class="user-info">
+                <a asp-action="ADM" asp-controller="ADM" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" style="display: inline;">
+                    <button type="submit" class="logout-btn" style="background:none; border:none; color:inherit; cursor:pointer; font:inherit;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+
+            @if (TempData["ShowSuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["ShowSuccessMessage"]</div>
+            }
+            @if (TempData["ErroStatus"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErroStatus"]</div>
+            }
+
+            <form method="get" asp-action="GerenciarPedidos" asp-controller="ADM" class="filters-section">
+                <div class="filters-left">
+                    <div class="filter-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status">
+                            <option value="">Todos</option>
+                            @foreach (StatusPedidoEnum se in Enum.GetValues(typeof(StatusPedidoEnum)))
+                            {
+                                <option value="@((int)se)" selected="@(currentStatus == (int)se)">@se</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="ordenarPor">Ordenar:</label>
+                        <select id="ordenarPor" name="ordenarPor">
+                            <option value="data-desc" selected="@(currentOrdenarPor == "data-desc")">Mais Recente</option>
+                            <option value="data-asc" selected="@(currentOrdenarPor == "data-asc")">Mais Antigo</option>
+                            <option value="total-desc" selected="@(currentOrdenarPor == "total-desc")">Maior Valor</option>
+                            <option value="total-asc" selected="@(currentOrdenarPor == "total-asc")">Menor Valor</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="busca">Buscar:</label>
+                        <input type="search" id="busca" name="busca" value="@currentBusca" placeholder="ID, Cliente, Email...">
+                    </div>
+                </div>
+                <div class="filters-right">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-filter"></i> Filtrar / Atualizar
+                    </button>
+                    <a asp-action="GerenciarPedidos" asp-controller="ADM" class="btn-secondary">
+                        <i class="fas fa-times"></i> Limpar
+                    </a>
+                </div>
+            </form>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-content">
+                        <h3>@(ViewBag.TotalPedidos ?? 0)</h3>
+                        <p>Total de Pedidos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-content">
+                        <h3>@(ViewBag.PedidosPendentes ?? 0)</h3>
+                        <p>Pendentes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-content">
+                        <h3>@(ViewBag.PedidosConfirmados ?? 0)</h3>
+                        <p>Confirmados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-truck"></i></div>
+                    <div class="stat-content">
+                        <h3>@(ViewBag.PedidosEnviados ?? 0)</h3>
+                        <p>Enviados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box-check"></i></div>
+                    <div class="stat-content">
+                        <h3>@(ViewBag.PedidosEntregues ?? 0)</h3>
+                        <p>Entregues</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-content">
+                        <h3>@((ViewBag.TotalVendas ?? 0).ToString("C", culture))</h3>
+                        <p>Total em Vendas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chamados-section">
+                <h2>Lista de Pedidos</h2>
+                <div class="chamados-list" id="pedidosList">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var pedido in Model)
+                        {
+                            <div class="chamado-item status-@pedido.Status"
+                                 data-id="@pedido.Id"
+                                 data-cliente="@pedido.NomeCliente"
+                                 data-email="@pedido.EmailCliente"
+                                 data-telefone="@pedido.TelefoneCliente"
+                                 data-datapedido="@FormatDateTime(pedido.DataPedido)"
+                                 data-status="@pedido.Status"
+                                 data-statusenum="@((int)pedido.Status)"
+                                 data-total="@pedido.Total.ToString("F2", culture)"
+                                 data-subtotal="@pedido.Subtotal.ToString("F2", culture)"
+                                 data-envio="@pedido.CustoEnvio.ToString("F2", culture)"
+                                 data-desconto="@pedido.Desconto.ToString("F2", culture)"
+                                 data-metodoenvio="@pedido.MetodoEnvio"
+                                 data-metodopagamento="@pedido.MetodoPagamento"
+                                 data-cep="@pedido.Cep"
+                                 data-logradouro="@pedido.Logradouro"
+                                 data-numero="@pedido.Numero"
+                                 data-complemento="@(pedido.Complemento ?? "")"
+                                 data-bairro="@pedido.Bairro"
+                                 data-cidade="@pedido.Cidade"
+                                 data-estado="@pedido.Estado"
+                                 data-observacoes="@(pedido.Observacoes ?? "Nenhuma")"
+                                 data-itens="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(pedido.Itens.Select(i => new { ProdutoNome = i.Produto?.Nome ?? "N/A", Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario, Subtotal = i.Subtotal })))">
+                                 
+                                <div class="chamado-header">
+                                    <div>
+                                        <div class="chamado-title">Pedido #@pedido.Id - @pedido.NomeCliente</div>
+                                        <div class="chamado-meta">
+                                            <span class="status-badge status-@pedido.Status">@pedido.Status</span>
+                                            <span class="chamado-tipo">@pedido.MetodoPagamento</span>
+                                        </div>
+                                    </div>
+                                    <div class="chamado-date">
+                                        <i class="fas fa-calendar-alt"></i> @FormatDateTime(pedido.DataPedido)
+                                        <br>
+                                        <strong style="color: #28a745; font-size: 1.1em;">@pedido.Total.ToString("C", culture)</strong>
+                                    </div>
+                                </div>
+                                <div class="chamado-info">
+                                    <div class="chamado-detail"><i class="fas fa-user"></i> @pedido.EmailCliente</div>
+                                    <div class="chamado-detail"><i class="fas fa-phone"></i> @pedido.TelefoneCliente</div>
+                                    <div class="chamado-detail"><i class="fas fa-map-marker-alt"></i> @pedido.Cidade/@pedido.Estado</div>
+                                    <div class="chamado-detail"><i class="fas fa-truck"></i> @pedido.MetodoEnvio</div>
+                                    <div class="chamado-detail"><i class="fas fa-box"></i> @pedido.Itens.Count item(ns)</div>
+                                </div>
+                                <div class="chamado-actions">
+                                    <button type="button" class="btn-view btn-sm" onclick="openDetailsModal(this)" title="Ver Detalhes">
+                                        <i class="fas fa-eye"></i> Detalhes
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-chamados"><h3>Nenhum pedido encontrado com os filtros atuais.</h3></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Detalhes do Pedido #<span id="modalPedidoId"></span></h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="chamado-details" id="pedidoDetails">
+                
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form id="formAtualizaStatus" asp-action="AtualizarStatusPedido" asp-controller="ADM" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="modalStatusFormId" value="0" />
+                    <input type="hidden" name="novoStatus" id="modalStatusFormNovoStatus" value="" />
+
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Fechar</button>
+
+                    <button type="button" class="btn-primary btn-status-action" data-next-status="@((int)StatusPedidoEnum.Confirmado)" style="display: none;">
+                        Confirmar Pedido
+                    </button>
+                    <button type="button" class="btn-warning btn-status-action" data-next-status="@((int)StatusPedidoEnum.EmPreparacao)" style="display: none;">
+                        Em Preparação
+                    </button>
+                    <button type="button" class="btn-info btn-status-action" data-next-status="@((int)StatusPedidoEnum.Enviado)" style="display: none;">
+                        Marcar como Enviado
+                    </button>
+                    <button type="button" class="btn-success btn-status-action" data-next-status="@((int)StatusPedidoEnum.Entregue)" style="display: none;">
+                        Marcar como Entregue
+                    </button>
+                    <button type="button" class="btn-danger btn-status-action" data-next-status="@((int)StatusPedidoEnum.Cancelado)" style="display: none;">
+                        Cancelar Pedido
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/GerenciarPedidos.js" asp-append-version="true"></script>
+</body>
+</html>
+

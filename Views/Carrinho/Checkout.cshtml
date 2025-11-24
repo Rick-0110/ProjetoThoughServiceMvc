@@ -1,5 +1,13 @@
+@model CheckoutViewModel
+@using System
+@using System.Globalization
+@using System.Linq
+@using ToughService.Models.ModelCheckout
 @{
     ViewData["Title"] = "Finalizar Compra";
+    var culture = new CultureInfo("pt-BR");
+    var installmentBase = Model?.Total > 0 ? Model.Total : Model?.Subtotal ?? 0m;
+    var selectedPayment = string.IsNullOrWhiteSpace(Model?.PaymentMethod) ? "card" : Model.PaymentMethod;
 }
 
 @section Styles {
@@ -23,301 +31,338 @@
         </div>
     </header>
 
-    <div class="checkout-content">
-        <main class="checkout-main">
-            <section class="card-block">
-                <div class="block-heading">
-                    <div class="block-title">
-                        <span class="icon-circle">
-                            <i class="fas fa-user-check"></i>
-                        </span>
-                        <div>
-                            <h2>Dados do comprador</h2>
-                            <p>Use os dados da sua conta ou edite conforme necessário.</p>
-                        </div>
-                    </div>
-                    <button class="btn-link" type="button">Editar perfil</button>
+    <form asp-controller="Checkout" asp-action="ConfirmOrder" method="post" id="checkoutForm">
+
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="SelectedAddressId" id="selectedAddressId" />
+
+        <div class="checkout-content">
+            <main class="checkout-main">
+
+                <div class="text-danger">
+                    <div asp-validation-summary="ModelOnly"></div>
                 </div>
 
-                <div class="block-grid two-cols">
-                    <div class="input-field">
-                        <label for="checkoutName">Nome completo</label>
-                        <input id="checkoutName" type="text" placeholder="Ex: Mariana Souza" autocomplete="name" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutDocument">CPF / CNPJ</label>
-                        <input id="checkoutDocument" type="text" placeholder="000.000.000-00" autocomplete="off" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutEmail">E-mail</label>
-                        <input id="checkoutEmail" type="email" placeholder="voce@email.com" autocomplete="email" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutPhone">Telefone</label>
-                        <input id="checkoutPhone" type="tel" placeholder="(11) 99999-0000" autocomplete="tel" />
-                    </div>
-                </div>
-            </section>
-
-            <section class="card-block">
-                <div class="block-heading">
-                    <div class="block-title">
-                        <span class="icon-circle">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </span>
-                        <div>
-                            <h2>Entrega</h2>
-                            <p>Escolha um endereço existente ou cadastre um novo.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="address-list" id="addressList">
-                    <article class="address-card is-selected" data-address-id="home">
-                        <header>
-                            <h3>Casa</h3>
-                            <span class="pill">Principal</span>
-                        </header>
-                        <p>Rua das Flores, 123 - Centro, São Paulo/SP</p>
-                        <p>CEP: 01010-010</p>
-                        <div class="address-actions">
-                            <button type="button" class="btn-link">Editar</button>
-                            <button type="button" class="btn-link text-danger">Excluir</button>
-                        </div>
-                    </article>
-
-                    <article class="address-card" data-address-id="office">
-                        <header>
-                            <h3>Escritório</h3>
-                        </header>
-                        <p>Av. Paulista, 1578 - Bela Vista, São Paulo/SP</p>
-                        <p>CEP: 01310-200</p>
-                        <div class="address-actions">
-                            <button type="button" class="btn-link">Editar</button>
-                            <button type="button" class="btn-link text-danger">Excluir</button>
-                        </div>
-                    </article>
-
-                    <button type="button" class="btn-outline" id="addAddressButton">
-                        <i class="fas fa-plus"></i>
-                        Adicionar novo endereço
-                    </button>
-                </div>
-
-                <div class="block-grid three-cols">
-                    <div class="input-field">
-                        <label for="checkoutCep">CEP</label>
-                        <input id="checkoutCep" type="text" placeholder="00000-000" inputmode="numeric" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutEstado">Estado</label>
-                        <select id="checkoutEstado">
-                            <option value="">Selecione</option>
-                            <option>SP</option>
-                            <option>RJ</option>
-                            <option>MG</option>
-                        </select>
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutCidade">Cidade</label>
-                        <input id="checkoutCidade" type="text" placeholder="Cidade" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutEndereco">Endereço</label>
-                        <input id="checkoutEndereco" type="text" placeholder="Rua, avenida, etc." />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutNumero">Número</label>
-                        <input id="checkoutNumero" type="text" placeholder="Nº" />
-                    </div>
-                    <div class="input-field">
-                        <label for="checkoutComplemento">Complemento</label>
-                        <input id="checkoutComplemento" type="text" placeholder="Apto, bloco, referência" />
-                    </div>
-                </div>
-
-                <div class="shipping-options" id="shippingOptions">
-                    <label class="shipping-card is-selected">
-                        <input type="radio" name="shipping" value="express" checked />
-                        <div>
-                            <strong>Entrega Expressa</strong>
-                            <span>Chega amanhã</span>
-                        </div>
-                        <span class="shipping-price">R$ 29,90</span>
-                    </label>
-
-                    <label class="shipping-card">
-                        <input type="radio" name="shipping" value="standard" />
-                        <div>
-                            <strong>Entrega Padrão</strong>
-                            <span>3-5 dias úteis</span>
-                        </div>
-                        <span class="shipping-price">R$ 12,90</span>
-                    </label>
-
-                    <label class="shipping-card">
-                        <input type="radio" name="shipping" value="pickup" />
-                        <div>
-                            <strong>Retirar na loja</strong>
-                            <span>Grátis • Disponível em 2h</span>
-                        </div>
-                        <span class="shipping-price">R$ 0,00</span>
-                    </label>
-                </div>
-            </section>
-
-            <section class="card-block">
-                <div class="block-heading">
-                    <div class="block-title">
-                        <span class="icon-circle">
-                            <i class="fas fa-credit-card"></i>
-                        </span>
-                        <div>
-                            <h2>Pagamento</h2>
-                            <p>Selecione a forma de pagamento de sua preferência.</p>
-                        </div>
-                    </div>
-                    <div class="card-badges">
-                        <span class="pill">Ambiente seguro</span>
-                        <span class="pill">SSL 256 bits</span>
-                    </div>
-                </div>
-
-                <div class="payment-tabs" id="paymentTabs">
-                    <button type="button" data-payment="card" class="payment-tab is-active">
-                        <i class="fas fa-credit-card"></i>
-                        Cartão
-                    </button>
-                    <button type="button" data-payment="pix" class="payment-tab">
-                        <i class="fas fa-qrcode"></i>
-                        Pix
-                    </button>
-                    <button type="button" data-payment="boleto" class="payment-tab">
-                        <i class="fas fa-barcode"></i>
-                        Boleto
-                    </button>
-                </div>
-
-                <div class="payment-panels">
-                    <div class="payment-panel is-visible" data-payment-panel="card">
-                        <div class="block-grid two-cols">
-                            <div class="input-field">
-                                <label for="cardNumber">Número do cartão</label>
-                                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" inputmode="numeric" />
-                            </div>
-                            <div class="input-field">
-                                <label for="cardName">Nome impresso</label>
-                                <input id="cardName" type="text" placeholder="Como está no cartão" />
-                            </div>
-                            <div class="input-field">
-                                <label for="cardExpiration">Validade</label>
-                                <input id="cardExpiration" type="text" placeholder="MM/AA" inputmode="numeric" />
-                            </div>
-                            <div class="input-field">
-                                <label for="cardCvv">CVV</label>
-                                <input id="cardCvv" type="password" placeholder="***" inputmode="numeric" />
+                <section class="card-block">
+                    <div class="block-heading">
+                        <div class="block-title">
+                            <span class="icon-circle">
+                                <i class="fas fa-user-check"></i>
+                            </span>
+                            <div>
+                                <h2>Dados do comprador</h2>
+                                <p>Use os dados da sua conta ou edite conforme necessário.</p>
                             </div>
                         </div>
-                        <div class="installments">
-                            <label for="installmentsSelect">Parcelamento</label>
-                            <select id="installmentsSelect">
-                                <option>1x de R$ 1.250,00 sem juros</option>
-                                <option>2x de R$ 625,00 sem juros</option>
-                                <option>3x de R$ 416,67 sem juros</option>
-                                <option>6x de R$ 222,34 com juros</option>
+                        <button class="btn-link" type="button">Editar perfil</button>
+                    </div>
+
+                    <div class="block-grid two-cols">
+                        <div class="input-field">
+                            <label asp-for="CheckoutName">Nome completo</label>
+                            <input asp-for="CheckoutName" type="text" placeholder="Ex: Mariana Souza" autocomplete="name" />
+                            <span asp-validation-for="CheckoutName" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutDocument">CPF / CNPJ</label>
+                            <input asp-for="CheckoutDocument" type="text" placeholder="000.000.000-00" autocomplete="off" />
+                            <span asp-validation-for="CheckoutDocument" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutEmail">E-mail</label>
+                            <input asp-for="CheckoutEmail" type="email" placeholder="voce@email.com" autocomplete="email" />
+                            <span asp-validation-for="CheckoutEmail" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutPhone">Telefone</label>
+                            <input asp-for="CheckoutPhone" type="tel" placeholder="(11) 99999-0000" autocomplete="tel" />
+                            <span asp-validation-for="CheckoutPhone" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card-block">
+                    <div class="block-heading">
+                        <div class="block-title">
+                            <span class="icon-circle">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <div>
+                                <h2>Entrega</h2>
+                                <p>Escolha um endereço existente ou cadastre um novo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-list" id="addressList">
+                        @if (Model.Addresses != null && Model.Addresses.Any())
+                        {
+                            foreach (var address in Model.Addresses)
+                            {
+                                var isSelected = address.Id == Model.SelectedAddressId;
+                                <article class="address-card @(isSelected ? "is-selected" : string.Empty)" data-address-id="@address.Id">
+                                    <header>
+                                        <h3>@address.Label</h3>
+                                        @if (address.IsPrimary)
+                                        {
+                                            <span class="pill">Principal</span>
+                                        }
+                                    </header>
+                                    <p>@address.Street</p>
+                                    @if (!string.IsNullOrWhiteSpace(address.Complement))
+                                    {
+                                        <p>@address.Complement</p>
+                                    }
+                                    <p>@address.CityState</p>
+                                    <p>CEP: @address.Cep</p>
+                                </article>
+                            }
+                        }
+                        else
+                        {
+                            <p class="address-empty">Nenhum endereço cadastrado ainda. Adicione um novo abaixo.</p>
+                        }
+
+                        <button type="button" class="btn-outline" id="addAddressButton">
+                            <i class="fas fa-plus"></i>
+                            Adicionar novo endereço
+                        </button>
+                    </div>
+
+                    <div class="block-grid three-cols">
+                        <div class="input-field">
+                            <label asp-for="CheckoutCep">CEP</label>
+                            <input asp-for="CheckoutCep" type="text" placeholder="00000-000" inputmode="numeric" />
+                            <span asp-validation-for="CheckoutCep" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutEstado">Estado</label>
+                            <select asp-for="CheckoutEstado">
+                                <option value="">Selecione</option>
+                                <option>SP</option>
+                                <option>RJ</option>
+                                <option>MG</option>
+                                <option>BA</option>
+                                <option>SE</option>
+                                <option>AC</option>
                             </select>
+                            <span asp-validation-for="CheckoutEstado" class="text-danger"></span>
                         </div>
-                        <label class="checkbox-control">
-                            <input type="checkbox" id="saveCard" />
-                            <span>Salvar cartão para compras futuras</span>
-                        </label>
-                    </div>
-
-                    <div class="payment-panel" data-payment-panel="pix">
-                        <div class="pix-panel">
-                            <p>O QR Code será gerado após clicar em “Confirmar pedido”.</p>
-                            <ul>
-                                <li>Pagamento instantâneo, sem taxas adicionais.</li>
-                                <li>O pedido é liberado em poucos minutos.</li>
-                                <li>Você receberá instruções por e-mail.</li>
-                            </ul>
+                        <div class="input-field">
+                            <label asp-for="CheckoutCidade">Cidade</label>
+                            <input asp-for="CheckoutCidade" type="text" placeholder="Cidade" />
+                            <span asp-validation-for="CheckoutCidade" class="text-danger"></span>
                         </div>
-                    </div>
-
-                    <div class="payment-panel" data-payment-panel="boleto">
-                        <div class="boleto-panel">
-                            <p>O boleto terá vencimento em 3 dias úteis.</p>
-                            <ul>
-                                <li>Confirmação pode levar até 2 dias úteis.</li>
-                                <li>O documento será enviado por e-mail.</li>
-                                <li>Você poderá imprimir ou pagar via internet banking.</li>
-                            </ul>
+                        <div class="input-field">
+                            <label asp-for="CheckoutEndereco">Endereço</label>
+                            <input asp-for="CheckoutEndereco" type="text" placeholder="Rua, avenida, etc." />
+                            <span asp-validation-for="CheckoutEndereco" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutNumero">Número</label>
+                            <input asp-for="CheckoutNumero" type="text" placeholder="Nº" />
+                            <span asp-validation-for="CheckoutNumero" class="text-danger"></span>
+                        </div>
+                        <div class="input-field">
+                            <label asp-for="CheckoutComplemento">Complemento</label>
+                            <input asp-for="CheckoutComplemento" type="text" placeholder="Apto, bloco, referência" />
+                            <span asp-validation-for="CheckoutComplemento" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
-            </section>
-        </main>
 
-        <aside class="checkout-sidebar">
-            <section class="card-block sticky-summary">
-                <div class="summary-header">
-                    <h3>Resumo do pedido</h3>
-                    <button type="button" class="btn-link">Editar itens</button>
-                </div>
-                <ul class="summary-items">
-                    <li>
+                    <div class="shipping-options" id="shippingOptions">
+                        @if (Model.ShippingOptions != null && Model.ShippingOptions.Any())
+                        {
+                            foreach (var option in Model.ShippingOptions)
+                            {
+                                var isSelected = option.Value.Equals(Model.ShippingMethod, StringComparison.OrdinalIgnoreCase);
+                                <label class="shipping-card @(isSelected ? "is-selected" : string.Empty)"
+                                       data-shipping-value="@option.Value"
+                                       data-shipping-price="@option.Price.ToString(CultureInfo.InvariantCulture)">
+                                    <input type="radio"
+                                           asp-for="ShippingMethod"
+                                           value="@option.Value" />
+                                    <div>
+                                        <strong>@option.Title</strong>
+                                        <span>@option.Description</span>
+                                    </div>
+                                    <span class="shipping-price">@option.Price.ToString("C", culture)</span>
+                                </label>
+                            }
+                        }
+                        <span asp-validation-for="ShippingMethod" class="text-danger"></span>
+                    </div>
+                </section>
+
+                <section class="card-block">
+                    <div class="block-heading">
+                        <div class="block-title">
+                            <span class="icon-circle">
+                                <i class="fas fa-credit-card"></i>
+                            </span>
+                            <div>
+                                <h2>Pagamento</h2>
+                                <p>Selecione a forma de pagamento de sua preferência.</p>
+                            </div>
+                        </div>
+                        <div class="card-badges">
+                            <span class="pill">Ambiente seguro</span>
+                            <span class="pill">SSL 256 bits</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-tabs" id="paymentTabs">
+                        @foreach (var option in Model.PaymentOptions)
+                        {
+                            var isActive = option.Value.Equals(selectedPayment, StringComparison.OrdinalIgnoreCase);
+                            <button type="button" data-payment="@option.Value" class="payment-tab @(isActive ? "is-active" : string.Empty)">
+                                <i class="@option.IconCss"></i>
+                                @option.Label
+                            </button>
+                        }
+                    </div>
+                    <input type="hidden" asp-for="PaymentMethod" id="paymentMethodField" />
+                    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+
+                    <div class="payment-panels">
+                        <div class="payment-panel @(selectedPayment.Equals("card", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="card">
+                            <div class="block-grid two-cols">
+                                <div class="input-field">
+                                    <label asp-for="CardNumber">Número do cartão</label>
+                                    <input asp-for="CardNumber" type="text" placeholder="1234 5678 9012 3456" inputmode="numeric" />
+                                    <span asp-validation-for="CardNumber" class="text-danger"></span>
+                                </div>
+                                <div class="input-field">
+                                    <label asp-for="CardName">Nome impresso</label>
+                                    <input asp-for="CardName" type="text" placeholder="Como está no cartão" />
+                                    <span asp-validation-for="CardName" class="text-danger"></span>
+                                </div>
+                                <div class="input-field">
+                                    <label asp-for="CardExpiration">Validade</label>
+                                    <input asp-for="CardExpiration" type="text" placeholder="MM/AA" inputmode="numeric" />
+                                    <span asp-validation-for="CardExpiration" class="text-danger"></span>
+                                </div>
+                                <div class="input-field">
+                                    <label asp-for="CardCvv">CVV</label>
+                                    <input asp-for="CardCvv" type="password" placeholder="***" inputmode="numeric" />
+                                    <span asp-validation-for="CardCvv" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="installments">
+                                <label asp-for="Installments">Parcelamento</label>
+                                <select asp-for="Installments">
+                                    <option value="1">1x de @installmentBase.ToString("C", culture) sem juros</option>
+                                    <option value="2">2x de @( (installmentBase / 2m).ToString("C", culture)) sem juros</option>
+                                    <option value="3">3x de @( (installmentBase / 3m).ToString("C", culture)) sem juros</option>
+                                    <option value="6">6x de @( (installmentBase / 6m).ToString("C", culture)) com juros</option>
+                                </select>
+                                <span asp-validation-for="Installments" class="text-danger"></span>
+                            </div>
+                            <label class="checkbox-control">
+                                <input asp-for="SaveCard" />
+                                <span>Salvar cartão para compras futuras</span>
+                            </label>
+                        </div>
+
+                        <div class="payment-panel @(selectedPayment.Equals("pix", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="pix">
+                            <div class="pix-panel">
+                                <p>O QR Code será gerado após clicar em “Confirmar pedido”.</p>
+                                <ul>
+                                    <li>Pagamento instantâneo, sem taxas adicionais.</li>
+                                    <li>O pedido é liberado em poucos minutos.</li>
+                                    <li>Você receberá instruções por e-mail.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="payment-panel @(selectedPayment.Equals("boleto", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="boleto">
+                            <div class="boleto-panel">
+                                <p>O boleto terá vencimento em 3 dias úteis.</p>
+                                <ul>
+                                    <li>Confirmação pode levar até 2 dias úteis.</li>
+                                    <li>O documento será enviado por e-mail.</li>
+                                    <li>Você poderá imprimir ou pagar via internet banking.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="checkout-sidebar">
+                <section class="card-block sticky-summary">
+                    <div class="summary-header">
+                        <h3>Resumo do pedido</h3>
+                        <button type="button" class="btn-link">Editar itens</button>
+                    </div>
+                    <ul class="summary-items">
+                        @if (Model.CartItems != null && Model.CartItems.Any())
+                        {
+                            foreach (var item in Model.CartItems)
+                            {
+                                <li>
+                                    <div>
+                                        <strong>@item.Nome</strong>
+                                        <span>Qtd @item.Quantidade @(string.IsNullOrWhiteSpace(item.Sku) ? string.Empty : $"· SKU {item.Sku}")</span>
+                                    </div>
+                                    <span>@item.Total.ToString("C", culture)</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>
+                                <div>
+                                    <strong>Seu carrinho está vazio</strong>
+                                    <span>Adicione itens para finalizar a compra.</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="summary-coupon">
+                        <input type="text" asp-for="CouponInput" placeholder="Possui cupom?" />
+                        <button type="button" id="applyCouponButton">Aplicar</button>
+                        <span asp-validation-for="CouponInput" class="text-danger"></span>
+                    </div>
+
+                    <dl class="summary-totals">
                         <div>
-                            <strong>Extintor CO₂ 6kg</strong>
-                            <span>Qtd 2 · SKU 45892</span>
+                            <dt>Subtotal</dt>
+                            <dd id="summarySubtotal">@Model.Subtotal.ToString("C", culture)</dd>
+                            <input type="hidden" asp-for="Subtotal" id="hiddenSubtotal" />
                         </div>
-                        <span>R$ 1.200,00</span>
-                    </li>
-                    <li>
                         <div>
-                            <strong>Kit sinalização</strong>
-                            <span>Qtd 1 · SKU 98231</span>
+                            <dt>Entrega</dt>
+                            <dd id="summaryShipping">@Model.ShippingCost.ToString("C", culture)</dd>
+                            <input type="hidden" asp-for="ShippingCost" id="hiddenShipping" />
                         </div>
-                        <span>R$ 350,00</span>
-                    </li>
-                </ul>
-                <div class="summary-coupon">
-                    <input type="text" id="couponInput" placeholder="Possui cupom?" />
-                    <button type="button" id="applyCouponButton">Aplicar</button>
-                </div>
-                <dl class="summary-totals">
-                    <div>
-                        <dt>Subtotal</dt>
-                        <dd>R$ 1.550,00</dd>
-                    </div>
-                    <div>
-                        <dt>Entrega</dt>
-                        <dd id="summaryShipping">R$ 29,90</dd>
-                    </div>
-                    <div>
-                        <dt>Descontos</dt>
-                        <dd class="text-success" id="summaryDiscounts">- R$ 0,00</dd>
-                    </div>
-                </dl>
-                <div class="summary-total">
-                    <span>Total</span>
-                    <strong id="summaryTotal">R$ 1.579,90</strong>
-                </div>
-                <button type="button" class="btn-primary btn-full" id="confirmOrderButton">
-                    Confirmar pedido
-                    <i class="fas fa-lock"></i>
-                </button>
-                <p class="summary-safe-text">
-                    <i class="fas fa-shield-alt"></i>
-                    Pagamento criptografado e protegido.
-                </p>
-            </section>
+                        <div>
+                            <dt>Descontos</dt>
+                            <dd class="text-success" id="summaryDiscounts">- @Model.Discount.ToString("C", culture)</dd>
+                            <input type="hidden" asp-for="Discount" id="hiddenDiscount" />
+                        </div>
+                    </dl>
 
-           
-        </aside>
-    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <strong id="summaryTotal">@Model.Total.ToString("C", culture)</strong>
+                        <input type="hidden" asp-for="Total" id="hiddenTotal" />
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full" id="confirmOrderButton">
+                        Confirmar pedido
+                        <i class="fas fa-lock"></i>
+                    </button>
+
+                    <p class="summary-safe-text">
+                        <i class="fas fa-shield-alt"></i>
+                        Pagamento criptografado e protegido.
+                    </p>
+                </section>
+            </aside>
+        </div>
+    </form>
 </div>
 
 
     <script src="~/js/checkout.js" asp-append-version="true"></script>
-
-
