@@ -1,0 +1,262 @@
+/* ===== CSS PARA EXTERNAL LOGIN CONFIRMATION - TOUGH SERVICE ===== */
+
+/* ===== VARIÁVEIS CSS ===== */
+:root {
+    --primary-red: #dc2626;
+    --primary-red-dark: #b91c1c;
+    --primary-red-light: #ef4444;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-600: #525252;
+    --gray-700: #404040;
+    --gray-800: #262626;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    --radius: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --transition: all 0.2s ease-in-out;
+}
+
+/* ===== CARD PRINCIPAL ===== */
+.ext-card {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+}
+
+/* ===== HERO SECTION ===== */
+.ext-hero {
+    background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+    color: var(--white);
+    padding: 3rem 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ext-hero-icon {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.ext-hero h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ext-hero p {
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+.ext-hero strong {
+    font-weight: 600;
+}
+
+/* ===== BODY SECTION ===== */
+.ext-body {
+    padding: 2.5rem;
+}
+
+/* ===== BANNER ===== */
+.ext-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+.ext-banner-item {
+    text-align: center;
+}
+
+.ext-banner-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ext-banner-item p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gray-800);
+}
+
+/* ===== FORM FIELDS ===== */
+.ext-field {
+    margin-bottom: 1.5rem;
+}
+
+.ext-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.ext-field input[type="text"],
+.ext-field input[type="email"],
+.ext-field input[type="number"],
+.ext-field select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--gray-800);
+    background-color: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.ext-field input[type="text"]:focus,
+.ext-field input[type="email"]:focus,
+.ext-field input[type="number"]:focus,
+.ext-field select:focus {
+    outline: none;
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.ext-field input[readonly] {
+    background-color: var(--gray-50);
+    cursor: not-allowed;
+    color: var(--gray-600);
+}
+
+.ext-field input::placeholder {
+    color: var(--gray-400);
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.ext-submit {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    text-transform: none;
+    letter-spacing: 0.025em;
+}
+
+.ext-submit:hover {
+    background: linear-gradient(135deg, var(--primary-red-dark) 0%, #991b1b 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.ext-submit:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow);
+}
+
+.ext-submit:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2), var(--shadow-md);
+}
+
+/* ===== VALIDATION MESSAGES ===== */
+.ext-body .text-red-600,
+.ext-body .text-red-500 {
+    color: var(--primary-red);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .ext-card {
+        margin: 1rem;
+        border-radius: var(--radius-xl);
+    }
+
+    .ext-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .ext-hero-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+    .ext-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .ext-hero p {
+        font-size: 0.875rem;
+    }
+
+    .ext-body {
+        padding: 1.5rem;
+    }
+
+    .ext-banner {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ext-hero {
+        padding: 1.5rem 1rem;
+    }
+
+    .ext-body {
+        padding: 1rem;
+    }
+
+    .ext-banner {
+        padding: 0.75rem;
+    }
+}
+
