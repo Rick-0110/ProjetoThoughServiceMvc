@@ -1,8 +1,9 @@
+@using ToughService.Models.LoginModels
 @{
     Layout = null;
 }
 
-@model ToughService.Models.LoginModel
+@model LoginModel
 
 @{
     var isLoggedIn = User.Identity.IsAuthenticated;
@@ -62,6 +63,20 @@
                         <a asp-action="Registro" asp-controller="Registro">Criar conta</a>
                     </div>
                 </form>
+
+                <div class="separador">
+                    <hr />
+                    <span>ou entre com</span>
+                    <hr />
+                </div>
+
+                <form asp-action="ExternalLogin" asp-controller="Registro" method="post" class="form-externo">
+                    <input type="hidden" name="provider" value="Google" />
+                    <button type="submit" class="botao-google">
+                        <i class="fab fa-google"></i>
+                        Entrar com Google
+                    </button>
+                </form>
             </div>
         </div>
     }
@@ -69,7 +84,7 @@
     {
         <div class="conteiner">
             <h3>Opa, @usuarioLogado! Você já está logado.</h3>
-            <a asp-controller="Perfil" asp-action="Index">Ir para Perfil</a>
+            <a asp-controller="Perfil" asp-action="Perfil" asp-area="">Ir para Perfil</a>
             <form asp-controller="Registro" asp-action="Logout" method="post" style="margin-top:10px;">
                 <button type="submit" class="btn btn-danger">Sair</button>
             </form>

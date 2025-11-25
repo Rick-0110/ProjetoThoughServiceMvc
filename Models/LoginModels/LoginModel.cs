@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace ToughService.Models
+namespace ToughService.Models.LoginModels
 {
     public class LoginModel
     {

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ToughService.Models;
 using ToughService.Data;
 using ToughService.Repository;
 using ToughService.Services;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 
 // ------------------------------------
 // Swagger 
@@ -51,7 +53,7 @@ builder.Services.AddDbContext<BancoContext>(opt =>
     opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
 // ------------------------------------
-// Identity
+// Identity (Configura o esquema de Cookie e define o LoginPath)
 // ------------------------------------
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -59,6 +61,30 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<BancoContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Registro/Login";
+});
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+            ?? throw new InvalidOperationException("ClientId do Google não configurado.");
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+            ?? throw new InvalidOperationException("ClientSecret do Google não configurado.");
+
+        options.CallbackPath = "/signin-google";
+        options.SignInScheme = IdentityConstants.ExternalScheme;
+
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+
+        options.SaveTokens = true;
+    });
+
 
 var app = builder.Build();
 
@@ -105,8 +131,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Essencial
+app.UseAuthorization();  // Essencial (e depois de UseAuthentication)
 
 app.MapControllerRoute(
     name: "default",
