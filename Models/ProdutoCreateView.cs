@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-// Esta classe serve APENAS para receber os dados do formulário de criação.
 public class ProdutoCreateViewModel
 {
     [Required(ErrorMessage = "O nome do produto é obrigatório.")]
