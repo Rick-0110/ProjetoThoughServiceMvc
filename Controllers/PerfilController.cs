@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToughService.Models;
 
-[Authorize] 
+namespace ToughService.Controllers;
+
+[Authorize]
 public class PerfilController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -12,36 +14,29 @@ public class PerfilController : Controller
     public PerfilController(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
-
     }
 
     [HttpGet]
     public async Task<IActionResult> Perfil()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (string.IsNullOrEmpty(userId))
-        {
-            return RedirectToAction("Login", "Registro");
-        }
-        var usuario = await _userManager.FindByIdAsync(userId);
+        var usuario = await ObterUsuarioAtualAsync();
         if (usuario == null)
         {
             return RedirectToAction("Login", "Registro");
         }
 
-        return View(usuario); 
+        return View(usuario);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AtualizarPerfil(ApplicationUser model)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var usuario = await _userManager.FindByIdAsync(userId);
-
+        var usuario = await ObterUsuarioAtualAsync();
         if (usuario == null)
+        {
             return RedirectToAction("Login", "Registro");
+        }
 
         // Atualiza apenas os campos permitidos
         usuario.Nome = model.Nome;
@@ -52,7 +47,7 @@ public class PerfilController : Controller
         if (result.Succeeded)
         {
             TempData["Mensagem"] = "Perfil atualizado com sucesso!";
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Perfil));
         }
 
         foreach (var error in result.Errors)
@@ -60,12 +55,39 @@ public class PerfilController : Controller
             ModelState.AddModelError("", error.Description);
         }
 
-        return View("Index", usuario);
+        return View(nameof(Perfil), usuario);
     }
 
     [HttpGet]
     public IActionResult VerHistoricoPedidos()
     {
         return View();
+    }
+
+    private async Task<ApplicationUser?> ObterUsuarioAtualAsync()
+    {
+        var usuario = await _userManager.GetUserAsync(User);
+        if (usuario != null)
+        {
+            return usuario;
+        }
+
+        var email = User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name;
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            usuario = await _userManager.FindByEmailAsync(email);
+            if (usuario != null)
+            {
+                return usuario;
+            }
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
+        return null;
     }
 }

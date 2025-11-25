@@ -53,7 +53,7 @@ builder.Services.AddDbContext<BancoContext>(opt =>
     opt.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
 // ------------------------------------
-// Identity
+// Identity (Configura o esquema de Cookie e define o LoginPath)
 // ------------------------------------
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -62,38 +62,29 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<BancoContext>();
 
-// ------------------------------------
-// AUTENTICAÇÃO GOOGLE
-// ------------------------------------
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-})
-.AddCookie(options =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Registro/Login";
-    options.Cookie.Path = "/";
-})
-.AddGoogle(options =>
-{
-
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
-        ?? throw new InvalidOperationException("ClientId do Google não configurado.");
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
-        ?? throw new InvalidOperationException("ClientSecret do Google não configurado.");
-
-
-    options.CallbackPath = "/signin-google";
-
-
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-
-
-    options.SaveTokens = true;
 });
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+            ?? throw new InvalidOperationException("ClientId do Google não configurado.");
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+            ?? throw new InvalidOperationException("ClientSecret do Google não configurado.");
+
+        options.CallbackPath = "/signin-google";
+        options.SignInScheme = IdentityConstants.ExternalScheme;
+
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+
+        options.SaveTokens = true;
+    });
+
 
 var app = builder.Build();
 
@@ -140,8 +131,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Essencial
+app.UseAuthorization();  // Essencial (e depois de UseAuthentication)
 
 app.MapControllerRoute(
     name: "default",

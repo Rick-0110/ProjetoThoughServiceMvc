@@ -5,6 +5,7 @@ using ToughService.Models;
 using ToughService.Repository;
 using ToughService.Services;
 using ToughService.Extensions;
+using ToughService.Models.LoginModels;
 
 namespace ToughService.Controllers
 {

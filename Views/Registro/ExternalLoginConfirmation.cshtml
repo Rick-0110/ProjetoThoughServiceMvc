@@ -1,0 +1,95 @@
+﻿@model ToughService.Models.LoginModels.ExternalLoginModel
+
+@{
+    ViewData["Title"] = "Concluir cadastro";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link href="~/css/" rel="stylesheet" />
+}
+
+<div class="ext-card">
+    <div class="ext-hero">
+        <div class="ext-hero-icon">
+            <i class="fas fa-fire-extinguisher"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-bold">@ViewData["Title"]</h1>
+            <p class="mt-2 text-lg opacity-90">
+                Vincule sua conta <strong>@ViewData["LoginProvider"]</strong> para acompanhar pedidos,
+                manutenção de extintores e gestão de estoque.
+            </p>
+        </div>
+    </div>
+
+    <div class="ext-body">
+        <div asp-validation-summary="All" class="text-red-600 font-medium mb-4"></div>
+
+        <div class="ext-banner">
+            <div class="ext-banner-item">
+                <h4>Plano ativo</h4>
+                <p>Cliente Tough Service</p>
+            </div>
+            <div class="ext-banner-item">
+                <h4>Benefício</h4>
+                <p>Histórico de inspeções</p>
+            </div>
+            <div class="ext-banner-item">
+                <h4>Próximo passo</h4>
+                <p>Confirmar dados</p>
+            </div>
+        </div>
+
+        <form asp-controller="Registro"
+              asp-action="ExternalLoginConfirmation"
+              asp-route-returnurl="@(ViewData["ReturnUrl"] ?? string.Empty)"
+              method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="ext-field">
+                <label asp-for="Nome"></label>
+                <input asp-for="Nome" />
+                <span asp-validation-for="Nome" class="text-red-500 text-sm"></span>
+            </div>
+
+            <div class="ext-field">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" readonly />
+                <span asp-validation-for="Email" class="text-red-500 text-sm"></span>
+            </div>
+
+            <div class="ext-field">
+                <label for="segmento">Segmento da operação</label>
+                <select id="segmento" name="segmento"
+                        class="form-select"
+                        style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid #d1d5db;">
+                    <option value="">Selecione</option>
+                    <option value="predial">Predial / Condomínios</option>
+                    <option value="industrial">Industrial</option>
+                    <option value="comercial">Comercial</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+
+            <div class="ext-field">
+                <label for="qtdeExtintores">Quantidade estimada de extintores</label>
+                <input type="number" id="qtdeExtintores" name="qtdeExtintores" min="0" placeholder="Ex.: 25" />
+            </div>
+
+            <p class="text-sm text-gray-500 mb-4">
+                Com esses dados conseguimos sugerir inspeções preventivas, reabastecimento e avisos de validade.
+            </p>
+
+            <button type="submit" class="ext-submit">
+                Registrar e sincronizar
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
