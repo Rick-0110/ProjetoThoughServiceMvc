@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToughService.Models;
 
-[Authorize] // Garante que só usuários autenticados podem acessar
+[Authorize] 
 public class PerfilController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -12,21 +12,25 @@ public class PerfilController : Controller
     public PerfilController(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
+
     }
 
     [HttpGet]
     public async Task<IActionResult> Perfil()
     {
-        // Obtém o ID do usuário logado
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // Busca o usuário pelo ID
-        var usuario = await _userManager.FindByIdAsync(userId);
-
-        if (usuario == null)
+        if (string.IsNullOrEmpty(userId))
+        {
             return RedirectToAction("Login", "Registro");
+        }
+        var usuario = await _userManager.FindByIdAsync(userId);
+        if (usuario == null)
+        {
+            return RedirectToAction("Login", "Registro");
+        }
 
-        return View(usuario); // Passa o ApplicationUser para a View
+        return View(usuario); 
     }
 
     [HttpPost]

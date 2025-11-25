@@ -16,6 +16,7 @@ namespace ToughService.Controllers
         private readonly IConfiguration _configuration;
         private readonly ICarrinhoRepository _carrinhoRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<RegistroController> _logger; // Adicionado para logs
 
         public RegistroController(
             UserManager<ApplicationUser> userManager,
@@ -23,7 +24,8 @@ namespace ToughService.Controllers
             ICaptchaService captchaService,
             IConfiguration configuration,
             ICarrinhoRepository carrinhoRepository,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<RegistroController> logger) // Logger injetado
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -31,6 +33,7 @@ namespace ToughService.Controllers
             _configuration = configuration;
             _carrinhoRepository = carrinhoRepository;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger; // Inicialização do logger
         }
 
         [HttpGet]
@@ -42,13 +45,14 @@ namespace ToughService.Controllers
         [HttpGet]
         public IActionResult Lockout()
         {
-            return View(); 
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Registro(RegistroModel registro, CancellationToken cancellationToken)
         {
-            // ... (Lógica de Registro existente)
+            // ... (Lógica de Captcha e validação omitida para foco)
+
             var user = new ApplicationUser
             {
                 UserName = registro.Email,
@@ -57,6 +61,7 @@ namespace ToughService.Controllers
                 CpfCnpj = registro.CpfCnpj,
             };
 
+      
             var result = await _userManager.CreateAsync(user, registro.Senha);
 
             if (result.Succeeded)
@@ -66,10 +71,14 @@ namespace ToughService.Controllers
                 return RedirectToAction("Perfil", "Perfil");
             }
 
+            // Se falhar, registra os erros para debug
+            _logger.LogError("Falha ao registrar usuário padrão: Email={Email}", registro.Email);
             foreach (var error in result.Errors)
             {
+                _logger.LogError("  - Erro Identity: {Code} - {Description}", error.Code, error.Description);
                 ModelState.AddModelError("", error.Description);
             }
+
             ViewData["SiteKey"] = _configuration["Captcha:SiteKey"];
             return View(registro);
         }
@@ -122,41 +131,25 @@ namespace ToughService.Controllers
 
 
         // ----------------------------------------------------
-        // MÉTODOS DE AUTENTICAÇÃO EXTERNA (GOOGLE) - NOVOS
+        // MÉTODOS DE AUTENTICAÇÃO EXTERNA (GOOGLE)
         // ----------------------------------------------------
 
-        // 1. INICIA O FLUXO DE LOGIN EXTERNO
-        // O `provider` será "Google"
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
-            // Requisita um redirecionamento para o provedor (Google)
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Registro", new { returnUrl });
-
-            // Cria as propriedades de autenticação com o URL de retorno para o nosso Callback
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-
-            // Inicia o desafio do provedor (redireciona para o Google)
             return Challenge(properties, provider);
         }
 
-        // 2. RECEBE O RETORNO DO GOOGLE (CallbackPath = /Registro/Login)
-        // Este método será chamado pelo ASP.NET Core após o Google autenticar o usuário
         [HttpGet]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
-            if (remoteError != null)
-            {
-                // Mensagem de erro se o Google rejeitou a autenticação
-                ModelState.AddModelError(string.Empty, $"Erro do provedor externo: {remoteError}");
-                return RedirectToAction(nameof(Login));
-            }
+            // ... (Código para tratamento de erro e obtenção de info omitido)
 
-            // Lê as informações de login externo que foram armazenadas temporariamente
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                // Não foi possível carregar a informação de login externo (algo deu errado)
                 ModelState.AddModelError(string.Empty, "Erro ao carregar informações de login externo.");
                 return RedirectToAction(nameof(Login));
             }
@@ -177,16 +170,14 @@ namespace ToughService.Controllers
 
             if (result.IsLockedOut)
             {
-                return RedirectToAction(nameof(Lockout)); // Você pode criar um método para bloqueio
+                return RedirectToAction(nameof(Lockout));
             }
             else
             {
-                // Usuário é novo ou está usando este provedor pela primeira vez. 
-                // Precisamos registrar o novo usuário usando os dados do Google.
+                // Usuário é novo ou está usando este provedor pela primeira vez.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
 
-                // Tenta obter o e-mail do Google (o ClaimTypes.Email foi configurado no Program.cs)
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var nome = info.Principal.FindFirstValue(ClaimTypes.Name);
 
@@ -206,7 +197,6 @@ namespace ToughService.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 1. Tenta obter as informações de login externo novamente
                 var info = await _signInManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
@@ -221,20 +211,32 @@ namespace ToughService.Controllers
                     Nome = model.Nome
                 };
 
-                var result = await _userManager.CreateAsync(user);
 
-                if (result.Succeeded)
+                var createResult = await _userManager.CreateAsync(user);
+
+                if (createResult.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
+                    var addLoginResult = await _userManager.AddLoginAsync(user, info);
+
+                    if (addLoginResult.Succeeded)
                     {
+                        // SUCESSO COMPLETO: Usuário salvo, Login externo linkado e autenticação local feita.
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         await MigrarCarrinhoSessaoParaBD(user.Id);
                         return RedirectToLocal(returnUrl);
                     }
+
+                    // 🛑 FALHA no AddLogin (Raro, mas possível)
+                    // Se falhar aqui, o usuário foi criado, mas não linkado ao Google.
+                    _logger.LogError("Falha ao adicionar login externo para {Email}.", user.Email);
+                    createResult = addLoginResult; // Usa os erros de AddLogin
                 }
-                foreach (var error in result.Errors)
+
+                // Trata erros de CreateAsync ou AddLoginAsync
+                _logger.LogError("Falha ao registrar/linkar login externo: Email={Email}", model.Email);
+                foreach (var error in createResult.Errors)
                 {
+                    _logger.LogError("  - Erro Identity: {Code} - {Description}", error.Code, error.Description);
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -251,7 +253,7 @@ namespace ToughService.Controllers
             }
             else
             {
-                return RedirectToAction("Perfil", "Perfil"); 
+                return RedirectToAction("Perfil", "Perfil");
             }
         }
         private async Task MigrarCarrinhoSessaoParaBD(string userId)

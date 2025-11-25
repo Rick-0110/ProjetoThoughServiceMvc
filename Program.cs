@@ -74,6 +74,7 @@ builder.Services.AddAuthentication(options =>
 .AddCookie(options =>
 {
     options.LoginPath = "/Registro/Login";
+    options.Cookie.Path = "/";
 })
 .AddGoogle(options =>
 {
