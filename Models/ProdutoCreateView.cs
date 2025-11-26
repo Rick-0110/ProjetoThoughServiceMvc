@@ -10,7 +10,7 @@ public class ProdutoCreateViewModel
     public IFormFile? Imagem { get; set; }
 
     [Required(ErrorMessage = "A categoria é obrigatória.")]
-    public string Categoria { get; set; } 
+    public int CategoriaId { get; set; }
 
     [Required(ErrorMessage = "O preço é obrigatório.")]
     public decimal Preco { get; set; }

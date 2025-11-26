@@ -57,6 +57,7 @@
                     <h2>Adicionar Novo Produto</h2>
 
                     <form asp-action="AdicionarProdutoADM" asp-controller="ADM" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
                         <div class="form-grid">
 
                             <div class="form-group">
@@ -150,6 +151,13 @@
                                                     title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </button>
+                                            
+                                            <button class="icon-btn stock-btn"
+                                                    onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
+                                                    title="Adicionar Estoque">
+                                                <i class="fas fa-box"></i>
+                                            </button>
+                                            
                                                 </div>
                                             <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
                                                 <input type="hidden" name="id" value="@produto.Id" />
@@ -227,6 +235,45 @@
                         <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancelar</button>
                         <button type="submit" class="btn-primary">
                             <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Adicionar Estoque -->
+    <div id="modalAdicionarEstoque" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Adicionar Estoque</h2>
+                <span class="close" onclick="closeAddStockModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-adicionar-estoque" asp-action="AdicionarEstoque" asp-controller="ADM" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="stockProdutoId" name="produtoId">
+                    
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <input type="text" id="stockProdutoNome" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estoque Atual</label>
+                        <input type="text" id="stockQuantidadeAtual" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stockQuantidade">Quantidade a Adicionar *</label>
+                        <input type="number" id="stockQuantidade" name="quantidade" min="1" required placeholder="Digite a quantidade">
+                        <small style="display: block; margin-top: 0.25rem; color: #6c757d; font-size: 0.875rem;">Digite a quantidade de unidades a adicionar ao estoque</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeAddStockModal()">Cancelar</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i> Adicionar ao Estoque
                         </button>
                     </div>
                 </form>

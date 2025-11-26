@@ -19,9 +19,35 @@ namespace ToughService.Repository
     
         public async Task<ProdutoModel> AddProdutoAsync(ProdutoModel produto)
         {
-            await _context.Produtos.AddAsync(produto);
-            await _context.SaveChangesAsync();
-            return produto;
+            try
+            {
+                Console.WriteLine($"REPOSITÓRIO: Adicionando produto ao contexto. Nome: {produto.Nome}");
+                await _context.Produtos.AddAsync(produto);
+                Console.WriteLine($"REPOSITÓRIO: Produto adicionado ao contexto. Salvando mudanças...");
+                
+                int linhasAfetadas = await _context.SaveChangesAsync();
+                Console.WriteLine($"REPOSITÓRIO: SaveChangesAsync retornou {linhasAfetadas} linha(s) afetada(s)");
+                Console.WriteLine($"REPOSITÓRIO: Produto salvo com ID: {produto.Id}");
+                
+                if (linhasAfetadas > 0)
+                {
+                    return produto;
+                }
+                else
+                {
+                    throw new Exception("Nenhuma linha foi afetada ao salvar o produto.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO NO REPOSITÓRIO AO ADICIONAR PRODUTO: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                throw;
+            }
         }
 
         public async Task<IEnumerable<ProdutoModel>> GetAllProdutosAsync()

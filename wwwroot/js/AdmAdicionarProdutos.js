@@ -1,17 +1,17 @@
 /**
  * AdmAdicionarProdutos.js
- * Script para interações VISUAIS na página de gerenciamento de produtos.
- * A listagem e manipulação de dados é feita pelo servidor (C#).
+ * Script para interaï¿½ï¿½es VISUAIS na pï¿½gina de gerenciamento de produtos.
+ * A listagem e manipulaï¿½ï¿½o de dados ï¿½ feita pelo servidor (C#).
  */
 
-// Executa quando o conteúdo da página é totalmente carregado.
+// Executa quando o conteï¿½do da pï¿½gina ï¿½ totalmente carregado.
 document.addEventListener('DOMContentLoaded', function () {
     showTab('adicionar');
 });
 
 /**
  * Alterna a visibilidade entre as abas 'adicionar' e 'listar'.
- * Esta função é puramente VISUAL.
+ * Esta funï¿½ï¿½o ï¿½ puramente VISUAL.
  * @param {string} tabName - O nome da aba para exibir ('adicionar' ou 'listar').
  */
 function showTab(tabName) {
@@ -23,14 +23,14 @@ function showTab(tabName) {
 }
 
 /**
- * Abre o modal de edição e PREENCHE os campos com os dados
+ * Abre o modal de ediï¿½ï¿½o e PREENCHE os campos com os dados
  * passados diretamente pelo HTML (via Razor).
- * Esta função é puramente VISUAL e não busca dados na internet.
+ * Esta funï¿½ï¿½o ï¿½ puramente VISUAL e nï¿½o busca dados na internet.
  */
 function openEditModal(id, nome, categoria, preco, quantidade, descricao) {
     const modal = document.getElementById('modalEditar');
 
-    // Preenche os campos do formulário do modal
+    // Preenche os campos do formulï¿½rio do modal
     document.getElementById('editId').value = id;
     document.getElementById('editNome').value = nome;
     document.getElementById('editCategoria').value = categoria.toLowerCase();
@@ -43,8 +43,8 @@ function openEditModal(id, nome, categoria, preco, quantidade, descricao) {
 }
 
 /**
- * Fecha o modal de edição.
- * Esta função é puramente VISUAL.
+ * Fecha o modal de ediï¿½ï¿½o.
+ * Esta funï¿½ï¿½o ï¿½ puramente VISUAL.
  */
 function closeEditModal() {
     document.getElementById('modalEditar').style.display = 'none';
@@ -52,7 +52,41 @@ function closeEditModal() {
 
 // Adiciona um listener global para fechar o modal ao clicar fora dele.
 window.onclick = function (event) {
-    if (event.target == document.getElementById('modalEditar')) {
+    const modalEditar = document.getElementById('modalEditar');
+    const modalEstoque = document.getElementById('modalAdicionarEstoque');
+    
+    if (event.target == modalEditar) {
         closeEditModal();
     }
+    if (event.target == modalEstoque) {
+        closeAddStockModal();
+    }
+}
+
+/**
+ * Abre o modal de adicionar estoque e preenche os dados do produto.
+ * @param {number} id - ID do produto
+ * @param {string} nome - Nome do produto
+ * @param {number} quantidadeAtual - Quantidade atual em estoque
+ */
+function openAddStockModal(id, nome, quantidadeAtual) {
+    const modal = document.getElementById('modalAdicionarEstoque');
+    
+    // Preenche os campos do formulÃ¡rio
+    document.getElementById('stockProdutoId').value = id;
+    document.getElementById('stockProdutoNome').value = nome;
+    document.getElementById('stockQuantidadeAtual').value = quantidadeAtual + ' unidade(s)';
+    document.getElementById('stockQuantidade').value = '';
+    
+    // Exibe o modal
+    modal.style.display = 'block';
+}
+
+/**
+ * Fecha o modal de adicionar estoque.
+ */
+function closeAddStockModal() {
+    document.getElementById('modalAdicionarEstoque').style.display = 'none';
+    // Limpa o formulÃ¡rio
+    document.getElementById('form-adicionar-estoque').reset();
 }
