@@ -1,6 +1,6 @@
-/* ===== CSS PARA ÁREA ADMINISTRATIVA ===== */
+/* ===== CSS PARA ï¿½REA ADMINISTRATIVA ===== */
 
-/* ===== VARIÁVEIS ===== */
+/* ===== VARIï¿½VEIS ===== */
 :root {
     --primary-red: #8a0404;
     --primary-red-dark: #6a0303;
@@ -41,49 +41,54 @@ body {
 }
 
 .icon-btn {
-    display: inline-flex; /* Alinha o ícone no centro */
+    display: inline-flex; /* Alinha o ï¿½cone no centro */
     align-items: center;
     justify-content: center;
     width: 38px; /* Largura fixa */
     height: 38px; /* Altura fixa */
 
     border: none; /* Sem borda */
-    border-radius: 50%; /* Botão perfeitamente redondo */
+    border-radius: 50%; /* Botï¿½o perfeitamente redondo */
 
-    font-size: 1rem; /* Tamanho do ícone */
-    color: #ffffff; /* Ícone branco (na maioria dos casos) */
+    font-size: 1rem; /* Tamanho do ï¿½cone */
+    color: #ffffff; /* ï¿½cone branco (na maioria dos casos) */
 
     cursor: pointer;
-    text-decoration: none; /* Para caso você use uma tag <a> */
-    margin: 0 4px; /* Espaçamento entre botões */
+    text-decoration: none; /* Para caso vocï¿½ use uma tag <a> */
+    margin: 0 4px; /* Espaï¿½amento entre botï¿½es */
 
     transition: all 0.2s ease-in-out;
 }
 
-    /* 2. EFEITO DE HOVER (Escurece um pouco e levanta o botão) */
+    /* 2. EFEITO DE HOVER (Escurece um pouco e levanta o botï¿½o) */
     .icon-btn:hover {
-        opacity: 0.85; /* Leve transparência */
+        opacity: 0.85; /* Leve transparï¿½ncia */
         transform: translateY(-2px); /* Efeito de "levantar" */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra suave */
     }
 
     /* ======================================= */
-    /* === BOTÃO DE EDITAR (CINZA) === */
+    /* === BOTï¿½O DE EDITAR (CINZA) === */
     /* ======================================= */
     .icon-btn.edit-btn {
-        background-color: #6c757d; /* Cinza "Secondary" (Padrão Bootstrap) */
-        color: #ffffff; /* Ícone branco */
+        background-color: #6c757d; /* Cinza "Secondary" (Padrï¿½o Bootstrap) */
+        color: #ffffff; /* ï¿½cone branco */
     }
 
     /* ======================================= */
-    /* === BOTÃO DE DELETAR (VERMELHO) === */
+    /* === BOTï¿½O DE DELETAR (VERMELHO) === */
     /* === (Combinando com seu tema) === */
     /* ======================================= */
     .icon-btn.delete-btn {
-        background-color: #dc3545; /* Vermelho "Danger" (Padrão Bootstrap) */
-        color: #ffffff; /* Ícone branco */
+        background-color: #dc3545; /* Vermelho "Danger" (Padrï¿½o Bootstrap) */
+        color: #ffffff; /* ï¿½cone branco */
     }
 
+    .icon-btn.stock-btn {
+        background-color: #28a745;
+        color: #ffffff;
+    }
+    
 /* ===== HEADER ADMINISTRATIVO ===== */
 .admin-header {
     background: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
@@ -979,7 +984,7 @@ a.admin-card-link:active {
     margin-top: 3rem;
 }
 
-/* ===== ANIMAÇÕES ===== */
+/* ===== ANIMAï¿½ï¿½ES ===== */
 @keyframes slideIn {
     from {
         opacity: 0;
