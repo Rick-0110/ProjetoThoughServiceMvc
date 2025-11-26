@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
 using ToughService.Models;
 using ToughService.Repository;
 namespace ToughService.Controllers
@@ -322,70 +319,70 @@ namespace ToughService.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Coleta todos os erros de validação
                 var erros = ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList();
-                
-                string mensagemErro = erros.Any() 
-                    ? string.Join(" ", erros) 
+
+                string mensagemErro = erros.Any()
+                    ? $"Preencha corretamente: {string.Join(" ", erros)}"
                     : "Erro ao adicionar produto. Verifique os campos obrigatórios.";
-                
-                Console.WriteLine($"ERRO DE VALIDAÇÃO: {mensagemErro}");
+
                 TempData["ErroStatus"] = mensagemErro;
-                var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
-                return View("GerenciarProdutos", listaDeProdutos);
+
+                return RedirectToAction(nameof(GerenciarProdutos));
             }
 
             CategoriaEnum categoriaConvertida;
-            // Mapeamento: Formulário usa 1-4, Enum usa 0-3
-            // 1=Extintores(0), 2=SistemasFixos(2), 3=SistemasDeDeteccao(3), 4=Acessorios(1)
-            categoriaConvertida = model.CategoriaId switch
+            try
             {
-                1 => CategoriaEnum.Extintores,        // 0 no enum
-                2 => CategoriaEnum.SistemasFixos,    // 2 no enum
-                3 => CategoriaEnum.SistemasDeDeteccao, // 3 no enum
-                4 => CategoriaEnum.Acessorios,        // 1 no enum
-                _ => throw new ArgumentException("Categoria inválida.")
-            };
-            
-            if (!Enum.IsDefined(typeof(CategoriaEnum), categoriaConvertida))
+                categoriaConvertida = model.CategoriaId switch
+                {
+                    1 => CategoriaEnum.Extintores, // 0 no enum
+                    2 => CategoriaEnum.SistemasFixos, // 2 no enum
+                    3 => CategoriaEnum.SistemasDeDeteccao, // 3 no enum
+                    4 => CategoriaEnum.Acessorios, // 1 no enum
+                    _ => throw new ArgumentException("Categoria inválida.")
+                };
+            }
+            catch (ArgumentException ex)
             {
-                ModelState.AddModelError("CategoriaId", "Categoria inválida.");
-                TempData["ErroStatus"] = "Categoria inválida selecionada.";
-                var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
-                return View("GerenciarProdutos", listaDeProdutos);
+                TempData["ErroStatus"] = ex.Message;
+                return RedirectToAction(nameof(GerenciarProdutos));
             }
 
+            // 3. UPLOAD DA IMAGEM
             string caminhoArquivo = "sem_imagem.png";
-
             if (model.Imagem != null)
             {
-                string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
-                if (!Directory.Exists(pastaUploads))
+                try
                 {
-                    Directory.CreateDirectory(pastaUploads);
+                    string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
+                    if (!Directory.Exists(pastaUploads))
+                    {
+                        Directory.CreateDirectory(pastaUploads);
+                    }
+
+                    caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
+                    string caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
+
+                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                    {
+                        await model.Imagem.CopyToAsync(stream);
+                    }
                 }
-
-                caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
-                string caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
-
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                catch (Exception ex)
                 {
-                    await model.Imagem.CopyToAsync(stream);
+                    // Trata erro de upload, mas permite continuar com a adição do produto sem imagem.
+                    Console.WriteLine($"ERRO AO FAZER UPLOAD DA IMAGEM: {ex.Message}");
+                    TempData["ErroStatus"] = "Erro ao fazer upload da imagem. Produto adicionado sem imagem.";
+                    caminhoArquivo = "sem_imagem.png";
                 }
             }
 
-            // Mapear CategoriaId para o valor correto do enum (0-3)
-            int categoriaIdMapeado = model.CategoriaId switch
-            {
-                1 => 0, // Extintores
-                2 => 2, // SistemasFixos
-                3 => 3, // SistemasDeDeteccao
-                4 => 1, // Acessorios
-                _ => 0
-            };
+            // 4. CRIAÇÃO DO MODELO PARA O REPOSITÓRIO
+            // Mapear CategoriaId para o valor correto do enum (0-3) - Isso é essencial se a sua camada de dados usar o ID numérico do enum.
+            int categoriaIdMapeado = (int)categoriaConvertida;
 
             var novoProduto = new ProdutoModel
             {
@@ -404,45 +401,20 @@ namespace ToughService.Controllers
 
             try
             {
-                Console.WriteLine($"=== TENTANDO ADICIONAR PRODUTO ===");
-                Console.WriteLine($"Nome: {novoProduto.Nome}");
-                Console.WriteLine($"Descricao: {novoProduto.Descricao}");
-                Console.WriteLine($"Preco: {novoProduto.Preco}");
-                Console.WriteLine($"CategoriaId: {novoProduto.CategoriaId}");
-                Console.WriteLine($"Categoria: {novoProduto.Categoria}");
-                Console.WriteLine($"Quantidade: {novoProduto.Quantidade}");
-                Console.WriteLine($"Ativo: {novoProduto.Ativo}");
-                Console.WriteLine($"ImagemUrl: {novoProduto.ImagemUrl}");
-                
                 var produtoSalvo = await _produtoRepository.AddProdutoAsync(novoProduto);
-                
-                Console.WriteLine($"=== PRODUTO ADICIONADO COM SUCESSO! ===");
-                Console.WriteLine($"ID Gerado: {produtoSalvo.Id}");
-                Console.WriteLine($"Nome: {produtoSalvo.Nome}");
-                
+
                 TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado com sucesso! (ID: {produtoSalvo.Id})";
-            }
-            // Adicione a captura de exceções do Entity Framework Core
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
-            {
-                // Esta exceção geralmente contém informações sobre violação de restrição do banco de dados (NOT NULL, tamanho, etc.)
-                string erroDetalhado = dbEx.InnerException?.Message ?? dbEx.Message;
-                Console.WriteLine($"ERRO DB: {erroDetalhado}");
-                Console.WriteLine($"Stack Trace: {dbEx.StackTrace}");
-                TempData["ErroStatus"] = $"Falha ao salvar no banco de dados. Detalhes: {erroDetalhado}";
+
+ 
+                return RedirectToAction(nameof(GerenciarProdutos));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO GERAL: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                TempData["ErroStatus"] = $"Erro interno ao salvar o produto: {ex.Message}";
-            }
+                Console.WriteLine($"ERRO FATAL AO SALVAR PRODUTO: {ex.Message}");
+                TempData["ErroStatus"] = $"Erro ao salvar o produto no banco de dados. Detalhes: {ex.Message}";
 
-            return RedirectToAction("GerenciarProdutos");
+                return RedirectToAction(nameof(GerenciarProdutos));
+            }
         }
 
         [HttpPost]
@@ -470,38 +442,6 @@ namespace ToughService.Controllers
             return RedirectToAction("GerenciarProdutos");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdicionarEstoque(int produtoId, int quantidade)
-        {
-            if (produtoId <= 0 || quantidade <= 0)
-            {
-                TempData["ErroStatus"] = "Dados inválidos para adicionar estoque.";
-                return RedirectToAction("GerenciarProdutos");
-            }
-
-            try
-            {
-                var produto = await _produtoRepository.GetProdutoByIdAsync(produtoId);
-                if (produto == null)
-                {
-                    TempData["ErroStatus"] = "Produto não encontrado.";
-                    return RedirectToAction("GerenciarProdutos");
-                }
-
-                produto.Quantidade += quantidade;
-                await _produtoRepository.UpdateProdutoAsync(produto);
-
-                TempData["SucessoFormProduto"] = $"Estoque atualizado! {quantidade} unidade(s) adicionada(s) ao produto '{produto.Nome}'. Nova quantidade: {produto.Quantidade}";
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERRO AO ADICIONAR ESTOQUE (ID: {produtoId}): {ex.Message}");
-                TempData["ErroStatus"] = $"Erro ao adicionar estoque: {ex.Message}";
-            }
-
-            return RedirectToAction("GerenciarProdutos");
-        }
-
+       
     }
     }

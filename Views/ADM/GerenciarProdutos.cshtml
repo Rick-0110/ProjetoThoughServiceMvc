@@ -2,13 +2,11 @@
     Layout = null;
 }
 
-
 @model IEnumerable<ToughService.Models.ProdutoModel>
 
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
 }
-
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -18,9 +16,10 @@
     <title>Gerenciar Produtos - Área Administrativa</title>
     <link rel="stylesheet" href="~/css/ADM.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+   
 </head>
 <body>
-    <!-- Header -->
     <header class="admin-header">
         <div class="header-content">
             <div class="logo-section">
@@ -38,10 +37,25 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="admin-main">
         <div class="container">
-            <!-- Tabs -->
+
+            @* 🚨 CORREÇÃO: ADICIONANDO AS MENSAGENS DE FEEDBACK (TempData) 🚨 *@
+            @if (TempData["SucessoFormProduto"] != null)
+            {
+                <div class="alert success-alert">
+                    <i class="fas fa-check-circle"></i> @TempData["SucessoFormProduto"]
+                </div>
+            }
+
+            @if (TempData["ErroStatus"] != null)
+            {
+                <div class="alert error-alert">
+                    <i class="fas fa-times-circle"></i> @TempData["ErroStatus"]
+                </div>
+            }
+            @* ------------------------------------------------------------- *@
+
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('adicionar')">
                     <i class="fas fa-plus"></i> Adicionar Produto
@@ -51,7 +65,6 @@
                 </button>
             </div>
 
-            <!-- Tab: Adicionar Produto -->
             <div id="tab-adicionar" class="tab-content active">
                 <div class="form-section">
                     <h2>Adicionar Novo Produto</h2>
@@ -114,7 +127,12 @@
                         </div>
 
                         <div class="form-group form-group-checkbox">
-                            <input type="checkbox" id="ativo" name="Ativo" checked> <label for="ativo">Produto Ativo (visível no site)</label>
+
+                            <input type="hidden" name="Ativo" value="false" />
+
+                            <input type="checkbox" id="ativo" name="Ativo" value="true" checked>
+
+                            <label for="ativo">Produto Ativo (visível no site)</label>
                         </div>
 
                         <div class="form-actions">
@@ -126,7 +144,6 @@
                     </form>
                 </div>
             </div>
-            <!-- Tab: Listar Produtos -->
             <div id="tab-listar" class="tab-content">
                 <div class="products-section">
                     <div class="section-header">
@@ -142,30 +159,30 @@
                                 <div class="product-card-minimal">
                                     <div class="product-image">
                                         <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
-                                       <div class="container-gerenciar-produtos">
-                                        <div class="container-produtos">
-                                        <div class="product-overlay">
-                                            
-                                            <button class="icon-btn edit-btn"
-                                                    onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"
-                                                    title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            
-                                            <button class="icon-btn stock-btn"
-                                                    onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
-                                                    title="Adicionar Estoque">
-                                                <i class="fas fa-box"></i>
-                                            </button>
-                                            
+                                        <div class="container-gerenciar-produtos">
+                                            <div class="container-produtos">
+                                                <div class="product-overlay">
+
+                                                    <button class="icon-btn edit-btn"
+                                                            onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"
+                                                            title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+
+                                                    <button class="icon-btn stock-btn"
+                                                            onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
+                                                            title="Adicionar Estoque">
+                                                        <i class="fas fa-box"></i>
+                                                    </button>
+
                                                 </div>
-                                            <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
-                                                <input type="hidden" name="id" value="@produto.Id" />
-                                                <button type="submit" class="icon-btn delete-btn" title="Excluir">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                                <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
+                                                    <input type="hidden" name="id" value="@produto.Id" />
+                                                    <button type="submit" class="icon-btn delete-btn" title="Excluir">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="product-info">
@@ -188,7 +205,6 @@
             </div>
     </main>
 
-    <!-- Modal de Edição -->
     <div id="modalEditar" class="modal">
         <div class="modal-content modal-large">
             <div class="modal-header">
@@ -208,10 +224,10 @@
                         <div class="form-group">
                             <label for="editCategoria">Categoria *</label>
                             <select id="editCategoria" name="categoria" required>
-                                <option value="extintores">Extintores</option>
-                                <option value="sistemas-fixos">Sistemas Fixos</option>
-                                <option value="detecao">Sistemas de Detecção</option>
-                                <option value="acessorios">Acessórios</option>
+                                <option value="Extintores">Extintores</option>
+                                <option value="SistemasFixos">Sistemas Fixos</option>
+                                <option value="SistemasDeDeteccao">Sistemas de Detecção</option>
+                                <option value="Acessorios">Acessórios</option>
                             </select>
                         </div>
 
@@ -242,7 +258,6 @@
         </div>
     </div>
 
-    <!-- Modal de Adicionar Estoque -->
     <div id="modalAdicionarEstoque" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -253,7 +268,7 @@
                 <form id="form-adicionar-estoque" asp-action="AdicionarEstoque" asp-controller="ADM" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" id="stockProdutoId" name="produtoId">
-                    
+
                     <div class="form-group">
                         <label>Produto</label>
                         <input type="text" id="stockProdutoNome" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
