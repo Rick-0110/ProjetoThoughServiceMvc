@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,10 +31,33 @@ namespace ToughService.Controllers
         }
 
     
-        public IActionResult ADM()
+        public async Task<IActionResult> ADM()
         {
-            return View();
+            try
+            {
+                int totalChamados = (await _chamadoRepository.GetAllChamadosAsync()).Count();
+
+                int totalProdutos = (await _produtoRepository.GetAllProdutosAsync()).Count();
+
+                int totalPedidos = (await _pedidoRepository.GetAllPedidosAsync()).Count();
+
+                var viewModel = new AdminDashboardViewModel
+                {
+                    TotalChamados = totalChamados,
+                    TotalProdutosEmEstoque = totalProdutos,
+                    TotalPedidos = totalPedidos
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO CARREGAR DADOS DO DASHBOARD: {ex.Message}");
+                TempData["ErroStatus"] = "Ocorreu um erro ao carregar as estatísticas do dashboard.";
+                return View(new AdminDashboardViewModel()); 
+            }
         }
+        
 
         [HttpGet]
         public async Task<IActionResult> GerenciarPedidos(

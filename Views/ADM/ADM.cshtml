@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ToughService.Models.AdminDashboardViewModel
+@{
     Layout = null;
 }
 
@@ -48,7 +49,7 @@
                             <h3>Ver Chamados</h3>
                             <p>Visualizar e gerenciar solicitações de orçamento e agendamentos</p>
                             <div class="card-stats">
-                                <span class="stat-number" id="totalChamados">4</span>
+                                <span class="stat-number" id="totalChamados">@(Model?.TotalChamados ?? 0)</span>
                                 <span class="stat-label">Chamados</span>
                             </div>
                         </div>
@@ -67,7 +68,7 @@
                         <h3>Gerenciar Produtos</h3>
                         <p>Adicionar, editar e remover produtos do catálogo</p>
                         <div class="card-stats">
-                            <span class="stat-number" id="totalProdutos">150</span>
+                            <span class="stat-number" id="totalProdutos">@(Model?.TotalProdutosEmEstoque ?? 0)</span>
                             <span class="stat-label">Produtos</span>
                         </div>
                     </div>
@@ -84,7 +85,7 @@
                         <h3>Gerenciar Pedidos</h3>
                         <p>Gerenciar as pedidos feitos</p>
                         <div class="card-stats">
-                            <span class="stat-number" id="totalProdutos">30</span>
+                            <span class="stat-number" id="totalPedidos">@(Model?.TotalPedidos ?? 0)</span>
                             <span class="stat-label">Produtos</span>
                         </div>
                     </div>
