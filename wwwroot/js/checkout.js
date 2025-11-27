@@ -176,6 +176,7 @@ function updateSummaryTotals() {
     if (summaryDiscounts) summaryDiscounts.textContent = formatCurrency(discountValue, true);
     if (summaryTotal) summaryTotal.textContent = formatCurrency(total);
     if (hiddenTotal) hiddenTotal.value = total.toFixed(2);
+    updateInstallmentOptions(total);
 }
 
 function parseCurrency(value) {
@@ -207,6 +208,37 @@ function formatCurrency(value, isNegative = false) {
     });
     // Adiciona o sinal negativo se necessário
     return isNegative ? `- ${formatted}` : formatted;
+}
+
+function updateInstallmentOptions(baseAmount) {
+    const installmentSelect = document.getElementById('Installments');
+    if (!installmentSelect) return;
+
+    const hiddenSubtotal = document.getElementById('hiddenSubtotal');
+    const amount = baseAmount > 0 ? baseAmount : parseDecimalValue(hiddenSubtotal?.value);
+    if (amount <= 0) return;
+
+    const interestRateSixInstallments = 0.12;
+    const config = {
+        '1': { parts: 1, interest: false },
+        '2': { parts: 2, interest: false },
+        '3': { parts: 3, interest: false },
+        '6': { parts: 6, interest: true }
+    };
+
+    Array.from(installmentSelect.options).forEach((option) => {
+        const optionConfig = config[option.value];
+        if (!optionConfig) return;
+
+        const total = optionConfig.interest ? amount * (1 + interestRateSixInstallments) : amount;
+        const perInstallment = total / optionConfig.parts;
+        const suffix = optionConfig.interest ? 'com juros' : 'sem juros';
+        let text = `${optionConfig.parts}x de ${formatCurrency(perInstallment)} ${suffix}`;
+        if (optionConfig.interest) {
+            text += ` (Total ${formatCurrency(total)})`;
+        }
+        option.textContent = text;
+    });
 }
 
 // =========================================================================

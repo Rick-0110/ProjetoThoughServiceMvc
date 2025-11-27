@@ -8,6 +8,8 @@
     var culture = new CultureInfo("pt-BR");
     var installmentBase = Model?.Total > 0 ? Model.Total : Model?.Subtotal ?? 0m;
     var selectedPayment = string.IsNullOrWhiteSpace(Model?.PaymentMethod) ? "card" : Model.PaymentMethod;
+    var interestRateSixInstallments = 0.12m;
+    var installmentWithInterest = installmentBase * (1 + interestRateSixInstallments);
 }
 
 @section Styles {
@@ -170,28 +172,7 @@
                         </div>
                     </div>
 
-                    <div class="shipping-options" id="shippingOptions">
-                        @if (Model.ShippingOptions != null && Model.ShippingOptions.Any())
-                        {
-                            foreach (var option in Model.ShippingOptions)
-                            {
-                                var isSelected = option.Value.Equals(Model.ShippingMethod, StringComparison.OrdinalIgnoreCase);
-                                <label class="shipping-card @(isSelected ? "is-selected" : string.Empty)"
-                                       data-shipping-value="@option.Value"
-                                       data-shipping-price="@option.Price.ToString(CultureInfo.InvariantCulture)">
-                                    <input type="radio"
-                                           asp-for="ShippingMethod"
-                                           value="@option.Value" />
-                                    <div>
-                                        <strong>@option.Title</strong>
-                                        <span>@option.Description</span>
-                                    </div>
-                                    <span class="shipping-price">@option.Price.ToString("C", culture)</span>
-                                </label>
-                            }
-                        }
-                        <span asp-validation-for="ShippingMethod" class="text-danger"></span>
-                    </div>
+              
                 </section>
 
                 <section class="card-block">
@@ -254,7 +235,7 @@
                                     <option value="1">1x de @installmentBase.ToString("C", culture) sem juros</option>
                                     <option value="2">2x de @( (installmentBase / 2m).ToString("C", culture)) sem juros</option>
                                     <option value="3">3x de @( (installmentBase / 3m).ToString("C", culture)) sem juros</option>
-                                    <option value="6">6x de @( (installmentBase / 6m).ToString("C", culture)) com juros</option>
+                                    <option value="6">6x de @( (installmentWithInterest / 6m).ToString("C", culture)) com juros (Total @installmentWithInterest.ToString("C", culture))</option>
                                 </select>
                                 <span asp-validation-for="Installments" class="text-danger"></span>
                             </div>
@@ -332,9 +313,9 @@
                             <input type="hidden" asp-for="Subtotal" id="hiddenSubtotal" />
                         </div>
                         <div>
-                            <dt>Entrega</dt>
-                            <dd id="summaryShipping">@Model.ShippingCost.ToString("C", culture)</dd>
-                            <input type="hidden" asp-for="ShippingCost" id="hiddenShipping" />
+                            <dt>Frete</dt>
+                            <dd class="text-success" id="Frete">Grátis</dd>
+                           
                         </div>
                         <div>
                             <dt>Descontos</dt>
