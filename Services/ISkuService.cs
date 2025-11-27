@@ -1,9 +1,9 @@
-﻿using ToughService.Models;
+﻿using ToughService.Models.Produtos;
 
 namespace ToughService.Services
 {
     public interface ISkuService
     {
-        Task<string> GerarSkuAsync(ProdutoModel produto);
+        Task<string> GerarSkuAsync(IProdutoBase produto);
     }
 }   

@@ -37,7 +37,8 @@ builder.Services.AddSession(options =>
 // ------------------------------------
 // Repositórios
 // ------------------------------------
-builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); // Repositório antigo (compatibilidade)
+builder.Services.AddScoped<IProdutoRepositoryGeneric, ProdutoRepositoryGeneric>(); // Novo repositório genérico
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();

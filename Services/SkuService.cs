@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ToughService.Models;
+using ToughService.Models.Produtos;
 using ToughService.Repository;
 
 namespace ToughService.Services
@@ -9,13 +10,17 @@ namespace ToughService.Services
     public class SkuService : ISkuService
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IProdutoRepositoryGeneric _produtoRepositoryGeneric;
 
-        public SkuService(IProdutoRepository produtoRepository)
+        public SkuService(
+            IProdutoRepository produtoRepository,
+            IProdutoRepositoryGeneric produtoRepositoryGeneric)
         {
             _produtoRepository = produtoRepository;
+            _produtoRepositoryGeneric = produtoRepositoryGeneric;
         }
 
-        public async Task<string> GerarSkuAsync(ProdutoModel produto)
+        public async Task<string> GerarSkuAsync(IProdutoBase produto)
         {
             // Valida se os campos necessários estão preenchidos
             if (string.IsNullOrWhiteSpace(produto.Sku_Tipo) ||
@@ -30,10 +35,18 @@ namespace ToughService.Services
             string skuBase = $"{produto.Sku_Tipo}-{produto.Sku_Agente}-{produto.Sku_Capacidade}-{produto.Sku_Modelo}";
 
             // Verifica se já existe um produto com este SKU base
-            var produtosExistentes = await _produtoRepository.GetAllProdutosAsync();
-            var produtosComMesmoSkuBase = produtosExistentes
+            // Busca em todos os produtos (antigos e novos) através dos repositórios
+            var produtosAntigos = await _produtoRepository.GetAllProdutosAsync();
+            var produtosNovos = await _produtoRepositoryGeneric.GetAllProdutosAsync();
+            
+            // Combina produtos antigos e novos para verificação de SKU
+            var todosProdutos = produtosAntigos
+                .Select(p => new { Sku = p.Sku })
+                .Concat(produtosNovos.Select(p => new { Sku = p.Sku }))
                 .Where(p => !string.IsNullOrWhiteSpace(p.Sku) && p.Sku.StartsWith(skuBase))
                 .ToList();
+            
+            var produtosComMesmoSkuBase = todosProdutos;
 
             // Se não existe nenhum produto com este SKU base, retorna o SKU base
             if (!produtosComMesmoSkuBase.Any())
