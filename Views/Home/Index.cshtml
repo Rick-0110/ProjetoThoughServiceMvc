@@ -19,51 +19,115 @@
     </div>
 </header>
 
+@{
+    var produtosPorCategoria = ViewBag.ProdutosPorCategoria as Dictionary<ToughService.Models.CategoriaEnum, List<ToughService.Models.ProdutoModel>>;
+    
+    string GetCategoriaNome(ToughService.Models.CategoriaEnum cat)
+    {
+        return cat switch
+        {
+            ToughService.Models.CategoriaEnum.Extintores => "Extintores de Incêndio",
+            ToughService.Models.CategoriaEnum.Mangueiras => "Mangueiras de Combate a Incêndio",
+            ToughService.Models.CategoriaEnum.Acessorios => "Acessórios (Abrigos, Placas, Suportes)",
+            ToughService.Models.CategoriaEnum.Hidrantes => "Hidrantes",
+            ToughService.Models.CategoriaEnum.SistemasFixos => "Sistemas Fixos de Combate a Incêndio",
+            ToughService.Models.CategoriaEnum.SistemasDeDeteccao => "Sistemas de Detecção de Fumaça",
+            ToughService.Models.CategoriaEnum.EquipamentosArMandado => "Equipamentos para Ar Mandado",
+            ToughService.Models.CategoriaEnum.PortasCortaFogo => "Portas Corta-Fogo",
+            ToughService.Models.CategoriaEnum.EPI => "EPI - Equipamento de Proteção Individual",
+            ToughService.Models.CategoriaEnum.EPR => "EPR - Equipamento de Proteção Respiratória",
+            ToughService.Models.CategoriaEnum.EPC => "EPC - Equipamento de Proteção Coletiva",
+            _ => cat.ToString()
+        };
+    }
+}
+
 <section class="products-section">
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Nossos Produtos</h2>
-            <p class="section-subtitle">Equipamentos de segurança com qualidade certificada</p>
+          
         </div>
 
-        <div class="products-grid">
-            @if (Model != null && Model.Count > 0)
-            {
-                @foreach (var produto in Model)
+        @{
+            var todasCategorias = ViewBag.TodasCategorias as List<ToughService.Models.CategoriaEnum> ?? new List<ToughService.Models.CategoriaEnum>();
+        }
+
+        @if (produtosPorCategoria != null && produtosPorCategoria.Any())
+        {
+            <!-- Menu de Filtro por Categoria -->
+            <div class="category-filter-menu">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-th"></i> Todos
+                </button>
+                @foreach (var categoria in todasCategorias)
                 {
-                    <div class="product-card-minimal">
-                        <div class="product-image">
-                            <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
-                            <div class="product-overlay">
-                                <a asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id" class="view-btn">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                {
-                                    <form ExcluirProdutoHome method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
-                                        <input type="hidden" name="id" value="@produto.Id" />
-                                        <button type="submit" class="delete-btn">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                }
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name">@produto.Nome</h3>
-                            <div class="product-rating"><div class="stars">★★★★★</div></div>
-                            <div class="product-price">R$ @produto.Preco.ToString("F2")</div>
-                        </div>
-                    </div>
+                    var temProdutos = produtosPorCategoria.ContainsKey(categoria);
+                    <button class="filter-btn @(temProdutos ? "" : "disabled")" data-category="@categoria" @(temProdutos ? "" : "disabled")>
+                        @GetCategoriaNome(categoria)
+                        @if (!temProdutos)
+                        {
+                            <span style="font-size: 0.75rem; opacity: 0.6;">(em breve)</span>
+                        }
+                    </button>
                 }
-            }
-            else
+            </div>
+
+            <!-- Seções de Produtos por Categoria -->
+            @foreach (var categoriaGroup in produtosPorCategoria)
             {
-                <div class="no-products">
-                    <i class="fas fa-box-open"></i>
-                    <p>Nenhum produto disponível no momento.</p>
+                <div class="category-section" data-category="@categoriaGroup.Key" style="margin-bottom: 4rem;">
+                    <h3 class="category-title">
+                        <i class="fas fa-fire-extinguisher"></i>
+                        @GetCategoriaNome(categoriaGroup.Key)
+                    </h3>
+                    
+                    <div class="products-grid">
+                        @foreach (var produto in categoriaGroup.Value)
+                        {
+                            <div class="product-card-minimal">
+                                <div class="product-image">
+                                    <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" />
+                                    <div class="product-overlay">
+                                        <a asp-action="InfoProduto" asp-controller="Carrinho" asp-route-id="@produto.Id" class="view-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="ExcluirProdutoHome" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
+                                                <input type="hidden" name="id" value="@produto.Id" />
+                                                <button type="submit" class="delete-btn">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-name">@produto.Nome</h3>
+                                    <div class="product-rating"><div class="stars">★★★★★</div></div>
+                                    <div class="product-price">R$ @produto.Preco.ToString("F2")</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             }
-        </div>
+        }
+        else
+        {
+            <div class="no-products">
+                <i class="fas fa-box-open"></i>
+                <p>Nenhum produto disponível no momento.</p>
+            </div>
+        }
     </div>
 </section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/category-filter.css" />
+}
+
+@section Scripts {
+    <script src="~/js/category-filter.js"></script>
+}

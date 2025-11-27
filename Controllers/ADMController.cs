@@ -258,6 +258,15 @@ namespace ToughService.Controllers
         public async Task<IActionResult> GerenciarProdutos()
         {
             var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
+            
+            // Agrupa produtos por categoria para exibição organizada
+            var produtosPorCategoria = listaDeProdutos
+                .GroupBy(p => p.Categoria ?? CategoriaEnum.Extintores)
+                .OrderBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            ViewBag.ProdutosPorCategoria = produtosPorCategoria;
+            
             return View(listaDeProdutos);
         }
 
@@ -293,13 +302,20 @@ namespace ToughService.Controllers
             CategoriaEnum categoriaConvertida;
             try
             {
-                // Mapeamento do ID da view para o Enum correto (ajustado para os valores do seu switch)
+                // Mapeamento do ID da view para o Enum correto
                 categoriaConvertida = model.CategoriaId switch
                 {
                     1 => CategoriaEnum.Extintores,
-                    2 => CategoriaEnum.SistemasFixos,
-                    3 => CategoriaEnum.SistemasDeDeteccao,
-                    4 => CategoriaEnum.Acessorios,
+                    2 => CategoriaEnum.Mangueiras,
+                    3 => CategoriaEnum.Acessorios,
+                    4 => CategoriaEnum.Hidrantes,
+                    5 => CategoriaEnum.SistemasFixos,
+                    6 => CategoriaEnum.SistemasDeDeteccao,
+                    7 => CategoriaEnum.EquipamentosArMandado,
+                    8 => CategoriaEnum.PortasCortaFogo,
+                    9 => CategoriaEnum.EPI,
+                    10 => CategoriaEnum.EPR,
+                    11 => CategoriaEnum.EPC,
                     _ => throw new ArgumentException("Categoria inválida.")
                 };
             }
