@@ -10,6 +10,14 @@
     var selectedPayment = string.IsNullOrWhiteSpace(Model?.PaymentMethod) ? "card" : Model.PaymentMethod;
     var interestRateSixInstallments = 0.12m;
     var installmentWithInterest = installmentBase * (1 + interestRateSixInstallments);
+    var selectedShippingMethod = string.IsNullOrWhiteSpace(Model?.ShippingMethod) ? string.Empty : Model.ShippingMethod;
+    var shippingOptions = Model?.ShippingOptions ?? Enumerable.Empty<CheckoutShippingOptionViewModel>();
+    var selectedShippingOption = shippingOptions.FirstOrDefault(o => o.Value.Equals(selectedShippingMethod, StringComparison.OrdinalIgnoreCase));
+    selectedShippingOption ??= shippingOptions.FirstOrDefault(o => o.IsDefault) ?? shippingOptions.FirstOrDefault();
+    selectedShippingMethod = selectedShippingOption?.Value ?? selectedShippingMethod;
+    var shippingSummaryText = selectedShippingOption == null
+        ? "Entrega grátis"
+        : $"{selectedShippingOption.Title} · {(selectedShippingOption.Price <= 0 ? "Grátis" : selectedShippingOption.Price.ToString("C", culture))}";
 }
 
 @section Styles {
@@ -172,7 +180,50 @@
                         </div>
                     </div>
 
-              
+                </section>
+
+                <section class="card-block">
+                    <div class="block-heading">
+                        <div class="block-title">
+                            <span class="icon-circle">
+                                <i class="fas fa-truck"></i>
+                            </span>
+                            <div>
+                                <h2>Entrega ou retirada</h2>
+                                <p>Escolha retirar na empresa ou receber com frete grátis.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shipping-options">
+                        @if (Model.ShippingOptions != null && Model.ShippingOptions.Any())
+                        {
+                            foreach (var option in Model.ShippingOptions)
+                            {
+                                var isSelected = option.Value.Equals(selectedShippingMethod, StringComparison.OrdinalIgnoreCase);
+                                <label class="shipping-card @(isSelected ? "is-selected" : string.Empty)"
+                                       data-shipping-price="@option.Price.ToString(CultureInfo.InvariantCulture)"
+                                       data-shipping-label="@option.Title">
+                                    <input type="radio"
+                                           name="ShippingMethod"
+                                           value="@option.Value"
+                                           @(isSelected ? "checked" : null) />
+                                    <div class="shipping-card-content">
+                                        <div>
+                                            <h3>@option.Title</h3>
+                                            <p>@option.Description</p>
+                                        </div>
+                                        <strong>@(option.Price <= 0 ? "Grátis" : option.Price.ToString("C", culture))</strong>
+                                    </div>
+                                </label>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">As opções de recebimento não estão disponíveis no momento.</p>
+                        }
+                    </div>
+                    <span asp-validation-for="ShippingMethod" class="text-danger"></span>
                 </section>
 
                 <section class="card-block">
@@ -313,9 +364,8 @@
                             <input type="hidden" asp-for="Subtotal" id="hiddenSubtotal" />
                         </div>
                         <div>
-                            <dt>Frete</dt>
-                            <dd class="text-success" id="Frete">Grátis</dd>
-                           
+                            <dt>Entrega</dt>
+                            <dd id="summaryShipping">@shippingSummaryText</dd>
                         </div>
                         <div>
                             <dt>Descontos</dt>

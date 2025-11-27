@@ -158,6 +158,19 @@ function getCurrentShippingPrice() {
     return 0;
 }
 
+function getCurrentShippingSummary() {
+    const selectedShipping = document.querySelector('.shipping-card.is-selected');
+    if (!selectedShipping) {
+        return 'Entrega grátis';
+    }
+
+    const label = selectedShipping.getAttribute('data-shipping-label') || 'Entrega';
+    const price = parseDecimalValue(selectedShipping.getAttribute('data-shipping-price') || '0');
+    const priceText = price <= 0 ? 'Grátis' : formatCurrency(price);
+
+    return `${label} · ${priceText}`;
+}
+
 function updateSummaryTotals() {
     const summaryShipping = document.getElementById('summaryShipping');
     const summaryTotal = document.getElementById('summaryTotal');
@@ -172,7 +185,7 @@ function updateSummaryTotals() {
 
     const total = subtotalValue + shippingValue - discountValue;
 
-    if (summaryShipping) summaryShipping.textContent = formatCurrency(shippingValue);
+    if (summaryShipping) summaryShipping.textContent = getCurrentShippingSummary();
     if (summaryDiscounts) summaryDiscounts.textContent = formatCurrency(discountValue, true);
     if (summaryTotal) summaryTotal.textContent = formatCurrency(total);
     if (hiddenTotal) hiddenTotal.value = total.toFixed(2);

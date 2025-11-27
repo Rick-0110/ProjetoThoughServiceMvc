@@ -134,24 +134,17 @@ namespace ToughService.Services
             {
                 new()
                 {
-                    Value = "express",
-                    Title = "Entrega Expressa",
-                    Description = "Chega amanhã",
-                    Price = 29.90m,
+                    Value = "delivery",
+                    Title = "Entrega na sua empresa/casa",
+                    Description = "Receba no endereço escolhido sem custo adicional",
+                    Price = 0m,
                     IsDefault = true
                 },
                 new()
                 {
-                    Value = "standard",
-                    Title = "Entrega Padrão",
-                    Description = "3-5 dias úteis",
-                    Price = 12.90m
-                },
-                new()
-                {
                     Value = "pickup",
-                    Title = "Retirar na loja",
-                    Description = "Grátis • Disponível em 2h",
+                    Title = "Retirar na Tough Service",
+                    Description = "Disponível para retirada em até 2h na empresa",
                     Price = 0m
                 }
             };
