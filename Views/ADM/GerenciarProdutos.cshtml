@@ -79,11 +79,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="sku">Código do Produto (SKU)</label>
-                                <input type="text" id="sku" name="Sku" placeholder="Ex: EXT-001">
-                            </div>
-
-                            <div class="form-group">
                                 <label for="categoria">Categoria *</label>
                                 <select id="categoria" name="CategoriaId" required>
                                     <option value="">Selecione uma categoria</option>
@@ -92,6 +87,27 @@
                                     <option value="3">Sistemas de Detecção</option>
                                     <option value="4">Acessórios</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_tipo">Tipo/Prefix (SKU) *</label>
+                                <input type="text" id="sku_tipo" name="Sku_Tipo" required placeholder="Ex: EAT (Extintor Automático) / MGA (Mangueira)">
+                                <small style="display: block; margin-top: 0.25rem; color: #6c757d; font-size: 0.875rem;">O SKU será gerado automaticamente com base nestes campos</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_agente">Agente Extintor (SKU) *</label>
+                                <input type="text" id="sku_agente" name="Sku_Agente" required placeholder="Ex: PO (Pó Químico) / CO2 / AGUA">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_capacidade">Capacidade (SKU) *</label>
+                                <input type="text" id="sku_capacidade" name="Sku_Capacidade" required placeholder="Ex: 06KG (Capacidade) / 10MT (Comprimento)">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_modelo">Modelo (SKU) *</label>
+                                <input type="text" id="sku_modelo" name="Sku_Modelo" required placeholder="Ex: MOD2">
                             </div>
 
                             <div class="form-group">

@@ -40,7 +40,7 @@
                                 </a>
                                 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                                 {
-                                    <form asp-action="RemoverProduto" asp-controller="Home" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
+                                    <form ExcluirProdutoHome method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');" class="admin-form">
                                         <input type="hidden" name="id" value="@produto.Id" />
                                         <button type="submit" class="delete-btn">
                                             <i class="fas fa-trash"></i>

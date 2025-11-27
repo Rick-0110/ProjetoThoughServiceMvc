@@ -3,8 +3,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models;
 using ToughService.Repository;
+using ToughService.Services;
+using System.IO; // Para Path e FileStream
+using Microsoft.AspNetCore.Hosting; // Para IWebHostEnvironment
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace ToughService.Controllers
 {
+    // O IWebHostEnvironment é usado para acessar o caminho do arquivo (wwwroot/IMG)
 
     [Authorize(Roles = "Admin")]
     public class ADMController : Controller
@@ -14,22 +23,28 @@ namespace ToughService.Controllers
         private readonly IChamadoRepository _chamadoRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISkuService _skuService; // Serviço de Geração de SKU
 
         public ADMController(
             IProdutoRepository produtoRepository,
             IWebHostEnvironment webHostEnvironment,
             IChamadoRepository chamadoRepository,
             IPedidoRepository pedidoRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ISkuService skuService) // Injeção do SkuService
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
             _chamadoRepository = chamadoRepository;
             _pedidoRepository = pedidoRepository;
             _userManager = userManager;
+            _skuService = skuService;
         }
 
-    
+        // ---------------------------------------------------------------------------------------------------
+        // DASHBOARD
+        // ---------------------------------------------------------------------------------------------------
+
         public async Task<IActionResult> ADM()
         {
             try
@@ -53,10 +68,13 @@ namespace ToughService.Controllers
             {
                 Console.WriteLine($"ERRO AO CARREGAR DADOS DO DASHBOARD: {ex.Message}");
                 TempData["ErroStatus"] = "Ocorreu um erro ao carregar as estatísticas do dashboard.";
-                return View(new AdminDashboardViewModel()); 
+                return View(new AdminDashboardViewModel());
             }
         }
-        
+
+        // ---------------------------------------------------------------------------------------------------
+        // PEDIDOS
+        // ---------------------------------------------------------------------------------------------------
 
         [HttpGet]
         public async Task<IActionResult> GerenciarPedidos(
@@ -145,6 +163,9 @@ namespace ToughService.Controllers
             return RedirectToAction(nameof(GerenciarPedidos));
         }
 
+        // ---------------------------------------------------------------------------------------------------
+        // CHAMADOS
+        // ---------------------------------------------------------------------------------------------------
 
         [HttpGet]
         public async Task<IActionResult> AdmChamados(
@@ -229,9 +250,10 @@ namespace ToughService.Controllers
             return RedirectToAction("AdmChamados");
         }
 
+        // ---------------------------------------------------------------------------------------------------
+        // PRODUTOS (ADM)
+        // ---------------------------------------------------------------------------------------------------
 
-
-       
         [HttpGet]
         public async Task<IActionResult> GerenciarProdutos()
         {
@@ -240,83 +262,18 @@ namespace ToughService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListarProdutos()
-        {
-            try
-            {
-                var produtos = _produtoRepository.GetAllProdutosAsync();
-                return Ok(produtos);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Ocorreu um erro interno ao buscar os produtos.");
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ObterProduto(int id)
-        {
-            var produto = _produtoRepository.GetProdutoByIdAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-            return Ok(produto);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExcluirProduto(int id)
-        {
-         
-            await _produtoRepository.RemoveProdutoAsync(id);
-            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
-            return RedirectToAction("GerenciarProdutos");
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> AtualizarProduto(int id, [FromBody] ProdutoModel produto)
-        {
-            if (id != produto.Id)
-            {
-                return BadRequest("Dados do produto inválidos.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var produtoExistente = await _produtoRepository.GetProdutoByIdAsync(id);
-            if (produtoExistente == null)
-            {
-                return NotFound("Produto não encontrado.");
-            }
-
-            produtoExistente.Nome = produto.Nome;
-            produtoExistente.Descricao = produto.Descricao;
-            produtoExistente.Preco = produto.Preco;
-            produtoExistente.Categoria = produto.Categoria;
-            produtoExistente.Sku = produto.Sku;
-            produtoExistente.Marca = produto.Marca;
-            produtoExistente.Quantidade = produto.Quantidade;
-            produtoExistente.Peso = produto.Peso;
-            produtoExistente.Ativo = produto.Ativo;
-            var updatedProduto = _produtoRepository.UpdateProdutoAsync(produtoExistente);
-            return Ok(updatedProduto);
-        }
-
-
-        [HttpGet]
         public IActionResult AdicionarProdutoADM()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {
+            // CORREÇÃO: Remove o campo 'Sku' do ModelState para evitar a validação [Required]
+            // já que o valor será gerado internamente no código.
+            ModelState.Remove(nameof(model.Sku));
+
             if (!ModelState.IsValid)
             {
                 var erros = ModelState.Values
@@ -330,25 +287,26 @@ namespace ToughService.Controllers
 
                 TempData["ErroStatus"] = mensagemErro;
 
-                return RedirectToAction(nameof(GerenciarProdutos));
+                return View(model);
             }
 
             CategoriaEnum categoriaConvertida;
             try
             {
+                // Mapeamento do ID da view para o Enum correto (ajustado para os valores do seu switch)
                 categoriaConvertida = model.CategoriaId switch
                 {
-                    1 => CategoriaEnum.Extintores, // 0 no enum
-                    2 => CategoriaEnum.SistemasFixos, // 2 no enum
-                    3 => CategoriaEnum.SistemasDeDeteccao, // 3 no enum
-                    4 => CategoriaEnum.Acessorios, // 1 no enum
+                    1 => CategoriaEnum.Extintores,
+                    2 => CategoriaEnum.SistemasFixos,
+                    3 => CategoriaEnum.SistemasDeDeteccao,
+                    4 => CategoriaEnum.Acessorios,
                     _ => throw new ArgumentException("Categoria inválida.")
                 };
             }
             catch (ArgumentException ex)
             {
                 TempData["ErroStatus"] = ex.Message;
-                return RedirectToAction(nameof(GerenciarProdutos));
+                return View(model);
             }
 
             // 3. UPLOAD DA IMAGEM
@@ -373,7 +331,6 @@ namespace ToughService.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Trata erro de upload, mas permite continuar com a adição do produto sem imagem.
                     Console.WriteLine($"ERRO AO FAZER UPLOAD DA IMAGEM: {ex.Message}");
                     TempData["ErroStatus"] = "Erro ao fazer upload da imagem. Produto adicionado sem imagem.";
                     caminhoArquivo = "sem_imagem.png";
@@ -381,7 +338,6 @@ namespace ToughService.Controllers
             }
 
             // 4. CRIAÇÃO DO MODELO PARA O REPOSITÓRIO
-            // Mapear CategoriaId para o valor correto do enum (0-3) - Isso é essencial se a sua camada de dados usar o ID numérico do enum.
             int categoriaIdMapeado = (int)categoriaConvertida;
 
             var novoProduto = new ProdutoModel
@@ -391,21 +347,50 @@ namespace ToughService.Controllers
                 Preco = model.Preco,
                 CategoriaId = categoriaIdMapeado,
                 Categoria = categoriaConvertida,
-                Sku = model.Sku ?? string.Empty,
                 Marca = model.Marca ?? string.Empty,
                 Quantidade = model.Quantidade,
                 Peso = model.Peso,
                 Ativo = model.Ativo,
-                ImagemUrl = caminhoArquivo
+                ImagemUrl = caminhoArquivo,
+                // Os campos Sku_* são preenchidos diretamente do model (garantidos pelo ModelState.IsValid)
+                Sku_Tipo = model.Sku_Tipo,
+                Sku_Agente = model.Sku_Agente,
+                Sku_Capacidade = model.Sku_Capacidade,
+                Sku_Modelo = model.Sku_Modelo,
+                // Inicializa o Sku como string vazia - será preenchido automaticamente pelo serviço
+                Sku = string.Empty
             };
+
+            // 5. GERAÇÃO AUTOMÁTICA DO SKU
+
+            if (novoProduto.Quantidade <= 0)
+            {
+                TempData["ErroStatus"] = "O estoque inicial deve ser maior que zero para criar o produto.";
+                return View(model);
+            }
+
+            try
+            {
+                novoProduto.Sku = await _skuService.GerarSkuAsync(novoProduto);
+
+                if (string.IsNullOrWhiteSpace(novoProduto.Sku))
+                {
+                    throw new InvalidOperationException("O SKU não foi gerado corretamente pelo serviço.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERRO AO GERAR SKU: {ex.Message}");
+                TempData["ErroStatus"] = $"Erro ao gerar o código SKU: {ex.Message}";
+                return View(model);
+            }
 
             try
             {
                 var produtoSalvo = await _produtoRepository.AddProdutoAsync(novoProduto);
 
-                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado com sucesso! (ID: {produtoSalvo.Id})";
+                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado com sucesso! SKU: {produtoSalvo.Sku} (ID: {produtoSalvo.Id})";
 
- 
                 return RedirectToAction(nameof(GerenciarProdutos));
             }
             catch (Exception ex)
@@ -413,14 +398,13 @@ namespace ToughService.Controllers
                 Console.WriteLine($"ERRO FATAL AO SALVAR PRODUTO: {ex.Message}");
                 TempData["ErroStatus"] = $"Erro ao salvar o produto no banco de dados. Detalhes: {ex.Message}";
 
-                return RedirectToAction(nameof(GerenciarProdutos));
+                return View(model);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> AtualizarProduto(ProdutoModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var produtoParaAtualizar = await _produtoRepository.GetProdutoByIdAsync(model.Id);
@@ -432,16 +416,65 @@ namespace ToughService.Controllers
                     produtoParaAtualizar.Preco = model.Preco;
                     produtoParaAtualizar.Quantidade = model.Quantidade;
                     produtoParaAtualizar.Categoria = model.Categoria;
-                   
+
+                    // Nota: Se a regra for não permitir a edição dos campos que geram o SKU após a criação,
+                    // esses campos (Sku_Tipo, Sku_Agente, Sku_Capacidade, Sku_Modelo, Sku) não devem ser mapeados aqui.
 
                     await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
                 }
+                TempData["SucessoFormProduto"] = $"Produto '{model.Nome}' atualizado com sucesso.";
+            }
+            else
+            {
+                TempData["ErroStatus"] = "Erro ao atualizar produto. Verifique os campos obrigatórios.";
             }
 
-            // Após atualizar (ou se o modelo for inválido), redirecione para a página principal.
             return RedirectToAction("GerenciarProdutos");
         }
 
-       
+        // Métodos auxiliares/API (simplificados)
+        [HttpGet]
+        public async Task<IActionResult> ListarProdutos()
+        {
+            try
+            {
+                var produtos = await _produtoRepository.GetAllProdutosAsync();
+                return Ok(produtos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro interno ao buscar os produtos.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterProduto(int id)
+        {
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+            if (produto == null)
+            {
+                return NotFound();
+            }
+            return Ok(produto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExcluirProduto(int id)
+        {
+            await _produtoRepository.RemoveProdutoAsync(id);
+            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
+            return RedirectToAction("GerenciarProdutos");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExcluirProdutoHome(int id)
+        {
+
+            await _produtoRepository.RemoveProdutoAsync(id);
+            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
+            return RedirectToAction("Index"); 
+        }
     }
-    }
+}

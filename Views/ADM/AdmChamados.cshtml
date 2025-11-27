@@ -43,11 +43,9 @@
                 <a asp-action="ADM" asp-controller="ADM" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
-                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" style="display: inline;">
-                    <button type="submit" class="logout-btn" style="background:none; border:none; color:inherit; cursor:pointer; font:inherit;">
-                        <i class="fas fa-sign-out-alt"></i> Sair
-                    </button>
-                </form>
+                <a asp-action="Index" asp-controller="Home" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
             </div>
         </div>
     </header>

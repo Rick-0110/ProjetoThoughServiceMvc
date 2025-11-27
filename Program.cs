@@ -45,6 +45,11 @@ builder.Services.AddScoped<ICheckoutViewModelBuilder, CheckoutViewModelBuilder>(
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 
 // ------------------------------------
+// Serviços
+// ------------------------------------
+builder.Services.AddScoped<ISkuService, SkuService>();
+
+// ------------------------------------
 // Banco de dados
 // ------------------------------------
 string mySqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION");
