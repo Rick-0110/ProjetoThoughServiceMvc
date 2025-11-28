@@ -63,12 +63,8 @@
                 @foreach (var categoria in todasCategorias)
                 {
                     var temProdutos = produtosPorCategoria.ContainsKey(categoria);
-                    <button class="filter-btn @(temProdutos ? "" : "disabled")" data-category="@categoria" @(temProdutos ? "" : "disabled")>
+                    <button class="filter-btn @(temProdutos ? "" : "")" data-category="@categoria">
                         @GetCategoriaNome(categoria)
-                        @if (!temProdutos)
-                        {
-                            <span style="font-size: 0.75rem; opacity: 0.6;">(em breve)</span>
-                        }
                     </button>
                 }
             </div>

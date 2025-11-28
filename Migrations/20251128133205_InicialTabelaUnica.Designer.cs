@@ -12,8 +12,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20251128002205_TornarCategoriaObrigatoria")]
-    partial class TornarCategoriaObrigatoria
+    [Migration("20251128133205_InicialTabelaUnica")]
+    partial class InicialTabelaUnica
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -515,7 +515,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -535,7 +535,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Produtos", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.AcessorioModel", b =>
@@ -585,7 +588,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -609,7 +612,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Acessorios");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Acessorios", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.EPCModel", b =>
@@ -660,7 +666,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -684,7 +690,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EPCs");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("EPCs", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.EPIModel", b =>
@@ -733,7 +742,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -760,7 +769,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EPIs");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("EPIs", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.EPRModel", b =>
@@ -806,7 +818,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -837,7 +849,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EPRs");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("EPRs", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.EquipamentoArMandadoModel", b =>
@@ -889,7 +904,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -913,7 +928,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EquipamentosArMandado");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("EquipamentosArMandado", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.ExtintorModel", b =>
@@ -973,7 +991,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -997,7 +1015,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Extintores");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Extintores", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.HidranteModel", b =>
@@ -1047,7 +1068,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -1071,7 +1092,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hidrantes");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Hidrantes", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.MangueiraModel", b =>
@@ -1119,7 +1143,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -1144,7 +1168,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Mangueiras");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Mangueiras", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.PortaCortaFogoModel", b =>
@@ -1196,7 +1223,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -1223,7 +1250,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PortasCortaFogo");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("PortasCortaFogo", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.SistemaDeteccaoModel", b =>
@@ -1268,7 +1298,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -1298,7 +1328,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SistemasDeteccao");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("SistemasDeteccao", (string)null);
                 });
 
             modelBuilder.Entity("ToughService.Models.Produtos.SistemaFixoModel", b =>
@@ -1349,7 +1382,7 @@ namespace ToughService.Migrations
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Sku_Agente")
                         .IsRequired()
@@ -1373,7 +1406,10 @@ namespace ToughService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SistemasFixos");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("SistemasFixos", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
