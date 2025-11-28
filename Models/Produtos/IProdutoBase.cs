@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToughService.Models.Produtos
 {
-    /// <summary>
+
     /// Interface base para todos os produtos, contendo campos comuns
-    /// </summary>
+
     public interface IProdutoBase
     {
         int Id { get; set; }

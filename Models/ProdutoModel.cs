@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using ToughService.Models;
+using ToughService.Models.Produtos;
 
 namespace ToughService.Models
 {
-    public class ProdutoModel
+    public class ProdutoModel : IProdutoBase
     {
         public int Id { get; set; }
         public decimal Preco { get; set; }
@@ -21,7 +17,7 @@ namespace ToughService.Models
         public string Nome { get; set; }
 
         public int CategoriaId { get; set; }
-        public CategoriaEnum? Categoria { get; set; }
+        public CategoriaEnum Categoria { get; set; }
 
         [Required(ErrorMessage = "O Tipo/Prefix é obrigatório (Ex: EAT).")]
         public string Sku_Tipo { get; set; } // Ex: EAT (Extintor Automático) / MGA (Mangueira)

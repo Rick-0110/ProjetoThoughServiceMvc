@@ -24,22 +24,18 @@ namespace ToughService.Controllers
         {
             var todosProdutos = await _produtoRepository.GetAllProdutosAsync();
             
-            // Filtra apenas produtos ativos
             var produtosAtivos = todosProdutos.Where(p => p.Ativo).ToList();
             
-            // Se não houver produtos ativos, mostra todos (para compatibilidade com produtos antigos)
             if (!produtosAtivos.Any())
             {
                 produtosAtivos = todosProdutos.ToList();
             }
             
-            // Agrupa produtos por categoria (produtos sem categoria vão para Extintores por padrão)
             var produtosPorCategoria = produtosAtivos
-                .GroupBy(p => p.Categoria ?? ToughService.Models.CategoriaEnum.Extintores)
+                .GroupBy(p => p.Categoria)
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.ToList());
-            
-            // Cria lista de todas as categorias disponíveis (mesmo sem produtos)
+
             var todasCategorias = Enum.GetValues(typeof(ToughService.Models.CategoriaEnum))
                 .Cast<ToughService.Models.CategoriaEnum>()
                 .ToList();
@@ -49,7 +45,7 @@ namespace ToughService.Controllers
 
             ViewBag.IsLoggedIn = usuario != null;
             ViewBag.ProdutosPorCategoria = produtosPorCategoria;
-            ViewBag.TodasCategorias = todasCategorias; // Passa todas as categorias para a view
+            ViewBag.TodasCategorias = todasCategorias; 
 
             return View(produtosAtivos);
         }

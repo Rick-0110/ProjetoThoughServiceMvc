@@ -261,7 +261,7 @@ namespace ToughService.Controllers
             
             // Agrupa produtos por categoria para exibição organizada
             var produtosPorCategoria = listaDeProdutos
-                .GroupBy(p => p.Categoria ?? CategoriaEnum.Extintores)
+                .GroupBy(p => p.Categoria)
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.ToList());
             

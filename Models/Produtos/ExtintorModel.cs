@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace ToughService.Models.Produtos
 {
-    /// <summary>
-    /// Model específico para Extintores de Incêndio
-    /// </summary>
     public class ExtintorModel : IProdutoBase
     {
         public int Id { get; set; }
@@ -21,11 +18,12 @@ namespace ToughService.Models.Produtos
 
         [Required(ErrorMessage = "O preço é obrigatório.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O preço deve ser maior que zero.")]
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal Preco { get; set; }
 
         public string ImagemUrl { get; set; } = string.Empty;
 
-        // Campos SKU
+        // --- Campos SKU (Obrigatórios pela Interface) ---
         [Required(ErrorMessage = "O Tipo/Prefix é obrigatório (Ex: EAT).")]
         public string Sku_Tipo { get; set; }
 
@@ -43,10 +41,9 @@ namespace ToughService.Models.Produtos
         public int Quantidade { get; set; }
         public bool Ativo { get; set; }
 
-        // Campos específicos de Extintor
-        [Required(ErrorMessage = "O peso é obrigatório para extintores.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "O peso deve ser maior que zero.")]
-        public decimal Peso { get; set; } // Em kg
+        [Required(ErrorMessage = "O peso líquido é obrigatório.")]
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal PesoLiquido { get; set; }
 
         [Required(ErrorMessage = "A data da última recarga é obrigatória.")]
         [DataType(DataType.Date)]
@@ -55,8 +52,15 @@ namespace ToughService.Models.Produtos
         [DataType(DataType.Date)]
         public DateTime? DataVencimento { get; set; }
 
-        public string TipoAgente { get; set; } // PO, CO2, AGUA, ESPUMA
-        public string Capacidade { get; set; } // 06KG, 10KG, etc.
+
+        [DataType(DataType.Date)]
+        public DateTime? DataFabricacao { get; set; }
+
+        [StringLength(50)]
+        public string NormaReferencia { get; set; }
+
+        public string TipoAgente { get; set; }
+        public string Capacidade { get; set; }
 
         [NotMapped]
         public IFormFile? Imagem { get; set; }
@@ -65,4 +69,3 @@ namespace ToughService.Models.Produtos
         public CategoriaEnum Categoria => CategoriaEnum.Extintores;
     }
 }
-

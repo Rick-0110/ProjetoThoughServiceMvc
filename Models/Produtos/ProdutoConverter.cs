@@ -18,13 +18,15 @@ namespace ToughService.Models.Produtos
             if (produtoAntigo == null)
                 return null;
 
-            if (!produtoAntigo.Categoria.HasValue)
-                return null;
+            // REMOVIDO: if (!produtoAntigo.Categoria.HasValue)
+            // A categoria agora é obrigatória, então sempre existe.
 
-            return produtoAntigo.Categoria.Value switch
+            // REMOVIDO: .Value no switch
+            return produtoAntigo.Categoria switch
             {
                 CategoriaEnum.Extintores => new ExtintorModel
                 {
+                    // Propriedades Base (IProdutoBase)
                     Id = produtoAntigo.Id,
                     Nome = produtoAntigo.Nome,
                     Descricao = produtoAntigo.Descricao,
@@ -34,15 +36,25 @@ namespace ToughService.Models.Produtos
                     Marca = produtoAntigo.Marca,
                     Quantidade = produtoAntigo.Quantidade,
                     Ativo = produtoAntigo.Ativo,
+
+                    // Campos de SKU Genéricos
                     Sku_Tipo = produtoAntigo.Sku_Tipo,
                     Sku_Agente = produtoAntigo.Sku_Agente,
                     Sku_Capacidade = produtoAntigo.Sku_Capacidade,
                     Sku_Modelo = produtoAntigo.Sku_Modelo,
-                    Peso = produtoAntigo.Peso ?? 0,
-                    DataRecarga = DateTime.Now, // Valor padrão, deve ser atualizado
-                    TipoAgente = produtoAntigo.Sku_Agente,
-                    Capacidade = produtoAntigo.Sku_Capacidade
+
+                    // Propriedades Específicas do ExtintorModel
+                    // Mapeando o antigo 'Peso' (genérico) para 'PesoLiquido' (específico)
+                    PesoLiquido = produtoAntigo.Peso ?? 0,
+
+                    // Atenção: Certifique-se de que ExtintorModel tem estas propriedades:
+                    DataFabricacao = DateTime.Now, // Placeholder
+                                                   // DataRecarga = DateTime.Now, // Se existir no ExtintorModel
+
+                    // Mapeia strings antigas para campos específicos se necessário
+                    NormaReferencia = "NBR 15808" // Valor padrão ou extraído de algum lugar
                 },
+
                 CategoriaEnum.Mangueiras => new MangueiraModel
                 {
                     Id = produtoAntigo.Id,
@@ -54,15 +66,19 @@ namespace ToughService.Models.Produtos
                     Marca = produtoAntigo.Marca,
                     Quantidade = produtoAntigo.Quantidade,
                     Ativo = produtoAntigo.Ativo,
+
                     Sku_Tipo = produtoAntigo.Sku_Tipo,
                     Sku_Agente = produtoAntigo.Sku_Agente,
                     Sku_Capacidade = produtoAntigo.Sku_Capacidade,
                     Sku_Modelo = produtoAntigo.Sku_Modelo,
+
+                    // Propriedades Específicas de MangueiraModel
                     Comprimento = ExtrairComprimento(produtoAntigo.Sku_Capacidade),
                     Diametro = 0, // Valor padrão
                     TipoMaterial = "Não especificado"
                 },
-                // Adicionar outros casos conforme necessário
+
+
                 _ => null
             };
         }
@@ -81,4 +97,3 @@ namespace ToughService.Models.Produtos
         }
     }
 }
-

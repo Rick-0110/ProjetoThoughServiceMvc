@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
@@ -5,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 namespace ToughService.Models.Produtos
 {
     /// <summary>
-    /// Model específico para Mangueiras de Combate a Incêndio
+    /// Model específico para Mangueiras de Incêndio
     /// </summary>
     public class MangueiraModel : IProdutoBase
     {
@@ -24,35 +25,38 @@ namespace ToughService.Models.Produtos
 
         public string ImagemUrl { get; set; } = string.Empty;
 
-        // Campos SKU
-        [Required(ErrorMessage = "O Tipo/Prefix é obrigatório (Ex: MGA).")]
+
+        [Required(ErrorMessage = "O Tipo/Prefix é obrigatório (Ex: MANG).")]
         public string Sku_Tipo { get; set; }
 
-        [Required(ErrorMessage = "O Agente é obrigatório.")]
-        public string Sku_Agente { get; set; }
+        [Required(ErrorMessage = "O Agente/Material é obrigatório (Ex: SINTETICO).")]
+        public string Sku_Agente { get; set; } // Para mangueiras, pode ser usado para o Material
 
-        [Required(ErrorMessage = "O Comprimento é obrigatório (Ex: 10MT).")]
-        public string Sku_Capacidade { get; set; }
+        [Required(ErrorMessage = "A Capacidade/Comprimento é obrigatória (Ex: 15MT).")]
+        public string Sku_Capacidade { get; set; } // Usado para o comprimento no SKU
 
-        [Required(ErrorMessage = "O Modelo é obrigatório.")]
-        public string Sku_Modelo { get; set; }
+        [Required(ErrorMessage = "O Modelo/Diâmetro é obrigatório (Ex: 1.5POL).")]
+        public string Sku_Modelo { get; set; } // Usado para o diâmetro no SKU
 
         public string Sku { get; set; }
         public string Marca { get; set; }
         public int Quantidade { get; set; }
         public bool Ativo { get; set; }
 
-        // Campos específicos de Mangueira
+        // --- Campos Específicos de Mangueiras ---
+
         [Required(ErrorMessage = "O comprimento é obrigatório.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "O comprimento deve ser maior que zero.")]
-        public decimal Comprimento { get; set; } // Em metros
+        [Range(1, 100, ErrorMessage = "O comprimento deve estar entre 1 e 100 metros.")]
+        public decimal Comprimento { get; set; } // Ex: 15, 20, 30 (metros)
 
         [Required(ErrorMessage = "O diâmetro é obrigatório.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "O diâmetro deve ser maior que zero.")]
-        public decimal Diametro { get; set; } // Em polegadas ou mm
+        public decimal Diametro { get; set; } // Ex: 1.5, 2.5 (polegadas)
 
-        public string TipoMaterial { get; set; } // Lona, Sintética, etc.
-        public int? PressaoMaxima { get; set; } // Em PSI ou Bar
+        [Required(ErrorMessage = "O tipo do material é obrigatório.")]
+        [StringLength(50)]
+        public string TipoMaterial { get; set; } // Ex: Tipo 1 (Predial), Tipo 2 (Industrial), Borracha
+
+        public decimal? Peso { get; set; } // Peso do rolo da mangueira
 
         [NotMapped]
         public IFormFile? Imagem { get; set; }
@@ -61,4 +65,3 @@ namespace ToughService.Models.Produtos
         public CategoriaEnum Categoria => CategoriaEnum.Mangueiras;
     }
 }
-

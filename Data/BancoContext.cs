@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ToughService.Models;
 using ToughService.Models.Produtos;
@@ -18,7 +14,6 @@ namespace ToughService.Data
         {
         }
 
-        // Model antigo (mantido para compatibilidade durante a transição)
         public DbSet<ProdutoModel> Produtos { get; set; }
 
         // Novos Models específicos por categoria

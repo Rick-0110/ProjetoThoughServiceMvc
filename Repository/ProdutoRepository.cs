@@ -52,7 +52,16 @@ namespace ToughService.Repository
 
         public async Task<IEnumerable<ProdutoModel>> GetAllProdutosAsync()
         {
-            return await _context.Produtos.ToListAsync();
+            try
+            {
+                return await _context.Produtos.ToListAsync();
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("NULL") || ex.Message.Contains("Int32"))
+            {
+                Console.WriteLine($"ERRO: Produtos com valores NULL encontrados. Execute a migração para corrigir os dados: {ex.Message}");
+                // Retorna lista vazia se houver problema com valores NULL
+                return new List<ProdutoModel>();
+            }
         }
 
         public async Task<ProdutoModel> GetProdutoByIdAsync(int id)
@@ -77,16 +86,16 @@ namespace ToughService.Repository
         {
             var termoBuscaLower = termoBusca.ToLower();
 
+     
             var todosProdutos = await _context.Produtos.ToListAsync();
 
             var resultados = todosProdutos
                     .Where(p => (p.Nome != null && p.Nome.ToLower().Contains(termoBuscaLower)) ||
                                 (p.Sku != null && p.Sku.ToLower().Contains(termoBuscaLower)) ||
-                                (p.Categoria.HasValue && p.Categoria.ToString().ToLower().Contains(termoBuscaLower)));
+                                (p.Categoria.ToString().ToLower().Contains(termoBuscaLower)));
 
             return resultados.ToList();
         }
-
         public async Task<ProdutoModel> UpdateProdutoAsync(ProdutoModel produto)
         {
             var produtoDB = await GetProdutoByIdAsync(produto.Id);
