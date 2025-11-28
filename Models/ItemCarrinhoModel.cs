@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ToughService.Models.Produtos;
 
 namespace ToughService.Models
 {
@@ -24,7 +25,7 @@ namespace ToughService.Models
 
       
         [ForeignKey("ProdutoId")]
-        public virtual ProdutoModel Produto { get; set; } 
+        public virtual ProdutoBaseModel Produto { get; set; } 
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }

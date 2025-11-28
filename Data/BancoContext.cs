@@ -2,7 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ToughService.Models;
-using ToughService.Models.Produtos; // Importante para achar os novos models
+using ToughService.Models.Produtos;
 
 namespace ToughService.Data
 {
@@ -13,8 +13,10 @@ namespace ToughService.Data
         }
 
         // ========================================================================
-        // TABELAS DE PRODUTOS ESPECÍFICAS POR CATEGORIA
+        // TABELA ÚNICA (TPH)
         // ========================================================================
+        public DbSet<ProdutoBaseModel> Produtos { get; set; }
+
         public DbSet<ExtintorModel> Extintores { get; set; }
         public DbSet<MangueiraModel> Mangueiras { get; set; }
         public DbSet<HidranteModel> Hidrantes { get; set; }
@@ -26,11 +28,8 @@ namespace ToughService.Data
         public DbSet<SistemaFixoModel> SistemasFixos { get; set; }
         public DbSet<SistemaDeteccaoModel> SistemasDeteccao { get; set; }
         public DbSet<EquipamentoArMandadoModel> EquipamentosArMandado { get; set; }
+        public DbSet<ProdutoModel> ProdutosLegado { get; set; }
 
-        // Tabela legada de produtos genéricos
-        public DbSet<ProdutoModel> Produtos { get; set; }
-
-        // Outros DbSets do sistema
         public DbSet<ApplicationUser> Usuarios { get; set; }
         public DbSet<ChamadoModel> Chamados { get; set; }
         public DbSet<ItemCarrinhoModel> ItensCarrinho { get; set; }
@@ -40,92 +39,39 @@ namespace ToughService.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ====================================================================
-            // CONFIGURAÇÃO DAS TABELAS DE PRODUTOS
-            // ====================================================================
-
-            // Configuração para Extintores
-            modelBuilder.Entity<ExtintorModel>()
-                .ToTable("Extintores");
-            modelBuilder.Entity<ExtintorModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Mangueiras
-            modelBuilder.Entity<MangueiraModel>()
-                .ToTable("Mangueiras");
-            modelBuilder.Entity<MangueiraModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Hidrantes
-            modelBuilder.Entity<HidranteModel>()
-                .ToTable("Hidrantes");
-            modelBuilder.Entity<HidranteModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Acessórios
-            modelBuilder.Entity<AcessorioModel>()
-                .ToTable("Acessorios");
-            modelBuilder.Entity<AcessorioModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para EPIs
-            modelBuilder.Entity<EPIModel>()
-                .ToTable("EPIs");
-            modelBuilder.Entity<EPIModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para EPRs
-            modelBuilder.Entity<EPRModel>()
-                .ToTable("EPRs");
-            modelBuilder.Entity<EPRModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para EPCs
-            modelBuilder.Entity<EPCModel>()
-                .ToTable("EPCs");
-            modelBuilder.Entity<EPCModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Portas Corta-Fogo
-            modelBuilder.Entity<PortaCortaFogoModel>()
-                .ToTable("PortasCortaFogo");
-            modelBuilder.Entity<PortaCortaFogoModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Sistemas Fixos
-            modelBuilder.Entity<SistemaFixoModel>()
-                .ToTable("SistemasFixos");
-            modelBuilder.Entity<SistemaFixoModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Sistemas de Detecção
-            modelBuilder.Entity<SistemaDeteccaoModel>()
-                .ToTable("SistemasDeteccao");
-            modelBuilder.Entity<SistemaDeteccaoModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Equipamentos Ar Mandado
-            modelBuilder.Entity<EquipamentoArMandadoModel>()
-                .ToTable("EquipamentosArMandado");
-            modelBuilder.Entity<EquipamentoArMandadoModel>()
-                .HasIndex(p => p.Sku)
-                .IsUnique();
-
-            // Configuração para Produtos legados (tabela genérica)
-            modelBuilder.Entity<ProdutoModel>()
+            // CONFIGURAÇÃO TPH - Tabela Única
+            modelBuilder.Entity<ProdutoBaseModel>()
                 .ToTable("Produtos")
-                .HasIndex(p => p.Sku)
-                .IsUnique();
+                .HasIndex(p => p.Sku).IsUnique();
+
+            modelBuilder.Entity<ProdutoBaseModel>()
+                .HasDiscriminator<string>("TipoProduto")
+                .HasValue<ExtintorModel>("Extintor")
+                .HasValue<MangueiraModel>("Mangueira")
+                .HasValue<HidranteModel>("Hidrante")
+                .HasValue<AcessorioModel>("Acessorio")
+                .HasValue<EPIModel>("EPI")
+                .HasValue<EPRModel>("EPR")
+                .HasValue<EPCModel>("EPC")
+                .HasValue<PortaCortaFogoModel>("PortaCortaFogo")
+                .HasValue<SistemaFixoModel>("SistemaFixo")
+                .HasValue<SistemaDeteccaoModel>("SistemaDeteccao")
+                .HasValue<EquipamentoArMandadoModel>("ArMandado")
+                .HasValue<ProdutoModel>("Generico");
+
+            // Configurar relacionamento com ItensCarrinho
+            modelBuilder.Entity<ItemCarrinhoModel>()
+                .HasOne(i => i.Produto)
+                .WithMany()
+                .HasForeignKey(i => i.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configurar relacionamento com PedidoItens
+            modelBuilder.Entity<PedidoItemModel>()
+                .HasOne(p => p.Produto)
+                .WithMany()
+                .HasForeignKey(p => p.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

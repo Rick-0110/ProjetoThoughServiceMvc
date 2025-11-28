@@ -2,12 +2,12 @@
     Layout = null;
 }
 
-@model IEnumerable<ToughService.Models.ProdutoModel>
+@model IEnumerable<ToughService.Models.Produtos.ProdutoBaseModel>
 
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
     
-    var produtosPorCategoria = ViewBag.ProdutosPorCategoria as Dictionary<ToughService.Models.CategoriaEnum, List<ToughService.Models.ProdutoModel>>;
+    var produtosPorCategoria = ViewBag.ProdutosPorCategoria as Dictionary<ToughService.Models.CategoriaEnum, List<ToughService.Models.Produtos.ProdutoBaseModel>>;
     
     string GetCategoriaNome(ToughService.Models.CategoriaEnum cat)
     {

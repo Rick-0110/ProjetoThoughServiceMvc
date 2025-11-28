@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting; // Para IWebHostEnvironment
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ToughService.Models;
-using ToughService.Repository;
-using ToughService.Services;
-using System.IO; // Para Path e FileStream
-using Microsoft.AspNetCore.Hosting; // Para IWebHostEnvironment
 using System;
 using System.Collections.Generic;
+using System.IO; // Para Path e FileStream
 using System.Linq;
 using System.Threading.Tasks;
+using ToughService.Models;
+using ToughService.Models.Produtos;
+using ToughService.Repository;
+using ToughService.Services;
 
 namespace ToughService.Controllers
 {
@@ -279,147 +280,105 @@ namespace ToughService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {
-            // CORREÇÃO: Remove o campo 'Sku' do ModelState para evitar a validação [Required]
-            // já que o valor será gerado internamente no código.
             ModelState.Remove(nameof(model.Sku));
 
             if (!ModelState.IsValid)
             {
-                var erros = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                string mensagemErro = erros.Any()
-                    ? $"Preencha corretamente: {string.Join(" ", erros)}"
-                    : "Erro ao adicionar produto. Verifique os campos obrigatórios.";
-
-                TempData["ErroStatus"] = mensagemErro;
-
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                TempData["ErroStatus"] = $"Preencha corretamente: {string.Join(" ", erros)}";
                 return View(model);
             }
 
             CategoriaEnum categoriaConvertida;
             try
             {
-                // Mapeamento do ID da view para o Enum correto
-                categoriaConvertida = model.CategoriaId switch
-                {
-                    1 => CategoriaEnum.Extintores,
-                    2 => CategoriaEnum.Mangueiras,
-                    3 => CategoriaEnum.Acessorios,
-                    4 => CategoriaEnum.Hidrantes,
-                    5 => CategoriaEnum.SistemasFixos,
-                    6 => CategoriaEnum.SistemasDeDeteccao,
-                    7 => CategoriaEnum.EquipamentosArMandado,
-                    8 => CategoriaEnum.PortasCortaFogo,
-                    9 => CategoriaEnum.EPI,
-                    10 => CategoriaEnum.EPR,
-                    11 => CategoriaEnum.EPC,
-                    _ => throw new ArgumentException("Categoria inválida.")
-                };
+                categoriaConvertida = (CategoriaEnum)model.CategoriaId;
+                if (!Enum.IsDefined(typeof(CategoriaEnum), categoriaConvertida))
+                    throw new ArgumentException("Categoria inválida.");
             }
-            catch (ArgumentException ex)
+            catch
             {
-                TempData["ErroStatus"] = ex.Message;
+                TempData["ErroStatus"] = "Categoria inválida.";
                 return View(model);
             }
 
-            // 3. UPLOAD DA IMAGEM
+            // 1. UPLOAD DA IMAGEM
             string caminhoArquivo = "sem_imagem.png";
             if (model.Imagem != null)
             {
                 try
                 {
                     string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
-                    if (!Directory.Exists(pastaUploads))
-                    {
-                        Directory.CreateDirectory(pastaUploads);
-                    }
+                    if (!Directory.Exists(pastaUploads)) Directory.CreateDirectory(pastaUploads);
 
                     caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
-                    string caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
-
-                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                    using (var stream = new FileStream(Path.Combine(pastaUploads, caminhoArquivo), FileMode.Create))
                     {
                         await model.Imagem.CopyToAsync(stream);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Console.WriteLine($"ERRO AO FAZER UPLOAD DA IMAGEM: {ex.Message}");
-                    TempData["ErroStatus"] = "Erro ao fazer upload da imagem. Produto adicionado sem imagem.";
-                    caminhoArquivo = "sem_imagem.png";
+                    TempData["ErroStatus"] = "Erro ao fazer upload da imagem.";
                 }
             }
 
-            // 4. CRIAÇÃO DO MODELO PARA O REPOSITÓRIO
-            int categoriaIdMapeado = (int)categoriaConvertida;
-
-            var novoProduto = new ProdutoModel
+            // 2. CRIAÇÃO DO OBJETO TEMPORÁRIO (GENÉRICO)
+            // Usamos ProdutoModel aqui apenas para transportar os dados do ViewModel
+            var produtoTemporario = new ProdutoModel
             {
                 Nome = model.Nome ?? string.Empty,
                 Descricao = model.Descricao ?? string.Empty,
                 Preco = model.Preco,
-                CategoriaId = categoriaIdMapeado,
+                CategoriaId = model.CategoriaId,
                 Categoria = categoriaConvertida,
                 Marca = model.Marca ?? string.Empty,
                 Quantidade = model.Quantidade,
                 Peso = model.Peso,
                 Ativo = model.Ativo,
                 ImagemUrl = caminhoArquivo,
-                // Os campos Sku_* são preenchidos diretamente do model (garantidos pelo ModelState.IsValid)
                 Sku_Tipo = model.Sku_Tipo,
                 Sku_Agente = model.Sku_Agente,
                 Sku_Capacidade = model.Sku_Capacidade,
                 Sku_Modelo = model.Sku_Modelo,
-                // Inicializa o Sku como string vazia - será preenchido automaticamente pelo serviço
                 Sku = string.Empty
             };
 
-            // 5. GERAÇÃO AUTOMÁTICA DO SKU
-
-            if (novoProduto.Quantidade <= 0)
-            {
-                TempData["ErroStatus"] = "O estoque inicial deve ser maior que zero para criar o produto.";
-                return View(model);
-            }
-
             try
             {
-                novoProduto.Sku = await _skuService.GerarSkuAsync(novoProduto);
-
-                if (string.IsNullOrWhiteSpace(novoProduto.Sku))
-                {
-                    throw new InvalidOperationException("O SKU não foi gerado corretamente pelo serviço.");
-                }
+                produtoTemporario.Sku = await _skuService.GerarSkuAsync(produtoTemporario);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO AO GERAR SKU: {ex.Message}");
-                TempData["ErroStatus"] = $"Erro ao gerar o código SKU: {ex.Message}";
+                TempData["ErroStatus"] = $"Erro ao gerar SKU: {ex.Message}";
+                return View(model);
+            }
+
+            ProdutoBaseModel produtoFinal = ProdutoConverter.ConverterParaModelEspecifico(produtoTemporario);
+
+            if (produtoFinal == null)
+            {
+                TempData["ErroStatus"] = "Erro ao converter para o modelo específico da categoria.";
                 return View(model);
             }
 
             try
             {
-                var produtoSalvo = await _produtoRepository.AddProdutoAsync(novoProduto);
+                var produtoSalvo = await _produtoRepository.AddProdutoAsync(produtoFinal);
 
-                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado com sucesso! SKU: {produtoSalvo.Sku} (ID: {produtoSalvo.Id})";
-
+                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado! SKU: {produtoSalvo.Sku}";
                 return RedirectToAction(nameof(GerenciarProdutos));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO FATAL AO SALVAR PRODUTO: {ex.Message}");
-                TempData["ErroStatus"] = $"Erro ao salvar o produto no banco de dados. Detalhes: {ex.Message}";
-
+                Console.WriteLine($"ERRO SALVAR PRODUTO: {ex.Message}");
+                var msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                TempData["ErroStatus"] = $"Erro ao salvar: {msg}";
                 return View(model);
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> AtualizarProduto(ProdutoModel model)
+        public async Task<IActionResult> AtualizarProduto(ProdutoBaseModel model)
         {
             if (ModelState.IsValid)
             {
