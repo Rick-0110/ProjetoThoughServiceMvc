@@ -90,3 +90,42 @@ function closeAddStockModal() {
     // Limpa o formulário
     document.getElementById('form-adicionar-estoque').reset();
 }
+
+/**
+ * Confirma a adição de um produto antes de enviar o formulário.
+ * Exibe uma mensagem de confirmação com os dados principais do produto.
+ * @param {Event} event - Evento de submit do formulário
+ * @returns {boolean} - Retorna false para cancelar o envio, true para permitir
+ */
+function confirmarAdicionarProduto(event) {
+    // Obtém os valores do formulário para mostrar na confirmação
+    const nome = document.getElementById('nome').value;
+    const categoria = document.getElementById('categoria');
+    const categoriaTexto = categoria.options[categoria.selectedIndex].text;
+    const preco = document.getElementById('preco').value;
+    
+    // Valida se os campos obrigatórios estão preenchidos
+    if (!nome || !categoria.value || !preco) {
+        // Se não estiverem preenchidos, deixa o HTML5 validation funcionar
+        return true;
+    }
+    
+    // Monta a mensagem de confirmação
+    let mensagem = 'Tem certeza que deseja adicionar o produto abaixo?\n\n';
+    mensagem += `Nome: ${nome}\n`;
+    mensagem += `Categoria: ${categoriaTexto}\n`;
+    mensagem += `Preço: R$ ${parseFloat(preco).toFixed(2).replace('.', ',')}\n\n`;
+    mensagem += 'Esta ação não pode ser desfeita facilmente.';
+    
+    // Mostra a confirmação
+    const confirmacao = confirm(mensagem);
+    
+    // Se o usuário cancelar, impede o envio do formulário
+    if (!confirmacao) {
+        event.preventDefault();
+        return false;
+    }
+    
+    // Se confirmar, permite o envio
+    return true;
+}

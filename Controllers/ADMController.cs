@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO; 
-using System.Linq;
-using System.Threading.Tasks;
 using ToughService.Models;
 using ToughService.Models.Produtos;
 using ToughService.Repository;
@@ -301,29 +295,30 @@ namespace ToughService.Controllers
                 return View(model);
             }
 
-            // 1. UPLOAD DA IMAGEM
             string caminhoArquivo = "sem_imagem.png";
             if (model.Imagem != null)
             {
                 try
                 {
-                    string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
+                   
+                    string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG", "Produtos");
                     if (!Directory.Exists(pastaUploads)) Directory.CreateDirectory(pastaUploads);
 
                     caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
-                    using (var stream = new FileStream(Path.Combine(pastaUploads, caminhoArquivo), FileMode.Create))
+                    var caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
+                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
                     {
                         await model.Imagem.CopyToAsync(stream);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"ERRO UPLOAD IMAGEM: {ex.Message}");
                     TempData["ErroStatus"] = "Erro ao fazer upload da imagem.";
                 }
             }
 
-            // 2. CRIAÇÃO DO OBJETO TEMPORÁRIO (GENÉRICO)
-            // Usamos ProdutoModel aqui apenas para transportar os dados do ViewModel
+       
             var produtoTemporario = new ProdutoModel
             {
                 Nome = model.Nome ?? string.Empty,
@@ -391,8 +386,7 @@ namespace ToughService.Controllers
                     produtoParaAtualizar.Quantidade = model.Quantidade;
                     produtoParaAtualizar.Categoria = model.Categoria;
 
-                    // Nota: Se a regra for não permitir a edição dos campos que geram o SKU após a criação,
-                    // esses campos (Sku_Tipo, Sku_Agente, Sku_Capacidade, Sku_Modelo, Sku) não devem ser mapeados aqui.
+
 
                     await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
                 }
@@ -406,7 +400,6 @@ namespace ToughService.Controllers
             return RedirectToAction("GerenciarProdutos");
         }
 
-        // Métodos auxiliares/API (simplificados)
         [HttpGet]
         public async Task<IActionResult> ListarProdutos()
         {
