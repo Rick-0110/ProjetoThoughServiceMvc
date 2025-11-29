@@ -50,10 +50,15 @@
             <div class="servicos-grid">
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon"><i class="fas fa-tools"></i></div>
-                        <h3>Manutenção Preventiva</h3>
-                        <p>Garanta o melhor desempenho.</p>
-                        <ul class="servico-lista"><li>Inspeção</li><li>Lubrificação</li><li>Ajustes</li><li>Testes</li></ul>
+                        <div class="servico-icon"><i class="fas fa-fire-extinguisher"></i></div>
+                        <h3>Recarga e manutenção</h3>
+                        <p>Cuidado completo com os seus extintores.</p>
+                        <ul class="servico-lista">
+                            <li>Recarga dos extintores após o uso ou vencimento.</li>
+                            <li>Manutenção anual obrigatória.</li>
+                            <li>Ensaios hidrostáticos (testes de pressão).</li>
+                            <li>Colocação de lacres e etiquetas de validade.</li>
+                        </ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('manutencao')">Solicitar Orçamento</button>
@@ -66,13 +71,16 @@
                 </section>
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon"><i class="fas fa-wrench"></i></div>
-                        <h3>Reparo Técnico</h3>
-                        <p>Equipe especializada.</p>
-                        <ul class="servico-lista"><li>Diagnóstico</li><li>Reparo</li><li>Peças</li><li>Garantia</li></ul>
+                        <div class="servico-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <h3>Inspeções e certificações</h3>
+                        <p>Regularidade e segurança em dia.</p>
+                        <ul class="servico-lista">
+                            <li>Verificação periódica dos extintores em empresas, condomínios, escolas e comércios.</li>
+                            <li>Emissão de laudos e certificados para Corpo de Bombeiros.</li>
+                        </ul>
                         @if (isLoggedIn)
                         {
-                            <button class="btn-servico" onclick="openModal('reparo')">Solicitar Orçamento</button>
+                            <button class="btn-servico" onclick="openModal('inspecao')">Solicitar Orçamento</button>
                         }
                         else
                         {
@@ -82,13 +90,55 @@
                 </section>
                 <section>
                     <div class="servico-card">
-                        <div class="servico-icon"><i class="fas fa-cogs"></i></div>
-                        <h3>Instalação</h3>
-                        <p>Instalação profissional.</p>
-                        <ul class="servico-lista"><li>Planejamento</li><li>Montagem</li><li>Testes</li><li>Treinamento</li></ul>
+                        <div class="servico-icon"><i class="fas fa-fire"></i></div>
+                        <h3>Instalação de equipamentos</h3>
+                        <p>Extintores e sinalização nos locais corretos.</p>
+                        <ul class="servico-lista">
+                            <li>Instalação de extintores em locais adequados.</li>
+                            <li>Colocação de placas de sinalização.</li>
+                            <li>Organização de rotas de fuga e pontos de segurança.</li>
+                        </ul>
                         @if (isLoggedIn)
                         {
                             <button class="btn-servico" onclick="openModal('instalacao')">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
+                    </div>
+                </section>
+                <section>
+                    <div class="servico-card">
+                        <div class="servico-icon"><i class="fas fa-building-shield"></i></div>
+                        <h3>Projetos de prevenção contra incêndios</h3>
+                        <p>Planejamento completo para seu AVCB.</p>
+                        <ul class="servico-lista">
+                            <li>Elaboração de projetos conforme normas técnicas (ABNT e Corpo de Bombeiros).</li>
+                            <li>Adequação de ambientes para obtenção ou renovação do AVCB.</li>
+                        </ul>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico" onclick="openModal('projetos')">Solicitar Orçamento</button>
+                        }
+                        else
+                        {
+                            <a asp-action="Login" asp-controller="Registro" class="btn-servico">Faça o login</a>
+                        }
+                    </div>
+                </section>
+                <section>
+                    <div class="servico-card">
+                        <div class="servico-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h3>Treinamentos</h3>
+                        <p>Capacitação prática e teórica.</p>
+                        <ul class="servico-lista">
+                            <li>Treinamento de brigada de incêndio.</li>
+                            <li>Orientação prática e teórica sobre o uso correto do extintor.</li>
+                        </ul>
+                        @if (isLoggedIn)
+                        {
+                            <button class="btn-servico" onclick="openModal('treinamentos')">Solicitar Orçamento</button>
                         }
                         else
                         {

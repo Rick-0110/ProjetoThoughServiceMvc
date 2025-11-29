@@ -93,6 +93,51 @@ body {
     align-items: center;
 }
 
+.select-all-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.select-all-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid rgba(255,255,255,0.6);
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.select-all-wrapper input[type="checkbox"]:hover {
+    box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.3);
+}
+
+.select-all-wrapper input[type="checkbox"]:checked {
+    background: #ffcc00;
+    border-color: #ffcc00;
+}
+
+.select-all-wrapper input[type="checkbox"]:checked::after {
+    content: "âœ”";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -58%);
+    font-size: 0.8rem;
+    color: #000;
+}
+
+.select-all-wrapper label {
+    cursor: pointer;
+}
+
 .carrinho-items-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -118,6 +163,44 @@ body {
     border-bottom: 1px solid #f0f0f0;
     transition: all 0.3s ease;
     position: relative;
+}
+
+.carrinho-item-select {
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.carrinho-item-select input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.carrinho-item-select input[type="checkbox"]:hover {
+    box-shadow: 0 0 0 3px rgba(138, 4, 4, 0.15);
+}
+
+.carrinho-item-select input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, #8a0404, #610202);
+    border-color: transparent;
+}
+
+.carrinho-item-select input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: translate(20%, -10%) rotate(-45deg);
 }
 
     .carrinho-item:hover {
@@ -197,6 +280,46 @@ body {
     font-weight: 500;
 }
 
+.quantity-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f8f9fa;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid #e2e6ea;
+}
+
+.btn-qty {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: #8a0404;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-qty i {
+    font-size: 0.75rem;
+}
+
+.btn-qty:hover {
+    background: #fff5f5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.btn-qty:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
 .carrinho-item-prices {
     text-align: right;
 }
@@ -216,6 +339,48 @@ body {
 
 .remove-form {
     display: inline;
+}
+
+.keep-only-form {
+    margin-top: 0.5rem;
+}
+
+.keep-only-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.keep-only-checkbox input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.keep-only-checkbox input[type="checkbox"]:checked {
+    background: #8a0404;
+    border-color: #8a0404;
+}
+
+.keep-only-checkbox input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: translate(20%, -10%) rotate(-45deg);
 }
 
 
@@ -521,7 +686,7 @@ footer {
     }
 }
 
-/* Animações */
+/* Animaï¿½ï¿½es */
 @keyframes fadeInUp {
     from {
         opacity: 0;

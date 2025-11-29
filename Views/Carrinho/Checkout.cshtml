@@ -11,7 +11,19 @@
     var interestRateSixInstallments = 0.12m;
     var installmentWithInterest = installmentBase * (1 + interestRateSixInstallments);
     var selectedShippingMethod = string.IsNullOrWhiteSpace(Model?.ShippingMethod) ? string.Empty : Model.ShippingMethod;
+    var isQualifiedForDelivery = Model?.TotalExtintores >= 5;
     var shippingOptions = Model?.ShippingOptions ?? Enumerable.Empty<CheckoutShippingOptionViewModel>();
+
+    // Se não tiver a quantidade mínima de extintores, só permite retirada na Tough Service
+    if (!isQualifiedForDelivery)
+    {
+        shippingOptions = shippingOptions.Where(o => o.Value.Equals("pickup", StringComparison.OrdinalIgnoreCase));
+
+        if (selectedShippingMethod.Equals("delivery", StringComparison.OrdinalIgnoreCase))
+        {
+            selectedShippingMethod = "pickup";
+        }
+    }
     var selectedShippingOption = shippingOptions.FirstOrDefault(o => o.Value.Equals(selectedShippingMethod, StringComparison.OrdinalIgnoreCase));
     selectedShippingOption ??= shippingOptions.FirstOrDefault(o => o.IsDefault) ?? shippingOptions.FirstOrDefault();
     selectedShippingMethod = selectedShippingOption?.Value ?? selectedShippingMethod;
@@ -190,15 +202,22 @@
                             </span>
                             <div>
                                 <h2>Entrega ou retirada</h2>
-                                <p>Escolha retirar na empresa ou receber com frete grátis.</p>
+                                @if (isQualifiedForDelivery)
+                                {
+                                    <p>Escolha retirar na empresa ou receber com frete grátis.</p>
+                                }
+                                else
+                                {
+                                    <p>Para pedidos com menos de 5 extintores, apenas a opção de retirada na Tough Service está disponível.</p>
+                                }
                             </div>
                         </div>
                     </div>
 
-                    <div class="shipping-options">
-                        @if (Model.ShippingOptions != null && Model.ShippingOptions.Any())
+                    <div class="shipping-options" id="shippingOptionsContainer">
+                        @if (shippingOptions != null && shippingOptions.Any())
                         {
-                            foreach (var option in Model.ShippingOptions)
+                            foreach (var option in shippingOptions)
                             {
                                 var isSelected = option.Value.Equals(selectedShippingMethod, StringComparison.OrdinalIgnoreCase);
                                 <label class="shipping-card @(isSelected ? "is-selected" : string.Empty)"

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ToughService.Extensions;
 using ToughService.Models;
 using ToughService.Models.ModelCheckout;
+using ToughService.Models.Produtos;
 using ToughService.Repository;
 
 namespace ToughService.Services
@@ -37,8 +38,22 @@ namespace ToughService.Services
             var viewModel = model ?? new CheckoutViewModel();
 
             var cartItems = await LoadCartItemsAsync(httpContext.User);
+
+            // Se o usuário veio do carrinho com itens selecionados, filtramos aqui
+            var selectedIds = httpContext.Session?.GetObject<List<int>>("SelectedProdutoIds");
+            if (selectedIds != null && selectedIds.Any())
+            {
+                cartItems = cartItems.Where(i => selectedIds.Contains(i.ProdutoId)).ToList();
+                // limpa seleção após o uso
+                httpContext.Session.Remove("SelectedProdutoIds");
+            }
+
             viewModel.CartItems = cartItems;
             viewModel.Subtotal = viewModel.CartItems.Sum(i => i.Total);
+
+            // Regra de qualificação: quantidade total de itens no carrinho (cada unidade conta)
+            // Se quiser restringir apenas a extintores depois, podemos refinar aqui.
+            viewModel.TotalExtintores = viewModel.CartItems.Sum(i => i.Quantidade);
 
             viewModel.PaymentOptions = BuildPaymentOptions();
             if (string.IsNullOrWhiteSpace(viewModel.PaymentMethod))
@@ -117,6 +132,17 @@ namespace ToughService.Services
         {
             var unitPrice = item.Produto?.Preco ?? item.PrecoUnitario;
 
+            var produtoBase = item.Produto as ProdutoBaseModel;
+            var nomeProduto = item.Produto?.Nome ?? string.Empty;
+
+            // Considera extintor se:
+            // - a categoria do produto é Extintores OU
+            // - o nome do produto contém "Extintor" (case-insensitive)
+            var isExtintor =
+                (produtoBase != null && produtoBase.Categoria == CategoriaEnum.Extintores) ||
+                (!string.IsNullOrWhiteSpace(nomeProduto) &&
+                 nomeProduto.IndexOf("Extintor", StringComparison.OrdinalIgnoreCase) >= 0);
+
             return new CheckoutCartItemViewModel
             {
                 ProdutoId = item.ProdutoId,
@@ -124,7 +150,8 @@ namespace ToughService.Services
                 Sku = item.Produto?.Sku,
                 Quantidade = item.Quantidade,
                 PrecoUnitario = unitPrice,
-                ImagemUrl = item.Produto?.ImagemUrl
+                ImagemUrl = item.Produto?.ImagemUrl,
+                IsExtintor = isExtintor
             };
         }
 

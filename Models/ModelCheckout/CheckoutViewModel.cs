@@ -22,6 +22,10 @@ namespace ToughService.Models.ModelCheckout
         public decimal Subtotal { get; set; }
         public decimal ShippingCost { get; set; }
         public decimal Discount { get; set; }
+        /// <summary>
+        /// Quantidade total de itens de extintor no carrinho (soma das quantidades de produtos cujo nome contenha "Extintor").
+        /// </summary>
+        public int TotalExtintores { get; set; }
 
         [Required(ErrorMessage = "Informe o CEP.")]
         public string CheckoutCep { get; set; } = string.Empty;

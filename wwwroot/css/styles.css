@@ -59,6 +59,86 @@
         box-shadow: 0 6px 18px rgba(0,0,0,0.2);
     }
 
+/* ============================
+   PRODUTO - CONTROLE QUANTIDADE
+   ============================ */
+
+.produto-qty-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 1.25rem;
+    width: 100%;
+    max-width: 260px;
+}
+
+.produto-qty-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.produto-qty-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    background: #ffffff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.produto-qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: none;
+    background: #f8f9fa;
+    color: #8a0404;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.produto-qty-btn i {
+    font-size: 0.75rem;
+}
+
+.produto-qty-btn:hover {
+    background: #fff0f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.produto-qty-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.produto-qty-input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #343a40;
+    line-height: 1.4;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.produto-qty-input::-webkit-outer-spin-button,
+.produto-qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 
 
 :root {

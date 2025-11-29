@@ -172,6 +172,78 @@ namespace ToughService.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AlterarQuantidade(int produtoId, int delta)
+        {
+            if (delta == 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var item = await _carrinhoRepository.GetItemAsync(produtoId, user.Id);
+                if (item != null)
+                {
+                    item.Quantidade += delta;
+                    if (item.Quantidade <= 0)
+                    {
+                        await _carrinhoRepository.RemoveItemAsync(produtoId, user.Id);
+                    }
+                    else
+                    {
+                        await _carrinhoRepository.UpdateItemAsync(item);
+                    }
+                }
+            }
+            else
+            {
+                var session = _httpContextAccessor.HttpContext.Session;
+                var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+                var item = carrinhoSessao.FirstOrDefault(i => i.ProdutoId == produtoId);
+                if (item != null)
+                {
+                    item.Quantidade += delta;
+                    if (item.Quantidade <= 0)
+                    {
+                        carrinhoSessao.Remove(item);
+                    }
+                }
+                session.SetObject("Carrinho", carrinhoSessao);
+            }
+
+            TempData["SucessoCarrinho"] = "Quantidade atualizada.";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ManterSomenteProduto(int produtoId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var carrinho = await _carrinhoRepository.GetCarrinhoByUserIdAsync(user.Id);
+
+                foreach (var item in carrinho.Where(i => i.ProdutoId != produtoId).ToList())
+                {
+                    await _carrinhoRepository.RemoveItemAsync(item.ProdutoId, user.Id);
+                }
+            }
+            else
+            {
+                var session = _httpContextAccessor.HttpContext.Session;
+                var carrinhoSessao = session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+                carrinhoSessao = carrinhoSessao.Where(i => i.ProdutoId == produtoId).ToList();
+                session.SetObject("Carrinho", carrinhoSessao);
+            }
+
+            TempData["SucessoCarrinho"] = "Mantido apenas o produto selecionado no carrinho.";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClearCarrinho() 
         {
             if (User.Identity.IsAuthenticated)
@@ -185,6 +257,27 @@ namespace ToughService.Controllers
             }
             TempData["SucessoCarrinho"] = "Carrinho limpo com sucesso.";
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckoutSelecionado(string selectedProdutoIds)
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+
+            if (!string.IsNullOrWhiteSpace(selectedProdutoIds))
+            {
+                var ids = selectedProdutoIds
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => int.TryParse(s, out var id) ? id : (int?)null)
+                    .Where(id => id.HasValue)
+                    .Select(id => id.Value)
+                    .ToList();
+
+                session.SetObject("SelectedProdutoIds", ids);
+            }
+
+            return RedirectToAction("Index", "Checkout");
         }
 
         [HttpGet]

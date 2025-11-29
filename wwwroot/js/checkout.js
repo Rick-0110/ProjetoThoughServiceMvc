@@ -1,3 +1,6 @@
+// =========================================================================
+// 0. INICIALIZAÇÃO E CHAMADAS INICIAIS
+// =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     // Inicialização
     setupAddressSelection();
@@ -5,8 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPaymentTabs();
     setupCouponBehavior();
     setupMasks();
-    setupCepLookup(); // Adicionei a chamada do ViaCEP que faltava no seu DOMContentLoaded
-    setupConfirmButton();
+    setupCepLookup();
+    setupConfirmButton(); // Garante que o botão seja configurado
+    
+    // NOVO: Verifica qualificação de frete ao carregar a página
+    checkShippingQualification(); 
 
     // Inicializa validações com base na aba ativa atual
     const activePaymentTab = document.querySelector('.payment-tab.is-active');
@@ -113,6 +119,41 @@ function setupShippingSelection() {
     });
 }
 
+/**
+ * NOVO: Checa se o frete foi qualificado (5 ou mais extintores) e desabilita o botão
+ * de confirmação se não houver qualificação.
+ */
+function checkShippingQualification() {
+    // Busca o hidden field injetado na View
+    const isQualifiedElement = document.getElementById('freteQualificado');
+    const freteQualificado = isQualifiedElement ? isQualifiedElement.value === 'true' : true; 
+    const confirmButton = document.getElementById('confirmOrderButton');
+
+    if (confirmButton) {
+        if (!freteQualificado) {
+            // Regra: Se NÃO qualificado (menos de 5 extintores), desabilita o botão
+            confirmButton.disabled = true;
+            confirmButton.textContent = 'Adicione extintores para liberar a entrega';
+            confirmButton.classList.add('btn-disabled-frete'); 
+            confirmButton.setAttribute('title', 'É necessário no mínimo 5 extintores no carrinho para liberar a entrega ou retirada.');
+        } else {
+            // Regra: Se qualificado, garante que o botão esteja habilitado (se não houver outros erros)
+            confirmButton.disabled = false;
+            confirmButton.textContent = 'Confirmar pedido';
+            confirmButton.classList.remove('btn-disabled-frete');
+            confirmButton.removeAttribute('title');
+            
+            // Verifica se o frete foi de fato SELECIONADO (só se aplica quando qualificado)
+            const selectedShipping = document.querySelector('.shipping-card.is-selected');
+            if (!selectedShipping) {
+                confirmButton.disabled = true;
+                confirmButton.textContent = 'Selecione uma opção de Entrega/Retirada';
+            }
+        }
+    }
+}
+
+
 // =========================================================================
 // 4. PAGAMENTO (A Correção Principal está aqui)
 // =========================================================================
@@ -212,14 +253,25 @@ function updateSummaryTotals() {
 
     // Pega frete selecionado
     let shippingPrice = 0;
+    let shippingLabel = "Indisponível";
+
     const selectedShipping = document.querySelector('.shipping-card.is-selected');
-    if (selectedShipping) {
+    const freteQualificado = document.getElementById('freteQualificado')?.value === 'true';
+
+    if (freteQualificado && selectedShipping) {
         shippingPrice = parseCurrency(selectedShipping.dataset.shippingPrice || '0');
-        // Atualiza texto do frete no resumo
-        const label = selectedShipping.dataset.shippingLabel;
-        const priceText = shippingPrice === 0 ? "Grátis" : formatCurrency(shippingPrice);
-        document.getElementById('summaryShipping').textContent = `${label} · ${priceText}`;
+        shippingLabel = selectedShipping.dataset.shippingLabel;
+    } else if (freteQualificado && !selectedShipping) {
+        // Se qualificado, mas não selecionado, mantém a label de "Selecione"
+        shippingLabel = "Selecione";
     }
+
+    const priceText = shippingPrice === 0 ? "Grátis" : formatCurrency(shippingPrice);
+    document.getElementById('summaryShipping').textContent = `${shippingLabel} · ${priceText}`;
+    
+    // Atualiza o custo de frete no hidden field
+    const hiddenShippingCost = document.getElementById('hiddenShippingCost');
+    if (hiddenShippingCost) hiddenShippingCost.value = shippingPrice.toFixed(2).replace('.', ',');
 
     // Calcula Total
     const total = subtotal + shippingPrice - discount;
@@ -233,15 +285,16 @@ function updateSummaryTotals() {
 
     // Atualiza opções de parcelamento
     updateInstallmentOptions(total);
+    
+    // NOVO: Revalida o botão de Confirmação após o cálculo (no caso de re-seleção de frete)
+    checkShippingQualification(); 
 }
 
 function updateInstallmentOptions(totalValue) {
     const select = document.getElementById('Installments');
     if (!select) return;
 
-    // Limpa opções (mantendo a lógica simples aqui)
-    // Em um cenário ideal, recriaríamos as options baseadas no juros
-    // Por enquanto, atualiza apenas o texto da opção '1x' para refletir o novo total
+    // Apenas atualiza o texto da opção '1x' para refletir o novo total
     if (select.options.length > 0) {
         select.options[0].text = `1x de ${formatCurrency(totalValue)} sem juros`;
     }
@@ -265,21 +318,27 @@ function setupConfirmButton() {
     const form = document.getElementById('checkoutForm');
 
     if (!confirmButton || !form) return;
+    
+    // NOVO: Chama para garantir o estado inicial do botão
+    checkShippingQualification();
 
     confirmButton.addEventListener('click', (e) => {
+        // NOVO: Verifica novamente a qualificação e se o botão estiver desabilitado, impede o envio
+        if (confirmButton.disabled) {
+             e.preventDefault();
+             showCheckoutToast(confirmButton.title || 'Atenção! É necessário qualificar o frete e selecioná-lo.', 'error');
+             return;
+        }
+
         // Verifica validação HTML5 nativa
         if (!form.checkValidity()) {
-            // Se inválido, previne o envio padrão do botão (se for submit)
-            // Mas permite que o navegador mostre os balões de erro nativos
-            // e foca no primeiro campo inválido
-
-            // Log para debug (aperte F12 para ver)
+            e.preventDefault(); 
+            
             const invalidField = form.querySelector(':invalid');
             console.warn("Campo inválido:", invalidField);
 
             showCheckoutToast(`Preencha o campo: ${invalidField.previousElementSibling?.textContent || invalidField.name}`, 'error');
 
-            // Foca no erro
             invalidField.focus();
             return;
         }

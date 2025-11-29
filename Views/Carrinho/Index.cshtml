@@ -41,7 +41,10 @@
         <div class="carrinho-layout">
             <div class="carrinho-items-section">
                 <div class="carrinho-items-header">
-                    <h2 class="carrinho-items-title">Produtos</h2>
+                    <div class="select-all-wrapper">
+                        <input type="checkbox" id="selectAll" checked />
+                        <label for="selectAll">Produtos</label>
+                    </div>
                     <span class="carrinho-items-count">@quantidadeItensCarrinho itens</span>
                 </div>
 
@@ -51,6 +54,12 @@
                         @foreach (var item in Model)
                         {
                             <div class="carrinho-item">
+                                <div class="carrinho-item-select">
+                                    <input type="checkbox"
+                                           class="cart-select-item"
+                                           value="@item.ProdutoId"
+                                           checked />
+                                </div>
                                 <div class="carrinho-item-image">
                                     <img src="@Url.Content("~/IMG/" + item.Produto.ImagemUrl)" alt="@item.Produto.Nome" class="img-produto" />
                                     <div class="quantity-badge">@item.Quantidade</div>
@@ -62,8 +71,32 @@
                                         <p class="carrinho-item-category">Equipamento de Segurança</p>
 
                                         <div class="quantity-controls">
-                                            <span class="quantity-label">Quantidade: <strong>@item.Quantidade</strong></span>
+                                            <form asp-action="AlterarQuantidade" asp-controller="Carrinho" method="post" class="quantity-form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+
+                                                <button type="submit" name="delta" value="-1" class="btn-qty btn-qty-minus" title="Diminuir quantidade">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+
+                                                <span class="quantity-label">
+                                                    Quantidade: <strong>@item.Quantidade</strong>
+                                                </span>
+
+                                                <button type="submit" name="delta" value="1" class="btn-qty btn-qty-plus" title="Aumentar quantidade">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </form>
                                         </div>
+
+                                        <form asp-action="ManterSomenteProduto" asp-controller="Carrinho" method="post" class="keep-only-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                            <label class="keep-only-checkbox">
+                                                <input type="checkbox" onchange="this.form.submit()" @(Model.Count > 1 ? "" : "disabled checked") />
+                                                <span>Continuar comprando apenas este produto</span>
+                                            </label>
+                                        </form>
                                     </div>
 
                                     <div class="carrinho-item-prices">
@@ -124,10 +157,14 @@
                         <i class="fas fa-arrow-left me-2"></i>
                         Continuar Comprando
                     </a>
-                    <a class="btn-finalizar" asp-action="Index" asp-controller="Checkout">
-                        <i class="fas fa-credit-card me-2"></i>
-                        Finalizar Compra
-                    </a>
+                    <form asp-action="CheckoutSelecionado" asp-controller="Carrinho" method="post" class="form-finalizar">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="selectedProdutoIdsField" name="selectedProdutoIds" />
+                        <button type="submit" class="btn-finalizar">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Finalizar Compra
+                        </button>
+                    </form>
                     <form asp-action="ClearCarrinho" method="post">
                         <button type="submit" class="btn-limpar">
                             <i class="fas fa-trash me-2"></i>
@@ -143,7 +180,7 @@
  
 
     <script src="~/js/MinimalistaPrincipal.js"></script>
-    <script src="~/js/carrinho-modern.js"></script>
+    <script src="~/js/carrinho.js"></script>
     <script src="~/js/scripts.js"></script>
 </body>
 
