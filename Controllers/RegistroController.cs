@@ -26,7 +26,7 @@ namespace ToughService.Controllers
             IConfiguration configuration,
             ICarrinhoRepository carrinhoRepository,
             IHttpContextAccessor httpContextAccessor,
-            ILogger<RegistroController> logger) // Logger injetado
+            ILogger<RegistroController> logger) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -34,8 +34,44 @@ namespace ToughService.Controllers
             _configuration = configuration;
             _carrinhoRepository = carrinhoRepository;
             _httpContextAccessor = httpContextAccessor;
-            _logger = logger; // Inicialização do logger
+            _logger = logger; 
         }
+
+
+        [HttpGet]
+        public IActionResult EsqueciMinhaSenha()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EsqueciMinhaSenha(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Por favor, informe o e-mail.");
+                return View();
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                ViewData["EmailEnviado"] = true;
+                return View();
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var callbackUrl = Url.Action("RedefinirSenha", "Registro",
+                new { token = token, email = user.Email }, protocol: Request.Scheme);
+
+            ViewData["EmailEnviado"] = true;
+            return View();
+        }
+
+
 
         [HttpGet]
         public IActionResult Registro()
@@ -115,11 +151,7 @@ namespace ToughService.Controllers
             return View(login);
         }
 
-        [HttpGet]
-        public IActionResult EsqueciMinhaSenha()
-        {
-            return View();
-        }
+      
 
         [HttpPost]
         [ValidateAntiForgeryToken]

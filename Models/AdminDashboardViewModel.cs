@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 
 namespace ToughService.Models
 {
@@ -6,7 +7,8 @@ namespace ToughService.Models
         public int TotalChamados { get; set; }
         public int TotalProdutosEmEstoque { get; set; }
         public int TotalPedidos { get; set; }
+
+     
+        public List<AdminActivityViewModel> AtividadesRecentes { get; set; } = new List<AdminActivityViewModel>();
     }
 }
-
-

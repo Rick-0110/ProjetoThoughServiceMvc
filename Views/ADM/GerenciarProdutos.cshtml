@@ -90,7 +90,7 @@
                 <div class="form-section">
                     <h2>Adicionar Novo Produto</h2>
 
-                    <form asp-action="AdicionarProdutoADM" asp-controller="ADM" method="post" enctype="multipart/form-data">
+                    <form id="formAdicionarProduto" asp-action="AdicionarProdutoADM" asp-controller="ADM" method="post" enctype="multipart/form-data" onsubmit="return confirmarAdicionarProduto(event)">
                         @Html.AntiForgeryToken()
                         <div class="form-grid">
 
@@ -212,7 +212,7 @@
                                     {
                                         <div class="product-card-minimal">
                                             <div class="product-image">
-                                                <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
+                                                <img src="@Url.Content("~/IMG/Produtos/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
                                                 <div class="container-gerenciar-produtos">
                                                     <div class="container-produtos">
                                                         <div class="product-overlay">
