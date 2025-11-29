@@ -1,9 +1,11 @@
-﻿namespace ToughService.Models
+﻿using ToughService.Models.Produtos;
+
+namespace ToughService.Models
 {
     public class ProdutoDetalheViewModel
     {
-        public ProdutoModel Produto { get; set; }
+        public ProdutoBaseModel Produto { get; set; }
        
-        public List<ProdutoModel> OutrosProdutos { get; internal set; }
+        public List<ProdutoBaseModel> OutrosProdutos { get; internal set; }
     }
 }

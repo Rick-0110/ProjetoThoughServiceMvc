@@ -12,8 +12,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20251125000432_LoginComGoogleMigration")]
-    partial class LoginComGoogleMigration
+    [Migration("20251128150437_InicialTabelaUnica")]
+    partial class InicialTabelaUnica
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -470,7 +470,7 @@ namespace ToughService.Migrations
                     b.ToTable("Pedidos");
                 });
 
-            modelBuilder.Entity("ToughService.Models.ProdutoModel", b =>
+            modelBuilder.Entity("ToughService.Models.Produtos.ProdutoBaseModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -481,7 +481,7 @@ namespace ToughService.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("Categoria")
+                    b.Property<int>("Categoria")
                         .HasColumnType("int");
 
                     b.Property<int>("CategoriaId")
@@ -504,22 +504,416 @@ namespace ToughService.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<decimal?>("Peso")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10, 2)");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.Property<string>("Sku")
                         .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Sku_Agente")
+                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<string>("Sku_Capacidade")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Sku_Modelo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Sku_Tipo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoProduto")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("varchar(21)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos");
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
+                    b.ToTable("Produtos", (string)null);
+
+                    b.HasDiscriminator<string>("TipoProduto").HasValue("ProdutoBaseModel");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("ToughService.Models.ProdutoModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<decimal?>("Peso")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Peso")
+                                .HasColumnName("ProdutoModel_Peso");
+                        });
+
+                    b.HasDiscriminator().HasValue("Generico");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.AcessorioModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("Cor")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Dimensoes")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("TipoAcessorio")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Dimensoes")
+                                .HasColumnName("AcessorioModel_Dimensoes");
+
+                            t.Property("Material")
+                                .HasColumnName("AcessorioModel_Material");
+                        });
+
+                    b.HasDiscriminator().HasValue("Acessorio");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.EPCModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("AreaProtecao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Dimensoes")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Norma")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoEPC")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Material")
+                                .HasColumnName("EPCModel_Material");
+
+                            t.Property("Norma")
+                                .HasColumnName("EPCModel_Norma");
+                        });
+
+                    b.HasDiscriminator().HasValue("EPC");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.EPIModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("CertificacaoCA")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Norma")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Tamanho")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoEPI")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("CertificacaoCA")
+                                .HasColumnName("EPIModel_CertificacaoCA");
+
+                            t.Property("Material")
+                                .HasColumnName("EPIModel_Material");
+
+                            t.Property("Norma")
+                                .HasColumnName("EPIModel_Norma");
+
+                            t.Property("Tamanho")
+                                .HasColumnName("EPIModel_Tamanho");
+                        });
+
+                    b.HasDiscriminator().HasValue("EPI");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.EPRModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("CertificacaoCA")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Norma")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Tamanho")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoEPR")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoFiltro")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Norma")
+                                .HasColumnName("EPRModel_Norma");
+                        });
+
+                    b.HasDiscriminator().HasValue("EPR");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.EquipamentoArMandadoModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("Capacidade")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Norma")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Potencia")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PressaoTrabalho")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoEquipamento")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Capacidade")
+                                .HasColumnName("EquipamentoArMandadoModel_Capacidade");
+
+                            t.Property("PressaoTrabalho")
+                                .HasColumnName("EquipamentoArMandadoModel_PressaoTrabalho");
+                        });
+
+                    b.HasDiscriminator().HasValue("ArMandado");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.ExtintorModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("Capacidade")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DataFabricacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataRecarga")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataVencimento")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NormaReferencia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("PesoLiquido")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<string>("TipoAgente")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("Extintor");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.HidranteModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("PressaoTrabalho")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<string>("Rosca")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("TipoHidrante")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Material")
+                                .HasColumnName("HidranteModel_Material");
+                        });
+
+                    b.HasDiscriminator().HasValue("Hidrante");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.MangueiraModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<decimal>("Comprimento")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<decimal>("Diametro")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<decimal?>("Peso")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<string>("TipoMaterial")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasDiscriminator().HasValue("Mangueira");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.PortaCortaFogoModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<decimal>("Altura")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<string>("Certificacao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Largura")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TempoResistenciaFogo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoAbertura")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("PortaCortaFogo");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.SistemaDeteccaoModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("AreaCobertura")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Norma")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TensaoAlimentacao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoDetecao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoSensor")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("Norma")
+                                .HasColumnName("SistemaDeteccaoModel_Norma");
+                        });
+
+                    b.HasDiscriminator().HasValue("SistemaDeteccao");
+                });
+
+            modelBuilder.Entity("ToughService.Models.Produtos.SistemaFixoModel", b =>
+                {
+                    b.HasBaseType("ToughService.Models.Produtos.ProdutoBaseModel");
+
+                    b.Property<string>("AreaCobertura")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CapacidadeSistema")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TipoSistema")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Produtos", t =>
+                        {
+                            t.Property("AreaCobertura")
+                                .HasColumnName("SistemaFixoModel_AreaCobertura");
+                        });
+
+                    b.HasDiscriminator().HasValue("SistemaFixo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -584,10 +978,10 @@ namespace ToughService.Migrations
 
             modelBuilder.Entity("ToughService.Models.ItemCarrinhoModel", b =>
                 {
-                    b.HasOne("ToughService.Models.ProdutoModel", "Produto")
+                    b.HasOne("ToughService.Models.Produtos.ProdutoBaseModel", "Produto")
                         .WithMany()
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ToughService.Models.ApplicationUser", "User")
@@ -609,10 +1003,10 @@ namespace ToughService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ToughService.Models.ProdutoModel", "Produto")
+                    b.HasOne("ToughService.Models.Produtos.ProdutoBaseModel", "Produto")
                         .WithMany()
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pedido");

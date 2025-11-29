@@ -37,12 +37,19 @@ builder.Services.AddSession(options =>
 // ------------------------------------
 // Repositórios
 // ------------------------------------
-builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); 
+builder.Services.AddScoped<IProdutoRepositoryGeneric, ProdutoRepositoryGeneric>(); 
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 builder.Services.AddScoped<ICheckoutViewModelBuilder, CheckoutViewModelBuilder>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+// ------------------------------------
+// Serviços
+// ------------------------------------
+builder.Services.AddScoped<ISkuService, SkuService>();
 
 // ------------------------------------
 // Banco de dados
@@ -87,6 +94,40 @@ builder.Services.AddAuthentication()
 
 
 var app = builder.Build();
+
+// ------------------------------------
+// Corrigir valores NULL no banco de dados
+// ------------------------------------
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var context = services.GetRequiredService<BancoContext>();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
+        // Corrige valores NULL na tabela Produtos
+        await context.Database.ExecuteSqlRawAsync(@"
+            UPDATE Produtos 
+            SET Categoria = 0, CategoriaId = 0 
+            WHERE Categoria IS NULL OR CategoriaId IS NULL
+        ");
+        
+        await context.Database.ExecuteSqlRawAsync(@"
+            UPDATE Produtos 
+            SET Quantidade = 0 
+            WHERE Quantidade IS NULL
+        ");
+        
+        logger.LogInformation("Valores NULL corrigidos na tabela Produtos.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning(ex, "Aviso ao corrigir valores NULL (pode ser normal se já foram corrigidos).");
+    }
+}
 
 // ------------------------------------
 // Criar usuário admin (seed)
@@ -153,7 +194,7 @@ async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager,
         Console.WriteLine(">>> Papel Admin criado.");
     }
 
-    string adminEmail = configuration["AdminUser:Email"];
+    string adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? configuration["AdminUser:Email"];
     string adminPassword = configuration["AdminUser:Password"];
 
     if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))

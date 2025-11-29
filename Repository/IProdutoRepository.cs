@@ -1,14 +1,18 @@
-﻿using ToughService.Models;
+﻿using ToughService.Models.Produtos; 
 
 namespace ToughService.Repository
 {
     public interface IProdutoRepository
     {
-     Task<IEnumerable<ProdutoModel>> GetAllProdutosAsync();
-        Task<ProdutoModel> GetProdutoByIdAsync(int id);
-        Task<ProdutoModel> AddProdutoAsync(ProdutoModel produto);
+        Task<IEnumerable<ProdutoBaseModel>> GetAllProdutosAsync();
+
+        Task<ProdutoBaseModel> GetProdutoByIdAsync(int id);
+
+        Task<ProdutoBaseModel> AddProdutoAsync(ProdutoBaseModel produto);
+        Task<ProdutoBaseModel> UpdateProdutoAsync(ProdutoBaseModel produto);
         Task<bool> RemoveProdutoAsync(int id);
-        Task<ProdutoModel> UpdateProdutoAsync(ProdutoModel produto);
-        Task<IEnumerable<ProdutoModel>> SearchProdutosAsync(string termobusca);
+
+        // Busca
+        Task<IEnumerable<ProdutoBaseModel>> SearchProdutosAsync(string termo);
     }
 }

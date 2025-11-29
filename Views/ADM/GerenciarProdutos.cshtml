@@ -2,10 +2,31 @@
     Layout = null;
 }
 
-@model IEnumerable<ToughService.Models.ProdutoModel>
+@model IEnumerable<ToughService.Models.Produtos.ProdutoBaseModel>
 
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
+    
+    var produtosPorCategoria = ViewBag.ProdutosPorCategoria as Dictionary<ToughService.Models.CategoriaEnum, List<ToughService.Models.Produtos.ProdutoBaseModel>>;
+    
+    string GetCategoriaNome(ToughService.Models.CategoriaEnum cat)
+    {
+        return cat switch
+        {
+            ToughService.Models.CategoriaEnum.Extintores => "Extintores de Incêndio",
+            ToughService.Models.CategoriaEnum.Mangueiras => "Mangueiras de Combate a Incêndio",
+            ToughService.Models.CategoriaEnum.Acessorios => "Acessórios (Abrigos, Placas, Suportes)",
+            ToughService.Models.CategoriaEnum.Hidrantes => "Hidrantes",
+            ToughService.Models.CategoriaEnum.SistemasFixos => "Sistemas Fixos de Combate a Incêndio",
+            ToughService.Models.CategoriaEnum.SistemasDeDeteccao => "Sistemas de Detecção de Fumaça",
+            ToughService.Models.CategoriaEnum.EquipamentosArMandado => "Equipamentos para Ar Mandado",
+            ToughService.Models.CategoriaEnum.PortasCortaFogo => "Portas Corta-Fogo",
+            ToughService.Models.CategoriaEnum.EPI => "EPI - Equipamento de Proteção Individual",
+            ToughService.Models.CategoriaEnum.EPR => "EPR - Equipamento de Proteção Respiratória",
+            ToughService.Models.CategoriaEnum.EPC => "EPC - Equipamento de Proteção Coletiva",
+            _ => cat.ToString()
+        };
+    }
 }
 
 <!DOCTYPE html>
@@ -79,19 +100,42 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="sku">Código do Produto (SKU)</label>
-                                <input type="text" id="sku" name="Sku" placeholder="Ex: EXT-001">
-                            </div>
-
-                            <div class="form-group">
                                 <label for="categoria">Categoria *</label>
                                 <select id="categoria" name="CategoriaId" required>
                                     <option value="">Selecione uma categoria</option>
-                                    <option value="1">Extintores</option>
-                                    <option value="2">Sistemas Fixos</option>
-                                    <option value="3">Sistemas de Detecção</option>
-                                    <option value="4">Acessórios</option>
+                                    <option value="1">Extintores de Incêndio</option>
+                                    <option value="2">Mangueiras de Combate a Incêndio</option>
+                                    <option value="3">Acessórios (Abrigos, Placas, Suportes)</option>
+                                    <option value="4">Hidrantes</option>
+                                    <option value="5">Sistemas Fixos de Combate a Incêndio</option>
+                                    <option value="6">Sistemas de Detecção de Fumaça</option>
+                                    <option value="7">Equipamentos para Ar Mandado</option>
+                                    <option value="8">Portas Corta-Fogo</option>
+                                    <option value="9">EPI - Equipamento de Proteção Individual</option>
+                                    <option value="10">EPR - Equipamento de Proteção Respiratória</option>
+                                    <option value="11">EPC - Equipamento de Proteção Coletiva</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_tipo">Tipo/Prefix (SKU) *</label>
+                                <input type="text" id="sku_tipo" name="Sku_Tipo" required placeholder="Ex: EAT (Extintor Automático) / MGA (Mangueira)">
+                                <small style="display: block; margin-top: 0.25rem; color: #6c757d; font-size: 0.875rem;">O SKU será gerado automaticamente com base nestes campos</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_agente">Agente Extintor (SKU) *</label>
+                                <input type="text" id="sku_agente" name="Sku_Agente" required placeholder="Ex: PO (Pó Químico) / CO2 / AGUA">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_capacidade">Capacidade (SKU) *</label>
+                                <input type="text" id="sku_capacidade" name="Sku_Capacidade" required placeholder="Ex: 06KG (Capacidade) / 10MT (Comprimento)">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sku_modelo">Modelo (SKU) *</label>
+                                <input type="text" id="sku_modelo" name="Sku_Modelo" required placeholder="Ex: MOD2">
                             </div>
 
                             <div class="form-group">
@@ -150,11 +194,74 @@
                         <h2>Produtos Cadastrados</h2>
                     </div>
 
-                    <div class="products-grid" id="productsGrid">
-
-                        @if (Model != null && Model.Any())
+                    @if (produtosPorCategoria != null && produtosPorCategoria.Any())
+                    {
+                        @foreach (var categoriaGroup in produtosPorCategoria.OrderBy(c => c.Key))
                         {
-                            foreach (var produto in Model)
+                            <div class="category-section-admin" style="margin-bottom: 3rem;">
+                                <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #8a0404; color: #343a40;">
+                                    <i class="fas fa-fire-extinguisher" style="margin-right: 0.5rem; color: #8a0404;"></i>
+                                    @GetCategoriaNome(categoriaGroup.Key)
+                                    <span style="font-size: 0.9rem; font-weight: 400; color: #6c757d; margin-left: 0.5rem;">
+                                        (@categoriaGroup.Value.Count produto@(categoriaGroup.Value.Count != 1 ? "s" : ""))
+                                    </span>
+                                </h3>
+
+                                <div class="products-grid" id="productsGrid">
+                                    @foreach (var produto in categoriaGroup.Value)
+                                    {
+                                        <div class="product-card-minimal">
+                                            <div class="product-image">
+                                                <img src="@Url.Content("~/IMG/" + produto.ImagemUrl)" alt="@produto.Nome" height="100px" />
+                                                <div class="container-gerenciar-produtos">
+                                                    <div class="container-produtos">
+                                                        <div class="product-overlay">
+
+                                                            <button class="icon-btn edit-btn"
+                                                                    onclick="openEditModal(@produto.Id, '@produto.Nome', '@produto.Categoria', @produto.Preco.ToString().Replace(",", "."), @produto.Quantidade, `@produto.Descricao.Replace("`", "\\`")`)"
+                                                                    title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+
+                                                            <button class="icon-btn stock-btn"
+                                                                    onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
+                                                                    title="Adicionar Estoque">
+                                                                <i class="fas fa-box"></i>
+                                                            </button>
+
+                                                        </div>
+                                                        <form asp-action="ExcluirProduto" asp-controller="ADM" method="post" onsubmit="return confirm('Tem certeza que deseja excluir o produto `@produto.Nome`?');">
+                                                            <input type="hidden" name="id" value="@produto.Id" />
+                                                            <button type="submit" class="icon-btn delete-btn" title="Excluir">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="product-info">
+                                                <h3 class="product-name">@produto.Nome</h3>
+                                                <div class="product-rating">
+                                                    <div class="stars">★★★★★</div>
+                                                </div>
+                                                <div class="product-price">@produto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-BR"))</div>
+                                                @if (!string.IsNullOrEmpty(produto.Sku))
+                                                {
+                                                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 0.25rem;">
+                                                        SKU: @produto.Sku
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else if (Model != null && Model.Any())
+                    {
+                        <div class="products-grid" id="productsGrid">
+                            @foreach (var produto in Model)
                             {
                                 <div class="product-card-minimal">
                                     <div class="product-image">
@@ -194,13 +301,13 @@
                                     </div>
                                 </div>
                             }
-                        }
-                        else
-                        {
-                            <p>Nenhum produto cadastrado.</p>
-                        }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Nenhum produto cadastrado.</p>
+                    }
 
-                    </div>
                 </div>
             </div>
     </main>
@@ -224,10 +331,17 @@
                         <div class="form-group">
                             <label for="editCategoria">Categoria *</label>
                             <select id="editCategoria" name="categoria" required>
-                                <option value="Extintores">Extintores</option>
-                                <option value="SistemasFixos">Sistemas Fixos</option>
-                                <option value="SistemasDeDeteccao">Sistemas de Detecção</option>
-                                <option value="Acessorios">Acessórios</option>
+                                <option value="Extintores">Extintores de Incêndio</option>
+                                <option value="Mangueiras">Mangueiras de Combate a Incêndio</option>
+                                <option value="Acessorios">Acessórios (Abrigos, Placas, Suportes)</option>
+                                <option value="Hidrantes">Hidrantes</option>
+                                <option value="SistemasFixos">Sistemas Fixos de Combate a Incêndio</option>
+                                <option value="SistemasDeDeteccao">Sistemas de Detecção de Fumaça</option>
+                                <option value="EquipamentosArMandado">Equipamentos para Ar Mandado</option>
+                                <option value="PortasCortaFogo">Portas Corta-Fogo</option>
+                                <option value="EPI">EPI - Equipamento de Proteção Individual</option>
+                                <option value="EPR">EPR - Equipamento de Proteção Respiratória</option>
+                                <option value="EPC">EPC - Equipamento de Proteção Coletiva</option>
                             </select>
                         </div>
 

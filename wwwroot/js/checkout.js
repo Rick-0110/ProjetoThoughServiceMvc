@@ -1,21 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicialização de todas as funcionalidades de Front-end
+    // Inicialização
     setupAddressSelection();
     setupShippingSelection();
     setupPaymentTabs();
     setupCouponBehavior();
-    setupMasks(); // Aplica as máscaras de input
-    setupConfirmButton(); // A função que envia os dados para o C#
+    setupMasks();
+    setupCepLookup(); // Adicionei a chamada do ViaCEP que faltava no seu DOMContentLoaded
+    setupConfirmButton();
 
-    // Calcula o total inicial ao carregar a página
-    // É crucial que o C# recalcule, mas o JS mantém a visualização correta
+    // Inicializa validações com base na aba ativa atual
+    const activePaymentTab = document.querySelector('.payment-tab.is-active');
+    if (activePaymentTab) {
+        updatePaymentValidators(activePaymentTab.dataset.payment);
+        const paymentField = document.getElementById('paymentMethodField');
+        if (paymentField) paymentField.value = activePaymentTab.dataset.payment;
+    }
+
+    // Calcula totais iniciais
     updateSummaryTotals();
 });
 
 // =========================================================================
-// FUNÇÕES DE INTERAÇÃO VISUAL
+// 1. ENDEREÇO
 // =========================================================================
-
 function setupAddressSelection() {
     const addressList = document.getElementById('addressList');
     if (!addressList) return;
@@ -24,24 +31,72 @@ function setupAddressSelection() {
         const card = event.target.closest('.address-card');
         if (!card) return;
 
-        // Remove a seleção de todos os cartões e adiciona ao clicado
-        document.querySelectorAll('.address-card').forEach((address) => {
-            address.classList.remove('is-selected');
+        // Visual
+        document.querySelectorAll('.address-card').forEach((addr) => {
+            addr.classList.remove('is-selected');
         });
         card.classList.add('is-selected');
 
+        // Lógica
         const selectedAddressField = document.getElementById('selectedAddressId');
         if (selectedAddressField) {
             selectedAddressField.value = card.dataset.addressId || '';
         }
-
-        // Em um sistema real, aqui haveria uma chamada AJAX para calcular o frete para o novo CEP.
     });
 }
 
+// =========================================================================
+// 2. CEP (VIA CEP)
+// =========================================================================
+function setupCepLookup() {
+    const cepInput = document.getElementById('CheckoutCep');
+    if (!cepInput) return;
+
+    cepInput.addEventListener('blur', function () {
+        const cep = this.value.replace(/\D/g, '');
+
+        if (cep.length !== 8) return;
+
+        // Feedback visual de carregamento
+        document.getElementById('CheckoutEndereco').placeholder = "Buscando...";
+
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.erro) {
+                    const enderecoInput = document.getElementById('CheckoutEndereco');
+                    const cidadeInput = document.getElementById('CheckoutCidade');
+                    const estadoInput = document.getElementById('CheckoutEstado');
+                    const bairroInput = document.getElementById('CheckoutBairro'); // Se existir
+
+                    if (enderecoInput) enderecoInput.value = data.logradouro;
+                    if (cidadeInput) cidadeInput.value = data.localidade;
+                    if (estadoInput) estadoInput.value = data.uf;
+                    // Se tiver campo de bairro: if(bairroInput) bairroInput.value = data.bairro;
+
+                    document.getElementById('CheckoutNumero').focus();
+                    showCheckoutToast(`Endereço encontrado!`, 'success');
+                } else {
+                    showCheckoutToast('CEP não encontrado.', 'warning');
+                    document.getElementById('CheckoutEndereco').focus();
+                }
+            })
+            .catch(() => {
+                showCheckoutToast('Erro ao consultar CEP.', 'error');
+            })
+            .finally(() => {
+                document.getElementById('CheckoutEndereco').placeholder = "Rua, avenida, etc.";
+            });
+    });
+}
+
+// =========================================================================
+// 3. ENTREGA (FRETE)
+// =========================================================================
 function setupShippingSelection() {
     const cards = document.querySelectorAll('.shipping-card');
-
     if (!cards.length) return;
 
     cards.forEach((card) => {
@@ -50,326 +105,230 @@ function setupShippingSelection() {
             card.classList.add('is-selected');
 
             const radio = card.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-            }
+            if (radio) radio.checked = true;
 
-            const hiddenShipping = document.getElementById('hiddenShipping');
-            if (hiddenShipping) {
-                hiddenShipping.value = card.getAttribute('data-shipping-price') || '0';
-            }
-
-            // Atualiza o resumo visualmente
+            // Atualiza resumo visualmente
             updateSummaryTotals();
         });
     });
 }
 
+// =========================================================================
+// 4. PAGAMENTO (A Correção Principal está aqui)
+// =========================================================================
 function setupPaymentTabs() {
     const tabs = document.querySelectorAll('.payment-tab');
     const panels = document.querySelectorAll('[data-payment-panel]');
+
     if (!tabs.length) return;
 
     tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
-            const payment = tab.dataset.payment;
+            const paymentType = tab.dataset.payment;
 
+            // 1. Atualiza Abas
             tabs.forEach((other) => other.classList.remove('is-active'));
             tab.classList.add('is-active');
 
+            // 2. Atualiza Painéis
             panels.forEach((panel) => {
-                panel.classList.toggle('is-visible', panel.dataset.paymentPanel === payment);
+                panel.classList.toggle('is-visible', panel.dataset.paymentPanel === paymentType);
             });
 
+            // 3. Atualiza Campo Hidden
             const paymentField = document.getElementById('paymentMethodField');
             if (paymentField) {
-                paymentField.value = payment;
+                paymentField.value = paymentType;
             }
+
+            // 4. ATIVA/DESATIVA VALIDATORS (CRUCIAL!)
+            updatePaymentValidators(paymentType);
         });
     });
 }
 
-function setupCouponBehavior() {
-    const couponInput = document.getElementById('CouponInput');
-    const applyButton = document.getElementById('applyCouponButton');
+/**
+ * Função que adiciona ou remove 'required' dos campos de cartão
+ * dependendo se a aba Cartão está ativa ou não.
+ */
+function updatePaymentValidators(paymentType) {
+    const cardInputs = document.querySelectorAll('[data-payment-panel="card"] input, [data-payment-panel="card"] select');
 
-    if (!couponInput || !applyButton) return;
+    if (paymentType === 'card') {
+        // Se for cartão, torna os campos obrigatórios
+        cardInputs.forEach(input => {
+            // Ignora o checkbox "Salvar Cartão"
+            if (input.type !== 'checkbox') {
+                input.setAttribute('required', 'required');
+            }
+        });
+    } else {
+        // Se for Pix ou Boleto, remove a obrigatoriedade
+        cardInputs.forEach(input => {
+            input.removeAttribute('required');
+            // Opcional: Limpa erros visuais se houver
+            input.classList.remove('input-validation-error');
+        });
+    }
+}
+
+// =========================================================================
+// 5. CUPOM
+// =========================================================================
+function setupCouponBehavior() {
+    const applyButton = document.getElementById('applyCouponButton');
+    const couponInput = document.getElementById('CouponInput');
+
+    if (!applyButton || !couponInput) return;
 
     applyButton.addEventListener('click', () => {
-        const code = couponInput.value.trim().toUpperCase();
-
-        // NOTA: A validação e aplicação real do desconto é feita no C#.
-        // Aqui, apenas simulamos para a UX do cliente.
-
+        const code = couponInput.value.trim();
         if (!code) {
-            showCheckoutToast('Digite um cupom antes de aplicar.', 'warning');
+            showCheckoutToast('Digite um código de cupom.', 'warning');
             return;
         }
 
-        const summaryDiscounts = document.getElementById('summaryDiscounts');
-        const hiddenDiscount = document.getElementById('hiddenDiscount');
-        const hiddenSubtotal = document.getElementById('hiddenSubtotal');
-        let discount = 0;
+        // Simulação Visual (A lógica real deve ser validada no C# ao enviar)
+        if (code.toUpperCase() === 'PROMO10') {
+            const hiddenDiscount = document.getElementById('hiddenDiscount');
+            if (hiddenDiscount) hiddenDiscount.value = "10.00"; // Exemplo
 
-        // Simulação de desconto
-        if (code === 'TGS10') {
-            discount = parseDecimalValue(hiddenSubtotal?.value) * 0.1;
-        } else if (code === 'FRETEGRATIS') {
-            discount = getCurrentShippingPrice();
-        } else {
-            showCheckoutToast('Cupom inválido ou expirado.', 'error');
-            summaryDiscounts.textContent = formatCurrency(0, true);
-            if (hiddenDiscount) hiddenDiscount.value = '0';
+            document.getElementById('summaryDiscounts').textContent = "- R$ 10,00";
             updateSummaryTotals();
-            return;
+            showCheckoutToast('Cupom aplicado!', 'success');
+        } else {
+            showCheckoutToast('Cupom inválido (Simulação).', 'error');
         }
-
-        if (!Number.isFinite(discount)) {
-            discount = 0;
-        }
-
-        summaryDiscounts.textContent = formatCurrency(discount, true); // O 'true' adiciona o '-'
-        if (hiddenDiscount) {
-            hiddenDiscount.value = discount.toFixed(2);
-        }
-        updateSummaryTotals();
-        showCheckoutToast('Cupom aplicado com sucesso!', 'success');
     });
 }
 
 // =========================================================================
-// FUNÇÕES DE CÁLCULO E FORMATAÇÃO (APENAS FRONT-END)
+// 6. CÁLCULOS E TOTAIS
 // =========================================================================
+function updateSummaryTotals() {
+    // Pega valores
+    const subtotal = parseCurrency(document.getElementById('hiddenSubtotal')?.value || '0');
+    const discount = parseCurrency(document.getElementById('hiddenDiscount')?.value || '0');
 
-function getCurrentShippingPrice() {
+    // Pega frete selecionado
+    let shippingPrice = 0;
     const selectedShipping = document.querySelector('.shipping-card.is-selected');
     if (selectedShipping) {
-        const datasetValue = selectedShipping.getAttribute('data-shipping-price');
-        if (datasetValue) {
-            return parseDecimalValue(datasetValue);
-        }
+        shippingPrice = parseCurrency(selectedShipping.dataset.shippingPrice || '0');
+        // Atualiza texto do frete no resumo
+        const label = selectedShipping.dataset.shippingLabel;
+        const priceText = shippingPrice === 0 ? "Grátis" : formatCurrency(shippingPrice);
+        document.getElementById('summaryShipping').textContent = `${label} · ${priceText}`;
     }
 
-    const hiddenShipping = document.getElementById('hiddenShipping');
-    if (hiddenShipping) {
-        return parseDecimalValue(hiddenShipping.value);
-    }
+    // Calcula Total
+    const total = subtotal + shippingPrice - discount;
 
-    return 0;
-}
+    // Atualiza HTML
+    document.getElementById('summaryTotal').textContent = formatCurrency(total);
 
-function getCurrentShippingSummary() {
-    const selectedShipping = document.querySelector('.shipping-card.is-selected');
-    if (!selectedShipping) {
-        return 'Entrega grátis';
-    }
-
-    const label = selectedShipping.getAttribute('data-shipping-label') || 'Entrega';
-    const price = parseDecimalValue(selectedShipping.getAttribute('data-shipping-price') || '0');
-    const priceText = price <= 0 ? 'Grátis' : formatCurrency(price);
-
-    return `${label} · ${priceText}`;
-}
-
-function updateSummaryTotals() {
-    const summaryShipping = document.getElementById('summaryShipping');
-    const summaryTotal = document.getElementById('summaryTotal');
-    const summaryDiscounts = document.getElementById('summaryDiscounts');
-    const hiddenSubtotal = document.getElementById('hiddenSubtotal');
-    const hiddenDiscount = document.getElementById('hiddenDiscount');
+    // Atualiza Input Hidden para envio (opcional, pois o C# recalcula)
     const hiddenTotal = document.getElementById('hiddenTotal');
+    if (hiddenTotal) hiddenTotal.value = total.toFixed(2).replace('.', ',');
 
-    const subtotalValue = parseDecimalValue(hiddenSubtotal?.value);
-    const shippingValue = getCurrentShippingPrice();
-    const discountValue = parseDecimalValue(hiddenDiscount?.value);
-
-    const total = subtotalValue + shippingValue - discountValue;
-
-    if (summaryShipping) summaryShipping.textContent = getCurrentShippingSummary();
-    if (summaryDiscounts) summaryDiscounts.textContent = formatCurrency(discountValue, true);
-    if (summaryTotal) summaryTotal.textContent = formatCurrency(total);
-    if (hiddenTotal) hiddenTotal.value = total.toFixed(2);
+    // Atualiza opções de parcelamento
     updateInstallmentOptions(total);
 }
 
-function parseCurrency(value) {
-    if (!value) return 0;
-    // Remove R$, espaços, pontos de milhar e substitui vírgula por ponto decimal
-    return Number(
-        value
-            .replace(/[R$\s-]/g, '')
-            .replace(/\./g, '')
-            .replace(',', '.')
-    ) || 0;
-}
+function updateInstallmentOptions(totalValue) {
+    const select = document.getElementById('Installments');
+    if (!select) return;
 
-function parseDecimalValue(value) {
-    if (value === undefined || value === null) return 0;
-    return Number(
-        value
-            .toString()
-            .replace(/\s/g, '')
-            .replace(/\./g, '')
-            .replace(',', '.')
-    ) || 0;
-}
-
-function formatCurrency(value, isNegative = false) {
-    const formatted = value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    });
-    // Adiciona o sinal negativo se necessário
-    return isNegative ? `- ${formatted}` : formatted;
-}
-
-function updateInstallmentOptions(baseAmount) {
-    const installmentSelect = document.getElementById('Installments');
-    if (!installmentSelect) return;
-
-    const hiddenSubtotal = document.getElementById('hiddenSubtotal');
-    const amount = baseAmount > 0 ? baseAmount : parseDecimalValue(hiddenSubtotal?.value);
-    if (amount <= 0) return;
-
-    const interestRateSixInstallments = 0.12;
-    const config = {
-        '1': { parts: 1, interest: false },
-        '2': { parts: 2, interest: false },
-        '3': { parts: 3, interest: false },
-        '6': { parts: 6, interest: true }
-    };
-
-    Array.from(installmentSelect.options).forEach((option) => {
-        const optionConfig = config[option.value];
-        if (!optionConfig) return;
-
-        const total = optionConfig.interest ? amount * (1 + interestRateSixInstallments) : amount;
-        const perInstallment = total / optionConfig.parts;
-        const suffix = optionConfig.interest ? 'com juros' : 'sem juros';
-        let text = `${optionConfig.parts}x de ${formatCurrency(perInstallment)} ${suffix}`;
-        if (optionConfig.interest) {
-            text += ` (Total ${formatCurrency(total)})`;
-        }
-        option.textContent = text;
-    });
-}
-
-// =========================================================================
-// FUNÇÕES DE VALIDAÇÃO E ENVIO (PONTE PARA O C#)
-// =========================================================================
-
-/**
- * Aplica máscaras básicas para melhorar a experiência do usuário.
- */
-function setupMasks() {
-    function applyMask(element, mask) {
-        if (!element) return;
-        element.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            let maskedValue = '';
-            let k = 0;
-            for (let i = 0; i < mask.length; i++) {
-                if (k >= value.length) break;
-                if (mask[i] === '#') {
-                    maskedValue += value[k++];
-                } else {
-                    maskedValue += mask[i];
-                }
-            }
-            e.target.value = maskedValue;
-        });
+    // Limpa opções (mantendo a lógica simples aqui)
+    // Em um cenário ideal, recriaríamos as options baseadas no juros
+    // Por enquanto, atualiza apenas o texto da opção '1x' para refletir o novo total
+    if (select.options.length > 0) {
+        select.options[0].text = `1x de ${formatCurrency(totalValue)} sem juros`;
     }
-
-    applyMask(document.getElementById('CheckoutDocument'), '###.###.###-##'); // CPF (Poderia ser melhorada para CNPJ)
-    applyMask(document.getElementById('CheckoutPhone'), '(##) #####-####');
-    applyMask(document.getElementById('CheckoutCep'), '#####-###');
-    applyMask(document.getElementById('CardNumber'), '#### #### #### ####');
-    applyMask(document.getElementById('CardExpiration'), '##/##');
-    applyMask(document.getElementById('CardCvv'), '###');
 }
 
+function parseCurrency(value) {
+    // Converte "1.200,50" ou "1200.50" para float JS
+    if (typeof value === 'number') return value;
+    return parseFloat(value.toString().replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
+}
 
+function formatCurrency(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// =========================================================================
+// 7. BOTÃO CONFIRMAR E SUBMIT
+// =========================================================================
 function setupConfirmButton() {
     const confirmButton = document.getElementById('confirmOrderButton');
     const form = document.getElementById('checkoutForm');
+
     if (!confirmButton || !form) return;
 
-    confirmButton.addEventListener('click', () => {
+    confirmButton.addEventListener('click', (e) => {
+        // Verifica validação HTML5 nativa
         if (!form.checkValidity()) {
+            // Se inválido, previne o envio padrão do botão (se for submit)
+            // Mas permite que o navegador mostre os balões de erro nativos
+            // e foca no primeiro campo inválido
+
+            // Log para debug (aperte F12 para ver)
+            const invalidField = form.querySelector(':invalid');
+            console.warn("Campo inválido:", invalidField);
+
+            showCheckoutToast(`Preencha o campo: ${invalidField.previousElementSibling?.textContent || invalidField.name}`, 'error');
+
+            // Foca no erro
+            invalidField.focus();
             return;
         }
 
+        // Se válido, muda estado do botão e deixa o form seguir
         confirmButton.disabled = true;
-        confirmButton.classList.add('is-loading');
-        confirmButton.dataset.originalLabel = confirmButton.dataset.originalLabel || confirmButton.innerHTML;
-        confirmButton.innerHTML = 'Processando...';
+        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+
+        // O formulário será enviado normalmente aqui pelo evento padrão do botão submit
     });
 }
 
 // =========================================================================
-// FUNÇÕES DE UTILIDADE
+// 8. MÁSCARAS E UTILITÁRIOS
 // =========================================================================
-
 function showCheckoutToast(message, type = 'info') {
-    const existing = document.querySelector('.checkout-toast');
-    if (existing) existing.remove();
+    // Remove anterior
+    const old = document.querySelector('.checkout-toast');
+    if (old) old.remove();
 
     const toast = document.createElement('div');
     toast.className = `checkout-toast checkout-toast--${type}`;
     toast.textContent = message;
     document.body.appendChild(toast);
 
-    setTimeout(() => {
-        toast.classList.add('is-visible');
-    }, 10);
-
+    // CSS deve tratar a classe .is-visible para animar
+    setTimeout(() => toast.classList.add('is-visible'), 10);
     setTimeout(() => {
         toast.classList.remove('is-visible');
         setTimeout(() => toast.remove(), 300);
-    }, 2500);
+    }, 4000);
 }
 
-//API viacep
-function setupCepLookup() {
-    document.getElementById('CheckoutCep').addEventListener('blur', function () {
-        const cep = this.value.replace(/\D/g, ''); 
+function setupMasks() {
+    const masks = {
+        'CheckoutDocument': (val) => val.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'),
+        'CheckoutPhone': (val) => val.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3'),
+        'CheckoutCep': (val) => val.replace(/\D/g, '').replace(/(\d{5})(\d{3})/, '$1-$3'),
+        'CardNumber': (val) => val.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim(),
+        'CardExpiration': (val) => val.replace(/\D/g, '').replace(/(\d{2})(\d{2})/, '$1/$2'),
+        'CardCvv': (val) => val.replace(/\D/g, '').substring(0, 4)
+    };
 
-        if (cep.length !== 8) {
-            clearAddressFields();
-            return;
-        }
-
-
-        setAddressFieldsDisabled(true);
-
-        const url = `https://viacep.com.br/ws/${cep}/json/`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                setAddressFieldsDisabled(false); 
-
-                if (!data.erro) {
-                   
-                    document.getElementById('CheckoutEndereco').value = data.logradouro;
-                    document.getElementById('CheckoutCidade').value = data.localidade;
-                    document.getElementById('CheckoutEstado').value = data.uf;
-        
-
-                    document.getElementById('CheckoutNumero').focus();
-                    showCheckoutToast(`Endereço encontrado: ${data.logradouro}, ${data.localidade}-${data.uf}`, 'info');
-
-                } else {
-                    alert('CEP não encontrado. Preencha o endereço manualmente.');
-                    clearAddressFields();
-                    document.getElementById('CheckoutEndereco').focus();
-                }
-            })
-            .catch(error => {
-                setAddressFieldsDisabled(false);
-                console.error('Erro na consulta do CEP:', error);
-                showCheckoutToast('Erro ao consultar o CEP. Preencha manualmente.', 'error');
-                clearAddressFields();
+    Object.keys(masks).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', (e) => {
+                e.target.value = masks[id](e.target.value);
             });
+        }
     });
 }

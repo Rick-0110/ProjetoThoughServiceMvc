@@ -23,4 +23,16 @@ public class ProdutoCreateViewModel
     public int Quantidade { get; set; }
     public decimal? Peso { get; set; }
     public bool Ativo { get; set; }
+
+    [Required(ErrorMessage = "O Tipo/Prefix é obrigatório (Ex: EAT).")]
+    public string Sku_Tipo { get; set; } // Ex: EAT (Extintor Automático) / MGA (Mangueira)
+
+    [Required(ErrorMessage = "O Agente Extintor é obrigatório (Ex: PO / CO2).")]
+    public string Sku_Agente { get; set; } // Ex: PO (Pó Químico) / AGUA
+
+    [Required(ErrorMessage = "A Capacidade é obrigatória (Ex: 06KG / 10MT).")]
+    public string Sku_Capacidade { get; set; } // Ex: 06KG (Capacidade) / 10MT (Comprimento da Mangueira)
+
+    [Required(ErrorMessage = "O Modelo é obrigatório (Ex: MOD2).")]
+    public string Sku_Modelo { get; set; } // Identificador de modelo/fabricante interno
 }

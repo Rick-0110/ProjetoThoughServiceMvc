@@ -1,37 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using ToughService.Models;
+using ToughService.Models.Produtos; 
 
 namespace ToughService.Models
 {
-    public class ProdutoModel
+    public class ProdutoModel : ProdutoBaseModel
     {
-        public int Id { get; set; }
-        public decimal Preco { get; set; }
-        public string Descricao { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal? Peso { get; set; }
 
-        public string ImagemUrl { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "O nome é obrigatório.")]
-        [StringLength(100)]
-        public string Nome { get; set; }
-
-        public int CategoriaId { get; set; }
-        public CategoriaEnum? Categoria { get; set; }
-
-
-        public string Sku { get; set; }
-        public string Marca { get; set; }
-        public int Quantidade { get; set; } 
-        public decimal? Peso { get; set; } 
-        public bool Ativo { get; set; }
-
-        [NotMapped] 
-        public IFormFile? Imagem { get; set; }
-
+        public ProdutoModel()
+        {
+            
+        }
     }
 }

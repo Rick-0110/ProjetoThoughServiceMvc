@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.IO; 
+using System.Linq;
+using System.Threading.Tasks;
 using ToughService.Models;
+using ToughService.Models.Produtos;
 using ToughService.Repository;
+using ToughService.Services;
+
 namespace ToughService.Controllers
 {
-
+    
     [Authorize(Roles = "Admin")]
     public class ADMController : Controller
     {
@@ -14,22 +23,28 @@ namespace ToughService.Controllers
         private readonly IChamadoRepository _chamadoRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISkuService _skuService; 
 
         public ADMController(
             IProdutoRepository produtoRepository,
             IWebHostEnvironment webHostEnvironment,
             IChamadoRepository chamadoRepository,
             IPedidoRepository pedidoRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ISkuService skuService) 
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
             _chamadoRepository = chamadoRepository;
             _pedidoRepository = pedidoRepository;
             _userManager = userManager;
+            _skuService = skuService;
         }
 
-    
+        // ---------------------------------------------------------------------------------------------------
+        // DASHBOARD
+        // ---------------------------------------------------------------------------------------------------
+
         public async Task<IActionResult> ADM()
         {
             try
@@ -53,10 +68,13 @@ namespace ToughService.Controllers
             {
                 Console.WriteLine($"ERRO AO CARREGAR DADOS DO DASHBOARD: {ex.Message}");
                 TempData["ErroStatus"] = "Ocorreu um erro ao carregar as estatísticas do dashboard.";
-                return View(new AdminDashboardViewModel()); 
+                return View(new AdminDashboardViewModel());
             }
         }
-        
+
+        // ---------------------------------------------------------------------------------------------------
+        // PEDIDOS
+        // ---------------------------------------------------------------------------------------------------
 
         [HttpGet]
         public async Task<IActionResult> GerenciarPedidos(
@@ -145,6 +163,9 @@ namespace ToughService.Controllers
             return RedirectToAction(nameof(GerenciarPedidos));
         }
 
+        // ---------------------------------------------------------------------------------------------------
+        // CHAMADOS
+        // ---------------------------------------------------------------------------------------------------
 
         [HttpGet]
         public async Task<IActionResult> AdmChamados(
@@ -229,198 +250,135 @@ namespace ToughService.Controllers
             return RedirectToAction("AdmChamados");
         }
 
+        // ---------------------------------------------------------------------------------------------------
+        // PRODUTOS (ADM)
+        // ---------------------------------------------------------------------------------------------------
 
-
-       
         [HttpGet]
         public async Task<IActionResult> GerenciarProdutos()
         {
             var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
+            
+            // Agrupa produtos por categoria para exibição organizada
+            var produtosPorCategoria = listaDeProdutos
+                .GroupBy(p => p.Categoria)
+                .OrderBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.ToList());
+            
+            ViewBag.ProdutosPorCategoria = produtosPorCategoria;
+            
             return View(listaDeProdutos);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ListarProdutos()
-        {
-            try
-            {
-                var produtos = _produtoRepository.GetAllProdutosAsync();
-                return Ok(produtos);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Ocorreu um erro interno ao buscar os produtos.");
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ObterProduto(int id)
-        {
-            var produto = _produtoRepository.GetProdutoByIdAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-            return Ok(produto);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExcluirProduto(int id)
-        {
-         
-            await _produtoRepository.RemoveProdutoAsync(id);
-            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
-            return RedirectToAction("GerenciarProdutos");
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> AtualizarProduto(int id, [FromBody] ProdutoModel produto)
-        {
-            if (id != produto.Id)
-            {
-                return BadRequest("Dados do produto inválidos.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var produtoExistente = await _produtoRepository.GetProdutoByIdAsync(id);
-            if (produtoExistente == null)
-            {
-                return NotFound("Produto não encontrado.");
-            }
-
-            produtoExistente.Nome = produto.Nome;
-            produtoExistente.Descricao = produto.Descricao;
-            produtoExistente.Preco = produto.Preco;
-            produtoExistente.Categoria = produto.Categoria;
-            produtoExistente.Sku = produto.Sku;
-            produtoExistente.Marca = produto.Marca;
-            produtoExistente.Quantidade = produto.Quantidade;
-            produtoExistente.Peso = produto.Peso;
-            produtoExistente.Ativo = produto.Ativo;
-            var updatedProduto = _produtoRepository.UpdateProdutoAsync(produtoExistente);
-            return Ok(updatedProduto);
-        }
-
 
         [HttpGet]
         public IActionResult AdicionarProdutoADM()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
         {
+            ModelState.Remove(nameof(model.Sku));
+
             if (!ModelState.IsValid)
             {
-                var erros = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                string mensagemErro = erros.Any()
-                    ? $"Preencha corretamente: {string.Join(" ", erros)}"
-                    : "Erro ao adicionar produto. Verifique os campos obrigatórios.";
-
-                TempData["ErroStatus"] = mensagemErro;
-
-                return RedirectToAction(nameof(GerenciarProdutos));
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                TempData["ErroStatus"] = $"Preencha corretamente: {string.Join(" ", erros)}";
+                return View(model);
             }
 
             CategoriaEnum categoriaConvertida;
             try
             {
-                categoriaConvertida = model.CategoriaId switch
-                {
-                    1 => CategoriaEnum.Extintores, // 0 no enum
-                    2 => CategoriaEnum.SistemasFixos, // 2 no enum
-                    3 => CategoriaEnum.SistemasDeDeteccao, // 3 no enum
-                    4 => CategoriaEnum.Acessorios, // 1 no enum
-                    _ => throw new ArgumentException("Categoria inválida.")
-                };
+                categoriaConvertida = (CategoriaEnum)model.CategoriaId;
+                if (!Enum.IsDefined(typeof(CategoriaEnum), categoriaConvertida))
+                    throw new ArgumentException("Categoria inválida.");
             }
-            catch (ArgumentException ex)
+            catch
             {
-                TempData["ErroStatus"] = ex.Message;
-                return RedirectToAction(nameof(GerenciarProdutos));
+                TempData["ErroStatus"] = "Categoria inválida.";
+                return View(model);
             }
 
-            // 3. UPLOAD DA IMAGEM
+            // 1. UPLOAD DA IMAGEM
             string caminhoArquivo = "sem_imagem.png";
             if (model.Imagem != null)
             {
                 try
                 {
                     string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
-                    if (!Directory.Exists(pastaUploads))
-                    {
-                        Directory.CreateDirectory(pastaUploads);
-                    }
+                    if (!Directory.Exists(pastaUploads)) Directory.CreateDirectory(pastaUploads);
 
                     caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
-                    string caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
-
-                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                    using (var stream = new FileStream(Path.Combine(pastaUploads, caminhoArquivo), FileMode.Create))
                     {
                         await model.Imagem.CopyToAsync(stream);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    // Trata erro de upload, mas permite continuar com a adição do produto sem imagem.
-                    Console.WriteLine($"ERRO AO FAZER UPLOAD DA IMAGEM: {ex.Message}");
-                    TempData["ErroStatus"] = "Erro ao fazer upload da imagem. Produto adicionado sem imagem.";
-                    caminhoArquivo = "sem_imagem.png";
+                    TempData["ErroStatus"] = "Erro ao fazer upload da imagem.";
                 }
             }
 
-            // 4. CRIAÇÃO DO MODELO PARA O REPOSITÓRIO
-            // Mapear CategoriaId para o valor correto do enum (0-3) - Isso é essencial se a sua camada de dados usar o ID numérico do enum.
-            int categoriaIdMapeado = (int)categoriaConvertida;
-
-            var novoProduto = new ProdutoModel
+            // 2. CRIAÇÃO DO OBJETO TEMPORÁRIO (GENÉRICO)
+            // Usamos ProdutoModel aqui apenas para transportar os dados do ViewModel
+            var produtoTemporario = new ProdutoModel
             {
                 Nome = model.Nome ?? string.Empty,
                 Descricao = model.Descricao ?? string.Empty,
                 Preco = model.Preco,
-                CategoriaId = categoriaIdMapeado,
+                CategoriaId = model.CategoriaId,
                 Categoria = categoriaConvertida,
-                Sku = model.Sku ?? string.Empty,
                 Marca = model.Marca ?? string.Empty,
                 Quantidade = model.Quantidade,
                 Peso = model.Peso,
                 Ativo = model.Ativo,
-                ImagemUrl = caminhoArquivo
+                ImagemUrl = caminhoArquivo,
+                Sku_Tipo = model.Sku_Tipo,
+                Sku_Agente = model.Sku_Agente,
+                Sku_Capacidade = model.Sku_Capacidade,
+                Sku_Modelo = model.Sku_Modelo,
+                Sku = string.Empty
             };
 
             try
             {
-                var produtoSalvo = await _produtoRepository.AddProdutoAsync(novoProduto);
+                produtoTemporario.Sku = await _skuService.GerarSkuAsync(produtoTemporario);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErroStatus"] = $"Erro ao gerar SKU: {ex.Message}";
+                return View(model);
+            }
 
-                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado com sucesso! (ID: {produtoSalvo.Id})";
+            ProdutoBaseModel produtoFinal = ProdutoConverter.ConverterParaModelEspecifico(produtoTemporario);
 
- 
+            if (produtoFinal == null)
+            {
+                TempData["ErroStatus"] = "Erro ao converter para o modelo específico da categoria.";
+                return View(model);
+            }
+
+            try
+            {
+                var produtoSalvo = await _produtoRepository.AddProdutoAsync(produtoFinal);
+
+                TempData["SucessoFormProduto"] = $"Produto '{produtoSalvo.Nome}' adicionado! SKU: {produtoSalvo.Sku}";
                 return RedirectToAction(nameof(GerenciarProdutos));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO FATAL AO SALVAR PRODUTO: {ex.Message}");
-                TempData["ErroStatus"] = $"Erro ao salvar o produto no banco de dados. Detalhes: {ex.Message}";
-
-                return RedirectToAction(nameof(GerenciarProdutos));
+                Console.WriteLine($"ERRO SALVAR PRODUTO: {ex.Message}");
+                var msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                TempData["ErroStatus"] = $"Erro ao salvar: {msg}";
+                return View(model);
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> AtualizarProduto(ProdutoModel model)
+        public async Task<IActionResult> AtualizarProduto(ProdutoBaseModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var produtoParaAtualizar = await _produtoRepository.GetProdutoByIdAsync(model.Id);
@@ -432,16 +390,65 @@ namespace ToughService.Controllers
                     produtoParaAtualizar.Preco = model.Preco;
                     produtoParaAtualizar.Quantidade = model.Quantidade;
                     produtoParaAtualizar.Categoria = model.Categoria;
-                   
+
+                    // Nota: Se a regra for não permitir a edição dos campos que geram o SKU após a criação,
+                    // esses campos (Sku_Tipo, Sku_Agente, Sku_Capacidade, Sku_Modelo, Sku) não devem ser mapeados aqui.
 
                     await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
                 }
+                TempData["SucessoFormProduto"] = $"Produto '{model.Nome}' atualizado com sucesso.";
+            }
+            else
+            {
+                TempData["ErroStatus"] = "Erro ao atualizar produto. Verifique os campos obrigatórios.";
             }
 
-            // Após atualizar (ou se o modelo for inválido), redirecione para a página principal.
             return RedirectToAction("GerenciarProdutos");
         }
 
-       
+        // Métodos auxiliares/API (simplificados)
+        [HttpGet]
+        public async Task<IActionResult> ListarProdutos()
+        {
+            try
+            {
+                var produtos = await _produtoRepository.GetAllProdutosAsync();
+                return Ok(produtos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro interno ao buscar os produtos.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterProduto(int id)
+        {
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+            if (produto == null)
+            {
+                return NotFound();
+            }
+            return Ok(produto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExcluirProduto(int id)
+        {
+            await _produtoRepository.RemoveProdutoAsync(id);
+            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
+            return RedirectToAction("GerenciarProdutos");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExcluirProdutoHome(int id)
+        {
+
+            await _produtoRepository.RemoveProdutoAsync(id);
+            TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
+            return RedirectToAction("Index"); 
+        }
     }
-    }
+}
