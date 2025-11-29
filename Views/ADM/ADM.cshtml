@@ -131,56 +131,43 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <h2>Ações Rápidas</h2>
-                <div class="actions-grid">
-                    <button class="quick-btn" onclick="navigateTo('chamados')">
-                        <i class="fas fa-eye"></i>
-                        <span>Ver Novos Chamados</span>
-                    </button>
-                    <button class="quick-btn" onclick="navigateTo('produtos')">
-                        <i class="fas fa-plus"></i>
-                        <span>Adicionar Produto</span>
-                    </button>
-                    <button class="quick-btn" onclick="exportData()">
-                        <i class="fas fa-download"></i>
-                        <span>Exportar Dados</span>
-                    </button>
-                </div>
-            </div>
+          
 
             <!-- Recent Activity -->
             <div class="recent-activity">
                 <h2>Atividade Recente</h2>
                 <div class="activity-list" id="activityList">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-plus text-success"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>Novo produto adicionado:</strong> Extintor PQS 4kg</p>
-                            <span class="activity-time">Há 2 horas</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-clipboard-list text-warning"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>Novo chamado recebido:</strong> Solicitação de instalação</p>
-                            <span class="activity-time">Há 4 horas</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-check text-success"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>Chamado finalizado:</strong> Orçamento de manutenção</p>
-                            <span class="activity-time">Ontem</span>
-                        </div>
-                    </div>
+
+                    @if (Model != null && Model.AtividadesRecentes != null && Model.AtividadesRecentes.Any())
+                    {
+                        @foreach (var atividade in Model.AtividadesRecentes)
+                        {
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="@atividade.IconeCss @atividade.CorCss"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p><strong>@atividade.Tipo:</strong> @atividade.Mensagem</p>
+                                    <span class="activity-time">
+                                        @* Lógica simples para mostrar tempo relativo *@
+                                        @{
+                                            var diff = DateTime.Now - atividade.Data;
+                                            string tempoTexto = "";
+                                            if (diff.TotalMinutes < 60) { tempoTexto = $"Há {Math.Ceiling(diff.TotalMinutes)} min"; }
+                                            else if (diff.TotalHours < 24) { tempoTexto = $"Há {Math.Ceiling(diff.TotalHours)} horas"; }
+                                            else { tempoTexto = atividade.Data.ToString("dd/MM/yyyy HH:mm"); }
+                                        }
+                                        @tempoTexto
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted" style="padding: 1rem;">Nenhuma atividade recente.</p>
+                    }
+
                 </div>
             </div>
         </div>

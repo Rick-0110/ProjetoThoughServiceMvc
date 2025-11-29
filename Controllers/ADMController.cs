@@ -43,29 +43,66 @@ namespace ToughService.Controllers
         {
             try
             {
-                int totalChamados = (await _chamadoRepository.GetAllChamadosAsync()).Count();
+                var chamados = await _chamadoRepository.GetAllChamadosAsync();
+                var produtos = await _produtoRepository.GetAllProdutosAsync();
+                var pedidos = await _pedidoRepository.GetAllPedidosAsync();
 
-                int totalProdutos = (await _produtoRepository.GetAllProdutosAsync()).Count();
+                int totalChamados = chamados.Count();
+                int totalProdutos = produtos.Count();
+                int totalPedidos = pedidos.Count();
 
-                int totalPedidos = (await _pedidoRepository.GetAllPedidosAsync()).Count();
+
+                var atividades = new List<AdminActivityViewModel>();
+
+
+                atividades.AddRange(chamados.OrderByDescending(c => c.DataSolicitacao).Take(5).Select(c => new AdminActivityViewModel
+                {
+                    Tipo = "Chamado",
+                    Mensagem = $"Novo chamado: {c.TipoServico} - {c.NomeCliente}",
+                    Data = c.DataSolicitacao,
+                    IconeCss = "fas fa-clipboard-list",
+                    CorCss = "text-warning"
+                }));
+
+
+                atividades.AddRange(pedidos.OrderByDescending(p => p.DataPedido).Take(5).Select(p => new AdminActivityViewModel
+                {
+                    Tipo = "Pedido",
+                    Mensagem = $"Novo pedido #{p.Id}: R$ {p.Total:F2}",
+                    Data = p.DataPedido,
+                    IconeCss = "fas fa-shopping-cart",
+                    CorCss = "text-primary"
+                }));
+
+       
+                atividades.AddRange(produtos.OrderByDescending(p => p.Id).Take(5).Select(p => new AdminActivityViewModel
+                {
+                    Tipo = "Produto",
+                    Mensagem = $"Produto cadastrado: {p.Nome}",
+                    Data = DateTime.Now, 
+                    IconeCss = "fas fa-plus",
+                    CorCss = "text-success"
+                }));
+
+
+                var atividadesFinais = atividades.OrderByDescending(a => a.Data).Take(10).ToList();
 
                 var viewModel = new AdminDashboardViewModel
                 {
                     TotalChamados = totalChamados,
                     TotalProdutosEmEstoque = totalProdutos,
-                    TotalPedidos = totalPedidos
+                    TotalPedidos = totalPedidos,
+                    AtividadesRecentes = atividadesFinais 
                 };
 
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO AO CARREGAR DADOS DO DASHBOARD: {ex.Message}");
-                TempData["ErroStatus"] = "Ocorreu um erro ao carregar as estatísticas do dashboard.";
+                Console.WriteLine($"ERRO DASHBOARD: {ex.Message}");
                 return View(new AdminDashboardViewModel());
             }
         }
-
         // ---------------------------------------------------------------------------------------------------
         // PEDIDOS
         // ---------------------------------------------------------------------------------------------------
