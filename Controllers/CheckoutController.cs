@@ -146,7 +146,7 @@ namespace ToughService.Controllers
                 sb.AppendLine($"<p><strong>Endereço de Entrega:</strong><br>{novoPedido.Logradouro}, {novoPedido.Numero}<br>{novoPedido.Cidade} - {novoPedido.Estado}<br>CEP: {novoPedido.Cep}</p>");
                 sb.AppendLine("<p>Avisaremos quando o status mudar.</p>");
                 sb.AppendLine("<p>Att,<br>Equipe Tough Service</p>");
-                await _emailService.SendEmailAsync(novoPedido.EmailCliente, $"Pedido #{novoPedido.Id} Confirmado - Tough Service", sb.ToString());
+                //await _emailService.SendEmailAsync(novoPedido.EmailCliente, $"Pedido #{novoPedido.Id} Confirmado - Tough Service", sb.ToString());
             }
             catch (Exception ex)
             {
