@@ -1,4 +1,7 @@
-
+using System;
+using System.Linq;
+using ToughService.Models;
+using ToughService.Models.Produtos;
 
 namespace ToughService.Models.Produtos
 {
@@ -13,10 +16,10 @@ namespace ToughService.Models.Produtos
                 CategoriaEnum.Extintores => new ExtintorModel
                 {
                     PesoLiquido = produtoAntigo.Peso ?? 0,
-                    DataRecarga = DateTime.Now,
                     TipoAgente = produtoAntigo.Sku_Agente ?? "Padrão",
                     Capacidade = produtoAntigo.Sku_Capacidade ?? "Padrão",
-                    NormaReferencia = "NBR"
+                    NormaReferencia = "NBR 15808",
+                    DataRecarga = DateTime.Now
                 },
 
                 CategoriaEnum.Mangueiras => new MangueiraModel
@@ -46,7 +49,7 @@ namespace ToughService.Models.Produtos
                 CategoriaEnum.EPI => new EPIModel
                 {
                     TipoEPI = "Geral",
-                    CertificacaoCA = "0000", // Obrigatório
+                    CertificacaoCA = "0000",
                     Tamanho = "Único",
                     Material = "Padrão",
                     Norma = "NR6"
@@ -105,11 +108,9 @@ namespace ToughService.Models.Produtos
                     Norma = "N/A"
                 },
 
-                // Caso padrão (nunca deve acontecer se o Enum estiver certo)
                 _ => new ProdutoModel()
             };
 
-            // Copia os dados comuns (Base) do antigo para o novo
             CopiarDadosBase(produtoAntigo, produtoNovo);
 
             return produtoNovo;
@@ -122,8 +123,12 @@ namespace ToughService.Models.Produtos
             destino.Descricao = origem.Descricao;
             destino.Preco = origem.Preco;
             destino.ImagemUrl = origem.ImagemUrl;
+
+          
             destino.CategoriaId = origem.CategoriaId;
             destino.Categoria = origem.Categoria;
+
+
             destino.Sku = origem.Sku;
             destino.Sku_Tipo = origem.Sku_Tipo;
             destino.Sku_Agente = origem.Sku_Agente;
@@ -132,7 +137,6 @@ namespace ToughService.Models.Produtos
             destino.Marca = origem.Marca;
             destino.Quantidade = origem.Quantidade;
             destino.Ativo = origem.Ativo;
-            // Imagem (IFormFile) não precisa copiar pois já foi salva ou tratada antes
         }
 
         private static decimal ExtrairNumero(string texto)

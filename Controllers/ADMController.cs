@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO; 
-using System.Linq;
-using System.Threading.Tasks;
 using ToughService.Models;
 using ToughService.Models.Produtos;
 using ToughService.Repository;
@@ -49,29 +43,66 @@ namespace ToughService.Controllers
         {
             try
             {
-                int totalChamados = (await _chamadoRepository.GetAllChamadosAsync()).Count();
+                var chamados = await _chamadoRepository.GetAllChamadosAsync();
+                var produtos = await _produtoRepository.GetAllProdutosAsync();
+                var pedidos = await _pedidoRepository.GetAllPedidosAsync();
 
-                int totalProdutos = (await _produtoRepository.GetAllProdutosAsync()).Count();
+                int totalChamados = chamados.Count();
+                int totalProdutos = produtos.Count();
+                int totalPedidos = pedidos.Count();
 
-                int totalPedidos = (await _pedidoRepository.GetAllPedidosAsync()).Count();
+
+                var atividades = new List<AdminActivityViewModel>();
+
+
+                atividades.AddRange(chamados.OrderByDescending(c => c.DataSolicitacao).Take(5).Select(c => new AdminActivityViewModel
+                {
+                    Tipo = "Chamado",
+                    Mensagem = $"Novo chamado: {c.TipoServico} - {c.NomeCliente}",
+                    Data = c.DataSolicitacao,
+                    IconeCss = "fas fa-clipboard-list",
+                    CorCss = "text-warning"
+                }));
+
+
+                atividades.AddRange(pedidos.OrderByDescending(p => p.DataPedido).Take(5).Select(p => new AdminActivityViewModel
+                {
+                    Tipo = "Pedido",
+                    Mensagem = $"Novo pedido #{p.Id}: R$ {p.Total:F2}",
+                    Data = p.DataPedido,
+                    IconeCss = "fas fa-shopping-cart",
+                    CorCss = "text-primary"
+                }));
+
+       
+                atividades.AddRange(produtos.OrderByDescending(p => p.Id).Take(5).Select(p => new AdminActivityViewModel
+                {
+                    Tipo = "Produto",
+                    Mensagem = $"Produto cadastrado: {p.Nome}",
+                    Data = DateTime.Now, 
+                    IconeCss = "fas fa-plus",
+                    CorCss = "text-success"
+                }));
+
+
+                var atividadesFinais = atividades.OrderByDescending(a => a.Data).Take(10).ToList();
 
                 var viewModel = new AdminDashboardViewModel
                 {
                     TotalChamados = totalChamados,
                     TotalProdutosEmEstoque = totalProdutos,
-                    TotalPedidos = totalPedidos
+                    TotalPedidos = totalPedidos,
+                    AtividadesRecentes = atividadesFinais 
                 };
 
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO AO CARREGAR DADOS DO DASHBOARD: {ex.Message}");
-                TempData["ErroStatus"] = "Ocorreu um erro ao carregar as estatísticas do dashboard.";
+                Console.WriteLine($"ERRO DASHBOARD: {ex.Message}");
                 return View(new AdminDashboardViewModel());
             }
         }
-
         // ---------------------------------------------------------------------------------------------------
         // PEDIDOS
         // ---------------------------------------------------------------------------------------------------
@@ -301,29 +332,30 @@ namespace ToughService.Controllers
                 return View(model);
             }
 
-            // 1. UPLOAD DA IMAGEM
             string caminhoArquivo = "sem_imagem.png";
             if (model.Imagem != null)
             {
                 try
                 {
-                    string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG");
+                   
+                    string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG", "Produtos");
                     if (!Directory.Exists(pastaUploads)) Directory.CreateDirectory(pastaUploads);
 
                     caminhoArquivo = Guid.NewGuid().ToString() + Path.GetExtension(model.Imagem.FileName);
-                    using (var stream = new FileStream(Path.Combine(pastaUploads, caminhoArquivo), FileMode.Create))
+                    var caminhoCompleto = Path.Combine(pastaUploads, caminhoArquivo);
+                    using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
                     {
                         await model.Imagem.CopyToAsync(stream);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"ERRO UPLOAD IMAGEM: {ex.Message}");
                     TempData["ErroStatus"] = "Erro ao fazer upload da imagem.";
                 }
             }
 
-            // 2. CRIAÇÃO DO OBJETO TEMPORÁRIO (GENÉRICO)
-            // Usamos ProdutoModel aqui apenas para transportar os dados do ViewModel
+       
             var produtoTemporario = new ProdutoModel
             {
                 Nome = model.Nome ?? string.Empty,
@@ -391,8 +423,7 @@ namespace ToughService.Controllers
                     produtoParaAtualizar.Quantidade = model.Quantidade;
                     produtoParaAtualizar.Categoria = model.Categoria;
 
-                    // Nota: Se a regra for não permitir a edição dos campos que geram o SKU após a criação,
-                    // esses campos (Sku_Tipo, Sku_Agente, Sku_Capacidade, Sku_Modelo, Sku) não devem ser mapeados aqui.
+
 
                     await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
                 }
@@ -406,7 +437,6 @@ namespace ToughService.Controllers
             return RedirectToAction("GerenciarProdutos");
         }
 
-        // Métodos auxiliares/API (simplificados)
         [HttpGet]
         public async Task<IActionResult> ListarProdutos()
         {
