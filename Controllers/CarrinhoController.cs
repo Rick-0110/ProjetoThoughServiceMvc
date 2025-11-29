@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToughService.Models; 
 using ToughService.Repository;
-using ToughService.Extensions; 
+using ToughService.Extensions;
+using ToughService.Services;
 
 namespace ToughService.Controllers
 {
@@ -13,16 +14,19 @@ namespace ToughService.Controllers
         private readonly IProdutoRepository _produtoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor; 
+        private readonly IEmailService _emailService;
         public CarrinhoController(
             ICarrinhoRepository carrinhoRepository,
             IProdutoRepository produtoRepository,
             UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContextAccessor) 
+            IHttpContextAccessor httpContextAccessor,
+            IEmailService emailService) 
         {
             _carrinhoRepository = carrinhoRepository;
             _produtoRepository = produtoRepository;
             _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor; 
+            _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
         }
 
         [HttpGet]

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting; // Para IWebHostEnvironment
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO; // Para Path e FileStream
+using System.IO; 
 using System.Linq;
 using System.Threading.Tasks;
 using ToughService.Models;
@@ -14,8 +14,7 @@ using ToughService.Services;
 
 namespace ToughService.Controllers
 {
-    // O IWebHostEnvironment é usado para acessar o caminho do arquivo (wwwroot/IMG)
-
+    
     [Authorize(Roles = "Admin")]
     public class ADMController : Controller
     {
@@ -24,7 +23,7 @@ namespace ToughService.Controllers
         private readonly IChamadoRepository _chamadoRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ISkuService _skuService; // Serviço de Geração de SKU
+        private readonly ISkuService _skuService; 
 
         public ADMController(
             IProdutoRepository produtoRepository,
@@ -32,7 +31,7 @@ namespace ToughService.Controllers
             IChamadoRepository chamadoRepository,
             IPedidoRepository pedidoRepository,
             UserManager<ApplicationUser> userManager,
-            ISkuService skuService) // Injeção do SkuService
+            ISkuService skuService) 
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;

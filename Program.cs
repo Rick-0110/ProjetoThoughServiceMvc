@@ -37,13 +37,14 @@ builder.Services.AddSession(options =>
 // ------------------------------------
 // Repositórios
 // ------------------------------------
-builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); // Repositório antigo (compatibilidade)
-builder.Services.AddScoped<IProdutoRepositoryGeneric, ProdutoRepositoryGeneric>(); // Novo repositório genérico
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); 
+builder.Services.AddScoped<IProdutoRepositoryGeneric, ProdutoRepositoryGeneric>(); 
 builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 builder.Services.AddScoped<ICheckoutViewModelBuilder, CheckoutViewModelBuilder>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 // ------------------------------------
 // Serviços
@@ -193,7 +194,7 @@ async Task SeedRolesAndAdminUser(UserManager<ApplicationUser> userManager,
         Console.WriteLine(">>> Papel Admin criado.");
     }
 
-    string adminEmail = configuration["AdminUser:Email"];
+    string adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? configuration["AdminUser:Email"];
     string adminPassword = configuration["AdminUser:Password"];
 
     if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))

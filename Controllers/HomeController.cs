@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using ToughService.Models;
-using ToughService.Models.Produtos; // Importante
 using ToughService.Repository;
 
 namespace ToughService.Controllers
