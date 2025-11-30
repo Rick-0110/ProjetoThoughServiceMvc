@@ -179,51 +179,46 @@
                       method="post">
 
                     @Html.AntiForgeryToken()
+
                     <input type="hidden" id="tipoServicoHidden" name="TipoServico" value="" />
+
+                    <input type="hidden" name="TipoExtintor" value="A Combinar / Outros" />
+                    <input type="hidden" name="Quantidade" value="1" />
 
                     <div class="form-group">
                         <label for="nomeCliente">Nome do Cliente *</label>
                         <input type="text" id="nomeCliente" name="NomeCliente" required>
                     </div>
+
                     <div class="form-group">
                         <label for="dataDesejada">Data Desejada *</label>
                         <input type="date" id="dataDesejada" name="DataDesejada" required>
                     </div>
-                    <div class="form-group">
-                        <label for="tipoExtintor">Tipo de Equipamento / Quantidade *</label>
-                        <div class="extintor-container">
-                            <select id="tipoExtintor" name="TipoExtintor" required>
-                                <option value="">Selecione o tipo</option>
-                                <option value="Extintor de Água (10L)">Extintor de Água (10L)</option>
-                                <option value="Extintor PQS (4kg)">Extintor PQS (4kg)</option>
-                                <option value="Extintor CO2 (5kg)">Extintor CO2 (5kg)</option>
-                                <option value="Extintor de Espuma (6L)">Extintor de Espuma (6L)</option>
-                                <option value="Sistema Fixo">Sistema Fixo</option>
-                                <option value="Sistema de Sprinklers">Sistema de Sprinklers</option>
-                                <option value="Sistema de Detecção">Sistema de Detecção</option>
-                            </select>
-                            <input type="number" id="quantidade" name="Quantidade" placeholder="Qtde" min="1" required style="width: 80px;">
-                        </div>
-                    </div>
+
                     <div class="form-group"><h4 style="margin-top: 20px;">Endereço</h4></div>
+
                     <div class="row">
                         <div class="col-md-3 form-group"><label for="cep">CEP *</label><input type="text" id="cep" name="Cep" required /></div>
                         <div class="col-md-6 form-group"><label for="logradouro">Rua/Avenida *</label><input type="text" id="logradouro" name="Logradouro" required /></div>
                         <div class="col-md-3 form-group"><label for="numero">Número *</label><input type="text" id="numero" name="Numero" required /></div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-4 form-group"><label for="bairro">Bairro *</label><input type="text" id="bairro" name="Bairro" required /></div>
                         <div class="col-md-4 form-group"><label for="cidade">Cidade *</label><input type="text" id="cidade" name="Cidade" required /></div>
                         <div class="col-md-2 form-group"><label for="estado">UF *</label><input type="text" id="estado" name="Estado" maxlength="2" required /></div>
                         <div class="col-md-2 form-group"><label for="complemento">Compl.</label><input type="text" id="complemento" name="Complemento" /></div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-4 form-group"><label for="telefone">Telefone/WhatsApp *</label><input type="tel" id="telefone" name="Telefone" required /></div>
                     </div>
+
                     <div class="form-group">
-                        <label for="observacoes">Observações</label>
-                        <textarea id="observacoes" name="Observacoes" rows="3"></textarea>
+                        <label for="observacoes">Observações (Descreva aqui o serviço/equipamento)</label>
+                        <textarea id="observacoes" name="Observacoes" rows="4" placeholder="Ex: Preciso de manutenção em 5 extintores..."></textarea>
                     </div>
+
                     <div class="form-actions">
                         <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
                         <button type="submit" class="btn-submit">Enviar Solicitação</button>
