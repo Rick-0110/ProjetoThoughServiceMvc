@@ -54,7 +54,6 @@ namespace ToughService.Controllers
                 return RedirectToAction("Index", "Carrinho");
             }
 
-            // Passar a PublicKey do Mercado Pago para a view
             ViewData["MercadoPagoPublicKey"] = _configuration["MercadoPagoSettings:PublicKey"] ?? string.Empty;
 
             return View("~/Views/Carrinho/Checkout.cshtml", model);
@@ -65,7 +64,7 @@ namespace ToughService.Controllers
         public async Task<IActionResult> ConfirmOrder(CheckoutViewModel model)
         {
             _logger.LogInformation($"ConfirmOrder chamado. PaymentMethod: {model.PaymentMethod}");
-            
+
             var hydratedModel = await _checkoutViewModelBuilder.BuildAsync(model);
 
             if (hydratedModel.CartItems == null || !hydratedModel.CartItems.Any())
@@ -74,7 +73,6 @@ namespace ToughService.Controllers
                 return RedirectToAction("Index", "Carrinho");
             }
 
-            // Aplicar valores do model ao hydratedModel
             hydratedModel.CheckoutName = model.CheckoutName;
             hydratedModel.CheckoutEmail = model.CheckoutEmail;
             hydratedModel.CheckoutPhone = model.CheckoutPhone;
@@ -101,9 +99,6 @@ namespace ToughService.Controllers
                 return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
 
-            // ==================================================================
-            // 3. SALVAR O PEDIDO NO BANCO (ANTES DO PAGAMENTO)
-            // ==================================================================
             var user = await _userManager.GetUserAsync(User);
 
             var novoPedido = new PedidoModel
@@ -132,7 +127,6 @@ namespace ToughService.Controllers
                 MetodoPagamento = model.PaymentMethod
             };
 
-            // Adicionar itens do pedido
             foreach (var item in hydratedModel.CartItems)
             {
                 novoPedido.Itens.Add(new PedidoItemModel
@@ -146,14 +140,10 @@ namespace ToughService.Controllers
 
             await _pedidoRepository.AddPedidoAsync(novoPedido);
 
-            // ==================================================================
-            // 4. PROCESSAR PAGAMENTO COM MERCADO PAGO
-            // ==================================================================
             try
             {
                 _logger.LogInformation($"Iniciando criação de preferência do Mercado Pago para pedido {novoPedido.Id}");
-                
-                // Criar preferência de pagamento no Mercado Pago
+
                 var initPoint = await _mercadoPagoService.CreatePreferenceAsync(hydratedModel, novoPedido.Id, user.Id);
 
                 if (string.IsNullOrEmpty(initPoint))
@@ -165,34 +155,30 @@ namespace ToughService.Controllers
 
                 _logger.LogInformation($"Preferência criada com sucesso. InitPoint: {initPoint}");
 
-                // Salvar ID da preferência no pedido
                 novoPedido.MercadoPagoPreferenceId = initPoint;
                 await _pedidoRepository.UpdatePedidoAsync(novoPedido);
 
                 _logger.LogInformation($"Redirecionando para o checkout do Mercado Pago: {initPoint}");
-                
-                // Redirecionar para o checkout do Mercado Pago
+
+                await _carrinhoRepository.ClearCarrinhoAsync(user.Id);
+
                 return Redirect(initPoint);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao criar preferência do Mercado Pago para pedido {novoPedido.Id}. Detalhes: {ex.Message}");
                 _logger.LogError($"Stack trace: {ex.StackTrace}");
-                
-                // Se o pedido foi criado, marcar como erro
+
                 if (novoPedido.Id > 0)
                 {
                     novoPedido.Status = StatusPedidoEnum.Cancelado;
                     await _pedidoRepository.UpdatePedidoAsync(novoPedido);
                 }
-                
+
                 TempData["ErroPagamento"] = $"Erro ao processar pagamento: {ex.Message}. Verifique as configurações do Mercado Pago.";
                 ModelState.AddModelError("PaymentError", $"Erro ao processar pagamento. Tente novamente.");
                 return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
-
-            // O redirecionamento para o Mercado Pago já foi feito acima
-            // O carrinho será limpo após a confirmação do pagamento (no webhook ou no retorno)
         }
 
         [HttpGet]

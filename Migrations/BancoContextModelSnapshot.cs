@@ -418,6 +418,21 @@ namespace ToughService.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
+                    b.Property<DateTime?>("MercadoPagoPaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MercadoPagoPaymentId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("MercadoPagoPreferenceId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("MercadoPagoStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("MetodoEnvio")
                         .IsRequired()
                         .HasMaxLength(50)

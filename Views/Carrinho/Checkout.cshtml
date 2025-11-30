@@ -1,39 +1,62 @@
-@model CheckoutViewModel
-@using System
+@model ToughService.Models.ModelCheckout.CheckoutViewModel
 @using System.Globalization
 @using System.Linq
-@using ToughService.Models.ModelCheckout
 @{
     ViewData["Title"] = "Finalizar Compra";
     var culture = new CultureInfo("pt-BR");
-    var installmentBase = Model?.Total > 0 ? Model.Total : Model?.Subtotal ?? 0m;
+
+    // Lógica de seleção inicial
     var selectedPayment = string.IsNullOrWhiteSpace(Model?.PaymentMethod) ? "card" : Model.PaymentMethod;
-    var interestRateSixInstallments = 0.12m;
-    var installmentWithInterest = installmentBase * (1 + interestRateSixInstallments);
     var selectedShippingMethod = string.IsNullOrWhiteSpace(Model?.ShippingMethod) ? string.Empty : Model.ShippingMethod;
     var isQualifiedForDelivery = Model?.TotalExtintores >= 5;
-    var shippingOptions = Model?.ShippingOptions ?? Enumerable.Empty<CheckoutShippingOptionViewModel>();
+    var shippingOptions = Model?.ShippingOptions ?? Enumerable.Empty<ToughService.Models.ModelCheckout.CheckoutShippingOptionViewModel>();
 
-    // Se não tiver a quantidade mínima de extintores, só permite retirada na Tough Service
+    // Regra de negócio: Frete vs Retirada
     if (!isQualifiedForDelivery)
     {
         shippingOptions = shippingOptions.Where(o => o.Value.Equals("pickup", StringComparison.OrdinalIgnoreCase));
-
         if (selectedShippingMethod.Equals("delivery", StringComparison.OrdinalIgnoreCase))
         {
             selectedShippingMethod = "pickup";
         }
     }
+
     var selectedShippingOption = shippingOptions.FirstOrDefault(o => o.Value.Equals(selectedShippingMethod, StringComparison.OrdinalIgnoreCase));
     selectedShippingOption ??= shippingOptions.FirstOrDefault(o => o.IsDefault) ?? shippingOptions.FirstOrDefault();
     selectedShippingMethod = selectedShippingOption?.Value ?? selectedShippingMethod;
+
     var shippingSummaryText = selectedShippingOption == null
-        ? "Entrega grátis"
+        ? "Calcule o frete"
         : $"{selectedShippingOption.Title} · {(selectedShippingOption.Price <= 0 ? "Grátis" : selectedShippingOption.Price.ToString("C", culture))}";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+    <style>
+        /* Pequeno ajuste para os alertas de pagamento */
+        .payment-info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+            color: #495057;
+        }
+
+            .payment-info-box i {
+                font-size: 2rem;
+                margin-bottom: 10px;
+                color: #009ee3; /* Azul Mercado Pago */
+                display: block;
+            }
+
+            .payment-info-box strong {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 1.1rem;
+            }
+    </style>
 }
 
 <div class="checkout-page" data-page="checkout">
@@ -41,20 +64,19 @@
         <div class="checkout-badge">
             <span class="badge-step is-active" data-step="1">Carrinho</span>
             <span class="badge-divider"></span>
-            <span class="badge-step is-active" data-step="2">Entrega</span>
+            <span class="badge-step is-active" data-step="2">Dados</span>
             <span class="badge-divider"></span>
-            <span class="badge-step" data-step="3">Pagamento</span>
+            <span class="badge-step is-active" data-step="3">Pagamento</span>
             <span class="badge-divider"></span>
             <span class="badge-step" data-step="4">Confirmação</span>
         </div>
         <div class="checkout-title">
             <h1>Finalize a sua compra</h1>
-            <p>Revise seus dados, escolha a forma de pagamento e confirme o pedido.</p>
+            <p>Revise seus dados e escolha a forma de pagamento.</p>
         </div>
     </header>
 
     <form asp-controller="Checkout" asp-action="ConfirmOrder" method="post" id="checkoutForm">
-
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="SelectedAddressId" id="selectedAddressId" />
 
@@ -66,7 +88,7 @@
                     @if (TempData["ErroPagamento"] != null)
                     {
                         <div class="alert alert-danger">
-                            @TempData["ErroPagamento"]
+                            <i class="fas fa-exclamation-triangle"></i> @TempData["ErroPagamento"]
                         </div>
                     }
                 </div>
@@ -74,15 +96,12 @@
                 <section class="card-block">
                     <div class="block-heading">
                         <div class="block-title">
-                            <span class="icon-circle">
-                                <i class="fas fa-user-check"></i>
-                            </span>
+                            <span class="icon-circle"><i class="fas fa-user-check"></i></span>
                             <div>
                                 <h2>Dados do comprador</h2>
-                                <p>Use os dados da sua conta ou edite conforme necessário.</p>
+                                <p>Identificação para a nota fiscal e contato.</p>
                             </div>
                         </div>
-                        <button class="btn-link" type="button">Editar perfil</button>
                     </div>
 
                     <div class="block-grid two-cols">
@@ -93,7 +112,7 @@
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutDocument">CPF / CNPJ</label>
-                            <input asp-for="CheckoutDocument" type="text" placeholder="000.000.000-00" autocomplete="off" />
+                            <input asp-for="CheckoutDocument" type="text" placeholder="000.000.000-00" />
                             <span asp-validation-for="CheckoutDocument" class="text-danger"></span>
                         </div>
                         <div class="input-field">
@@ -103,7 +122,7 @@
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutPhone">Telefone</label>
-                            <input asp-for="CheckoutPhone" type="tel" placeholder="(11) 99999-0000" autocomplete="tel" />
+                            <input asp-for="CheckoutPhone" type="tel" placeholder="(11) 99999-0000" />
                             <span asp-validation-for="CheckoutPhone" class="text-danger"></span>
                         </div>
                     </div>
@@ -112,12 +131,10 @@
                 <section class="card-block">
                     <div class="block-heading">
                         <div class="block-title">
-                            <span class="icon-circle">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </span>
+                            <span class="icon-circle"><i class="fas fa-map-marker-alt"></i></span>
                             <div>
-                                <h2>Entrega</h2>
-                                <p>Escolha um endereço existente ou cadastre um novo.</p>
+                                <h2>Endereço de Entrega</h2>
+                                <p>Selecione onde você quer receber o produto.</p>
                             </div>
                         </div>
                     </div>
@@ -136,28 +153,20 @@
                                             <span class="pill">Principal</span>
                                         }
                                     </header>
-                                    <p>@address.Street</p>
-                                    @if (!string.IsNullOrWhiteSpace(address.Complement))
-                                    {
-                                        <p>@address.Complement</p>
-                                    }
-                                    <p>@address.CityState</p>
-                                    <p>CEP: @address.Cep</p>
+
+                                    <p>@address.Street, @(address.GetType().GetProperty("Numero") != null ? address.GetType().GetProperty("Numero").GetValue(address, null) : "")</p>
+
+                                    <p>@address.CityState - @address.Cep</p>
                                 </article>
                             }
                         }
                         else
                         {
-                            <p class="address-empty">Nenhum endereço cadastrado ainda. Adicione um novo abaixo.</p>
+                            <p class="address-empty">Nenhum endereço salvo. Preencha os campos abaixo.</p>
                         }
-
-                        <button type="button" class="btn-outline" id="addAddressButton">
-                            <i class="fas fa-plus"></i>
-                            Adicionar novo endereço
-                        </button>
                     </div>
 
-                    <div class="block-grid three-cols">
+                    <div class="block-grid three-cols" style="margin-top: 1.5rem;">
                         <div class="input-field">
                             <label asp-for="CheckoutCep">CEP</label>
                             <input asp-for="CheckoutCep" type="text" placeholder="00000-000" inputmode="numeric" />
@@ -166,61 +175,60 @@
                         <div class="input-field">
                             <label asp-for="CheckoutEstado">Estado</label>
                             <select asp-for="CheckoutEstado">
-                                <option value="">Selecione</option>
+                                <option value="">UF</option>
                                 <option>SP</option>
                                 <option>RJ</option>
                                 <option>MG</option>
                                 <option>BA</option>
-                                <option>SE</option>
-                                <option>AC</option>
+                                <option>RS</option>
+                                <option>PR</option>
+                                <option>SC</option>
+                                <option>ES</option>
                             </select>
                             <span asp-validation-for="CheckoutEstado" class="text-danger"></span>
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutCidade">Cidade</label>
-                            <input asp-for="CheckoutCidade" type="text" placeholder="Cidade" />
+                            <input asp-for="CheckoutCidade" type="text" />
                             <span asp-validation-for="CheckoutCidade" class="text-danger"></span>
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutEndereco">Endereço</label>
-                            <input asp-for="CheckoutEndereco" type="text" placeholder="Rua, avenida, etc." />
+                            <input asp-for="CheckoutEndereco" type="text" />
                             <span asp-validation-for="CheckoutEndereco" class="text-danger"></span>
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutNumero">Número</label>
-                            <input asp-for="CheckoutNumero" type="text" placeholder="Nº" />
+                            <input asp-for="CheckoutNumero" type="text" />
                             <span asp-validation-for="CheckoutNumero" class="text-danger"></span>
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutComplemento">Complemento</label>
-                            <input asp-for="CheckoutComplemento" type="text" placeholder="Apto, bloco, referência" />
-                            <span asp-validation-for="CheckoutComplemento" class="text-danger"></span>
+                            <input asp-for="CheckoutComplemento" type="text" />
                         </div>
                     </div>
-
                 </section>
 
                 <section class="card-block">
                     <div class="block-heading">
                         <div class="block-title">
-                            <span class="icon-circle">
-                                <i class="fas fa-truck"></i>
-                            </span>
+                            <span class="icon-circle"><i class="fas fa-truck"></i></span>
                             <div>
-                                <h2>Entrega ou retirada</h2>
+                                <h2>Método de Envio</h2>
                                 @if (isQualifiedForDelivery)
                                 {
-                                    <p>Escolha retirar na empresa ou receber com frete grátis.</p>
+                                    <p>Receba em casa ou retire na loja.</p>
                                 }
                                 else
                                 {
-                                    <p>Para pedidos com menos de 5 extintores, apenas a opção de retirada na Tough Service está disponível.</p>
+
+                                    <p class="text-warning">Para pedidos pequenos, apenas retirada disponível.</p>
                                 }
                             </div>
                         </div>
                     </div>
 
-                    <div class="shipping-options" id="shippingOptionsContainer">
+                    <div class="shipping-options">
                         @if (shippingOptions != null && shippingOptions.Any())
                         {
                             foreach (var option in shippingOptions)
@@ -229,10 +237,7 @@
                                 <label class="shipping-card @(isSelected ? "is-selected" : string.Empty)"
                                        data-shipping-price="@option.Price.ToString(CultureInfo.InvariantCulture)"
                                        data-shipping-label="@option.Title">
-                                    <input type="radio"
-                                           name="ShippingMethod"
-                                           value="@option.Value"
-                                           @(isSelected ? "checked" : null) />
+                                    <input type="radio" name="ShippingMethod" value="@option.Value" @(isSelected ? "checked" : null) />
                                     <div class="shipping-card-content">
                                         <div>
                                             <h3>@option.Title</h3>
@@ -245,7 +250,7 @@
                         }
                         else
                         {
-                            <p class="text-muted">As opções de recebimento não estão disponíveis no momento.</p>
+                            <p class="text-muted">Nenhuma opção de entrega disponível.</p>
                         }
                     </div>
                     <span asp-validation-for="ShippingMethod" class="text-danger"></span>
@@ -254,17 +259,15 @@
                 <section class="card-block">
                     <div class="block-heading">
                         <div class="block-title">
-                            <span class="icon-circle">
-                                <i class="fas fa-credit-card"></i>
-                            </span>
+                            <span class="icon-circle"><i class="fas fa-credit-card"></i></span>
                             <div>
                                 <h2>Pagamento</h2>
-                                <p>Selecione a forma de pagamento de sua preferência.</p>
+                                <p>Ambiente seguro Mercado Pago.</p>
                             </div>
                         </div>
                         <div class="card-badges">
-                            <span class="pill">Ambiente seguro</span>
-                            <span class="pill">SSL 256 bits</span>
+                            <span class="pill">Seguro</span>
+                            <span class="pill">Criptografado</span>
                         </div>
                     </div>
 
@@ -273,8 +276,7 @@
                         {
                             var isActive = option.Value.Equals(selectedPayment, StringComparison.OrdinalIgnoreCase);
                             <button type="button" data-payment="@option.Value" class="payment-tab @(isActive ? "is-active" : string.Empty)">
-                                <i class="@option.IconCss"></i>
-                                @option.Label
+                                <i class="@option.IconCss"></i> @option.Label
                             </button>
                         }
                     </div>
@@ -282,75 +284,44 @@
                     <span asp-validation-for="PaymentMethod" class="text-danger"></span>
 
                     <div class="payment-panels">
+
                         <div class="payment-panel @(selectedPayment.Equals("card", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="card">
-                            <div class="block-grid two-cols">
-                                <div class="input-field">
-                                    <label asp-for="CardNumber">Número do cartão</label>
-                                    <input asp-for="CardNumber" type="text" placeholder="1234 5678 9012 3456" inputmode="numeric" />
-                                    <span asp-validation-for="CardNumber" class="text-danger"></span>
-                                </div>
-                                <div class="input-field">
-                                    <label asp-for="CardName">Nome impresso</label>
-                                    <input asp-for="CardName" type="text" placeholder="Como está no cartão" />
-                                    <span asp-validation-for="CardName" class="text-danger"></span>
-                                </div>
-                                <div class="input-field">
-                                    <label asp-for="CardExpiration">Validade</label>
-                                    <input asp-for="CardExpiration" type="text" placeholder="MM/AA" inputmode="numeric" />
-                                    <span asp-validation-for="CardExpiration" class="text-danger"></span>
-                                </div>
-                                <div class="input-field">
-                                    <label asp-for="CardCvv">CVV</label>
-                                    <input asp-for="CardCvv" type="password" placeholder="***" inputmode="numeric" />
-                                    <span asp-validation-for="CardCvv" class="text-danger"></span>
-                                </div>
+                            <div class="payment-info-box">
+                                <i class="fas fa-external-link-alt"></i>
+                                <strong>Você será redirecionado para o Mercado Pago</strong>
+                                <p>Lá você poderá usar seu cartão de crédito com segurança total.</p>
+                                <small>Aceitamos Visa, Mastercard, Elo, Hipercard e outros.</small>
                             </div>
-                            <div class="installments">
-                                <label asp-for="Installments">Parcelamento</label>
-                                <select asp-for="Installments">
-                                    <option value="1">1x de @installmentBase.ToString("C", culture) sem juros</option>
-                                    <option value="2">2x de @( (installmentBase / 2m).ToString("C", culture)) sem juros</option>
-                                    <option value="3">3x de @( (installmentBase / 3m).ToString("C", culture)) sem juros</option>
-                                    <option value="6">6x de @( (installmentWithInterest / 6m).ToString("C", culture)) com juros (Total @installmentWithInterest.ToString("C", culture))</option>
-                                </select>
-                                <span asp-validation-for="Installments" class="text-danger"></span>
-                            </div>
-                            <label class="checkbox-control">
-                                <input asp-for="SaveCard" />
-                                <span>Salvar cartão para compras futuras</span>
-                            </label>
                         </div>
 
                         <div class="payment-panel @(selectedPayment.Equals("pix", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="pix">
-                            <div class="pix-panel">
-                                <p>O QR Code será gerado após clicar em “Confirmar pedido”.</p>
-                                <ul>
-                                    <li>Pagamento instantâneo, sem taxas adicionais.</li>
-                                    <li>O pedido é liberado em poucos minutos.</li>
-                                    <li>Você receberá instruções por e-mail.</li>
-                                </ul>
+                            <div class="payment-info-box">
+                                <i class="brands fa-pix"></i> <strong>Pagamento Instantâneo via Pix</strong>
+                                <p>Ao confirmar, você será redirecionado para gerar seu QR Code.</p>
+                                <small>Aprovação imediata.</small>
                             </div>
                         </div>
+
                         <div class="payment-panel @(selectedPayment.Equals("boleto", StringComparison.OrdinalIgnoreCase) ? "is-visible" : string.Empty)" data-payment-panel="boleto">
-                            <div class="boleto-panel">
-                                <p>O boleto terá vencimento em 3 dias úteis.</p>
-                                <ul>
-                                    <li>Confirmação pode levar até 2 dias úteis.</li>
-                                    <li>O documento será enviado por e-mail.</li>
-                                    <li>Você poderá imprimir ou pagar via internet banking.</li>
-                                </ul>
+                            <div class="payment-info-box">
+                                <i class="fas fa-barcode"></i>
+                                <strong>Boleto Bancário</strong>
+                                <p>Você será redirecionado para imprimir ou copiar o código do boleto.</p>
+                                <small>Aprovação em 1 a 2 dias úteis.</small>
                             </div>
                         </div>
                     </div>
                 </section>
+
             </main>
 
             <aside class="checkout-sidebar">
                 <section class="card-block sticky-summary">
                     <div class="summary-header">
                         <h3>Resumo do pedido</h3>
-                        <button type="button" class="btn-link">Editar itens</button>
+                        <a asp-controller="Carrinho" asp-action="Index" class="btn-link">Voltar</a>
                     </div>
+
                     <ul class="summary-items">
                         @if (Model.CartItems != null && Model.CartItems.Any())
                         {
@@ -359,7 +330,7 @@
                                 <li>
                                     <div>
                                         <strong>@item.Nome</strong>
-                                        <span>Qtd @item.Quantidade @(string.IsNullOrWhiteSpace(item.Sku) ? string.Empty : $"· SKU {item.Sku}")</span>
+                                        <span>Qtd: @item.Quantidade</span>
                                     </div>
                                     <span>@item.Total.ToString("C", culture)</span>
                                 </li>
@@ -367,19 +338,13 @@
                         }
                         else
                         {
-                            <li>
-                                <div>
-                                    <strong>Seu carrinho está vazio</strong>
-                                    <span>Adicione itens para finalizar a compra.</span>
-                                </div>
-                            </li>
+                            <li>O carrinho está vazio.</li>
                         }
                     </ul>
 
                     <div class="summary-coupon">
-                        <input type="text" asp-for="CouponInput" placeholder="Possui cupom?" />
+                        <input type="text" asp-for="CouponInput" placeholder="Cupom de desconto" />
                         <button type="button" id="applyCouponButton">Aplicar</button>
-                        <span asp-validation-for="CouponInput" class="text-danger"></span>
                     </div>
 
                     <dl class="summary-totals">
@@ -406,13 +371,11 @@
                     </div>
 
                     <button type="submit" class="btn-primary btn-full" id="confirmOrderButton">
-                        Confirmar pedido
-                        <i class="fas fa-lock"></i>
+                        Pagar com Mercado Pago <i class="fas fa-lock"></i>
                     </button>
 
                     <p class="summary-safe-text">
-                        <i class="fas fa-shield-alt"></i>
-                        Pagamento criptografado e protegido.
+                        <i class="fas fa-shield-alt"></i> Compra 100% segura e monitorada.
                     </p>
                 </section>
             </aside>
@@ -420,27 +383,9 @@
     </form>
 </div>
 
-
+@section Scripts {
     <script src="~/js/checkout.js" asp-append-version="true"></script>
-    
-    @section Scripts {
-        <script>
-            // Configuração do SDK do Mercado Pago
-            @{
-                var publicKey = ViewData["MercadoPagoPublicKey"]?.ToString() ?? "";
-            }
-            
-            @if (!string.IsNullOrEmpty(publicKey))
-            {
-                <text>
-                // Inicializar SDK do Mercado Pago (disponível globalmente)
-                window.MercadoPagoConfig = {
-                    publicKey: '@publicKey'
-                };
-                
-                // SDK já está carregado no _Layout.cshtml
-                // Você pode usar window.MercadoPago em qualquer lugar da página
-                </text>
-            }
-        </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
