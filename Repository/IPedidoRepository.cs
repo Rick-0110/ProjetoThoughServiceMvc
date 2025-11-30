@@ -8,6 +8,7 @@ namespace ToughService.Repository
         Task<IEnumerable<PedidoModel>> GetAllPedidosAsync();
         Task<PedidoModel> GetPedidoByIdAsync(int pedidoId);
         Task UpdateStatusPedidoAsync(int pedidoId, StatusPedidoEnum novoStatus);
+        Task UpdatePedidoAsync(PedidoModel pedido);
         Task<List<PedidoModel>> GetPedidosByUserIdAsync(string userId);
     }
 }

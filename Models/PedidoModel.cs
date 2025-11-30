@@ -84,6 +84,18 @@ namespace ToughService.Models
         [StringLength(500)]
         public string? Observacoes { get; set; }
 
+        // Campos do Mercado Pago
+        [StringLength(100)]
+        public string? MercadoPagoPaymentId { get; set; }
+
+        [StringLength(100)]
+        public string? MercadoPagoPreferenceId { get; set; }
+
+        [StringLength(50)]
+        public string? MercadoPagoStatus { get; set; }
+
+        public DateTime? MercadoPagoPaymentDate { get; set; }
+
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 

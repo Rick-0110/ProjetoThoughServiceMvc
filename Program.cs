@@ -50,6 +50,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 // Serviços
 // ------------------------------------
 builder.Services.AddScoped<ISkuService, SkuService>();
+builder.Services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
 // ------------------------------------
 // Banco de dados

@@ -58,6 +58,12 @@ namespace ToughService.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdatePedidoAsync(PedidoModel pedido)
+        {
+            _context.Pedidos.Update(pedido);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<PedidoModel>> GetPedidosByUserIdAsync(string userId)
         {
             return await _context.Pedidos

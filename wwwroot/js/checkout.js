@@ -343,11 +343,12 @@ function setupConfirmButton() {
             return;
         }
 
-        // Se válido, muda estado do botão e deixa o form seguir
+        // Se válido, muda estado do botão e submete o formulário
         confirmButton.disabled = true;
         confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
 
-        // O formulário será enviado normalmente aqui pelo evento padrão do botão submit
+        // Submete o formulário explicitamente
+        form.submit();
     });
 }
 

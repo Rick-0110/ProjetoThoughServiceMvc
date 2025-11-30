@@ -16,20 +16,26 @@ namespace ToughService.Controllers
         private readonly IEmailService _emailService;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly ICarrinhoRepository _carrinhoRepository;
+        private readonly IMercadoPagoService _mercadoPagoService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<CheckoutController> _logger;
 
         public CheckoutController(
             ICheckoutViewModelBuilder checkoutViewModelBuilder,
             IEmailService emailService,
             IPedidoRepository pedidoRepository,
             ICarrinhoRepository carrinhoRepository,
-            UserManager<ApplicationUser> userManager)
+            IMercadoPagoService mercadoPagoService,
+            UserManager<ApplicationUser> userManager,
+            ILogger<CheckoutController> logger)
         {
             _checkoutViewModelBuilder = checkoutViewModelBuilder;
             _emailService = emailService;
             _pedidoRepository = pedidoRepository;
             _carrinhoRepository = carrinhoRepository;
+            _mercadoPagoService = mercadoPagoService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -52,6 +58,8 @@ namespace ToughService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmOrder(CheckoutViewModel model)
         {
+            _logger.LogInformation($"ConfirmOrder chamado. PaymentMethod: {model.PaymentMethod}");
+            
             var hydratedModel = await _checkoutViewModelBuilder.BuildAsync(model);
 
             if (hydratedModel.CartItems == null || !hydratedModel.CartItems.Any())
@@ -60,8 +68,23 @@ namespace ToughService.Controllers
                 return RedirectToAction("Index", "Carrinho");
             }
 
+            // Aplicar valores do model ao hydratedModel
+            hydratedModel.CheckoutName = model.CheckoutName;
+            hydratedModel.CheckoutEmail = model.CheckoutEmail;
+            hydratedModel.CheckoutPhone = model.CheckoutPhone;
+            hydratedModel.CheckoutCep = model.CheckoutCep;
+            hydratedModel.CheckoutCidade = model.CheckoutCidade;
+            hydratedModel.CheckoutEstado = model.CheckoutEstado;
+            hydratedModel.CheckoutEndereco = model.CheckoutEndereco;
+            hydratedModel.CheckoutNumero = model.CheckoutNumero;
+            hydratedModel.CheckoutComplemento = model.CheckoutComplemento;
+            hydratedModel.ShippingMethod = model.ShippingMethod;
+            hydratedModel.PaymentMethod = model.PaymentMethod;
+            hydratedModel.Total = model.Total;
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning($"ModelState inválido. Erros: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))}");
                 return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
 
@@ -72,15 +95,8 @@ namespace ToughService.Controllers
                 return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
 
-            bool pagamentoBemSucedido = true;
-            if (!pagamentoBemSucedido)
-            {
-                ModelState.AddModelError("PaymentError", "O pagamento falhou.");
-                return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
-            }
-
             // ==================================================================
-            // 4. SALVAR O PEDIDO NO BANCO 
+            // 3. SALVAR O PEDIDO NO BANCO (ANTES DO PAGAMENTO)
             // ==================================================================
             var user = await _userManager.GetUserAsync(User);
 
@@ -90,7 +106,6 @@ namespace ToughService.Controllers
                 DataPedido = DateTime.Now,
                 Status = StatusPedidoEnum.Pendente,
 
-          
                 NomeCliente = model.CheckoutName,
                 EmailCliente = model.CheckoutEmail,
                 TelefoneCliente = model.CheckoutPhone,
@@ -111,51 +126,67 @@ namespace ToughService.Controllers
                 MetodoPagamento = model.PaymentMethod
             };
 
+            // Adicionar itens do pedido
+            foreach (var item in hydratedModel.CartItems)
+            {
+                novoPedido.Itens.Add(new PedidoItemModel
+                {
+                    ProdutoId = item.ProdutoId,
+                    Quantidade = item.Quantidade,
+                    PrecoUnitario = item.PrecoUnitario,
+                    Subtotal = item.Total
+                });
+            }
+
             await _pedidoRepository.AddPedidoAsync(novoPedido);
 
             // ==================================================================
-            // 5. ENVIAR E-MAIL COM TABELA DE PRODUTOS
+            // 4. PROCESSAR PAGAMENTO COM MERCADO PAGO
             // ==================================================================
             try
             {
-                var sb = new StringBuilder();
-                sb.AppendLine($"<h1>Obrigado, {novoPedido.NomeCliente}!</h1>");
-                sb.AppendLine($"<p>Seu pedido <strong>#{novoPedido.Id}</strong> foi recebido com sucesso.</p>");
+                _logger.LogInformation($"Iniciando criação de preferência do Mercado Pago para pedido {novoPedido.Id}");
+                
+                // Criar preferência de pagamento no Mercado Pago
+                var initPoint = await _mercadoPagoService.CreatePreferenceAsync(hydratedModel, novoPedido.Id, user.Id);
 
-                sb.AppendLine("<h3>Resumo do Pedido:</h3>");
-                sb.AppendLine("<table border='1' cellpadding='5' cellspacing='0' style='border-collapse:collapse; width:100%; max-width:600px; font-family: Arial, sans-serif;'>");
-                sb.AppendLine("<tr style='background-color:#f2f2f2; text-align:left;'><th>Produto</th><th>Qtd</th><th>Preço</th></tr>");
-
-                foreach (var item in hydratedModel.CartItems)
+                if (string.IsNullOrEmpty(initPoint))
                 {
-                    sb.AppendLine("<tr>");
-                    // Assumindo que CheckoutCartItemViewModel tem ProductName, Quantity e Price
-                    // Se os nomes forem diferentes lá também, me avise.
-                    sb.AppendLine($"<td>{item.Nome}</td>");
-                    sb.AppendLine($"<td style='text-align:center'>{item.Quantidade}</td>");
-                    sb.AppendLine($"<td style='text-align:right'>R$ {item.PrecoUnitario:F2}</td>");
-                    sb.AppendLine("</tr>");
+                    _logger.LogError($"Erro ao criar preferência do Mercado Pago para pedido {novoPedido.Id} - InitPoint vazio");
+                    ModelState.AddModelError("PaymentError", "Erro ao processar pagamento. Tente novamente.");
+                    return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
                 }
-                sb.AppendLine("</table>");
 
-                sb.AppendLine($"<p><strong>Subtotal:</strong> R$ {novoPedido.Subtotal:F2}</p>");
-                sb.AppendLine($"<p><strong>Frete:</strong> R$ {novoPedido.CustoEnvio:F2}</p>");
-                sb.AppendLine($"<h2 style='color:#28a745;'>Total: R$ {novoPedido.Total:F2}</h2>");
+                _logger.LogInformation($"Preferência criada com sucesso. InitPoint: {initPoint}");
 
-                sb.AppendLine("<hr>");
-                sb.AppendLine($"<p><strong>Endereço de Entrega:</strong><br>{novoPedido.Logradouro}, {novoPedido.Numero}<br>{novoPedido.Cidade} - {novoPedido.Estado}<br>CEP: {novoPedido.Cep}</p>");
-                sb.AppendLine("<p>Avisaremos quando o status mudar.</p>");
-                sb.AppendLine("<p>Att,<br>Equipe Tough Service</p>");
-                //await _emailService.SendEmailAsync(novoPedido.EmailCliente, $"Pedido #{novoPedido.Id} Confirmado - Tough Service", sb.ToString());
+                // Salvar ID da preferência no pedido
+                novoPedido.MercadoPagoPreferenceId = initPoint;
+                await _pedidoRepository.UpdatePedidoAsync(novoPedido);
+
+                _logger.LogInformation($"Redirecionando para o checkout do Mercado Pago: {initPoint}");
+                
+                // Redirecionar para o checkout do Mercado Pago
+                return Redirect(initPoint);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO AO ENVIAR EMAIL: {ex.Message}");
+                _logger.LogError(ex, $"Erro ao criar preferência do Mercado Pago para pedido {novoPedido.Id}. Detalhes: {ex.Message}");
+                _logger.LogError($"Stack trace: {ex.StackTrace}");
+                
+                // Se o pedido foi criado, marcar como erro
+                if (novoPedido.Id > 0)
+                {
+                    novoPedido.Status = StatusPedidoEnum.Cancelado;
+                    await _pedidoRepository.UpdatePedidoAsync(novoPedido);
+                }
+                
+                TempData["ErroPagamento"] = $"Erro ao processar pagamento: {ex.Message}. Verifique as configurações do Mercado Pago.";
+                ModelState.AddModelError("PaymentError", $"Erro ao processar pagamento. Tente novamente.");
+                return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
 
-            await _carrinhoRepository.ClearCarrinhoAsync(user.Id);
-
-            return RedirectToAction(nameof(Confirmation), new { id = novoPedido.Id });
+            // O redirecionamento para o Mercado Pago já foi feito acima
+            // O carrinho será limpo após a confirmação do pagamento (no webhook ou no retorno)
         }
 
         [HttpGet]

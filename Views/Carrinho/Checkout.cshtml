@@ -63,6 +63,12 @@
 
                 <div class="text-danger">
                     <div asp-validation-summary="ModelOnly"></div>
+                    @if (TempData["ErroPagamento"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErroPagamento"]
+                        </div>
+                    }
                 </div>
 
                 <section class="card-block">
