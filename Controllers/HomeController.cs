@@ -10,7 +10,6 @@ namespace ToughService.Controllers
     public class HomeController : Controller
     {
         private readonly IProdutoRepository _produtoRepository;
-        // REMOVIDO: IProdutoRepositoryGeneric (não é mais necessário para listagem)
         private readonly UserManager<ApplicationUser> _userManager;
 
         public HomeController(
@@ -21,28 +20,27 @@ namespace ToughService.Controllers
             _userManager = userManager;
         }
 
+        public async Task<IActionResult> Sobre()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Index()
         {
-            // 1. BUSCA UNIFICADA (Tabela Única resolve tudo!)
-            // Isso traz Extintores, Mangueiras e Genéricos, tudo junto.
             var todosProdutos = await _produtoRepository.GetAllProdutosAsync();
 
-            // 2. FILTRO DE ATIVOS
             var produtosAtivos = todosProdutos.Where(p => p.Ativo).ToList();
 
-            // Fallback: se não tiver ativos, mostra tudo (para teste)
             if (!produtosAtivos.Any())
             {
                 produtosAtivos = todosProdutos.ToList();
             }
 
-            // 3. AGRUPAMENTO (Funciona direto com ProdutoBaseModel)
             var produtosPorCategoria = produtosAtivos
                 .GroupBy(p => p.Categoria)
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.ToList());
 
-            // 4. DADOS AUXILIARES
             var todasCategorias = Enum.GetValues(typeof(CategoriaEnum))
                 .Cast<CategoriaEnum>()
                 .ToList();

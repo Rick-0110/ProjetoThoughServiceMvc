@@ -84,11 +84,11 @@ namespace ToughService.Models
         [StringLength(500)]
         public string? Observacoes { get; set; }
 
-        // Campos do Mercado Pago
+
         [StringLength(100)]
         public string? MercadoPagoPaymentId { get; set; }
 
-        [StringLength(100)]
+        [StringLength(500)]
         public string? MercadoPagoPreferenceId { get; set; }
 
         [StringLength(50)]
@@ -96,10 +96,11 @@ namespace ToughService.Models
 
         public DateTime? MercadoPagoPaymentDate { get; set; }
 
+        // ------------------------------
+
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<PedidoItemModel> Itens { get; set; } = new List<PedidoItemModel>();
     }
 }
-

@@ -1,12 +1,22 @@
+using MercadoPago.Client.Common;
+using MercadoPago.Client.Payment;
 using MercadoPago.Client.Preference;
 using MercadoPago.Config;
 using MercadoPago.Resource.Preference;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ToughService.Models;
 using ToughService.Models.ModelCheckout;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ToughService.Services
 {
+    // A interface que você mandou fica aqui (ou em arquivo separado, mas o namespace deve bater)
+    // Se já estiver em outro arquivo, pode remover este bloco interface daqui.
+
     public class MercadoPagoService : IMercadoPagoService
     {
         private readonly IConfiguration _configuration;
@@ -16,94 +26,107 @@ namespace ToughService.Services
         {
             _configuration = configuration;
             _logger = logger;
+        }
 
-            // Configurar o SDK do Mercado Pago
-            var accessToken = _configuration["MercadoPagoSettings:AccessToken"];
+        // Método auxiliar para garantir que o Token esteja carregado antes de qualquer chamada
+        private void ConfigurarSDK()
+        {
+            // Tenta pegar o token da chave correta
+            var accessToken = _configuration["MercadoPago:AccessToken"];
+
+            if (string.IsNullOrEmpty(accessToken) || accessToken.Contains("SEU_ACCESS_TOKEN"))
+            {
+                // Fallback para nome antigo se houver
+                accessToken = _configuration["MercadoPagoSettings:AccessToken"];
+            }
+
             if (string.IsNullOrEmpty(accessToken))
             {
-                _logger.LogWarning("AccessToken do Mercado Pago não configurado");
+                throw new InvalidOperationException("AccessToken do Mercado Pago não encontrado. Configure usando 'dotnet user-secrets set \"MercadoPago:AccessToken\" \"SEU_TOKEN\"'");
             }
-            else
-            {
-                MercadoPagoConfig.AccessToken = accessToken;
-            }
+
+            MercadoPagoConfig.AccessToken = accessToken;
         }
 
         public async Task<string> CreatePreferenceAsync(CheckoutViewModel checkout, int pedidoId, string userId)
         {
             try
             {
-                var accessToken = _configuration["MercadoPagoSettings:AccessToken"];
-                if (string.IsNullOrEmpty(accessToken) || accessToken == "SEU_ACCESS_TOKEN_PRIVADO_AQUI")
+                // 1. Configura o SDK
+                ConfigurarSDK();
+
+                _logger.LogInformation($"Criando preferência MP para pedido #{pedidoId}...");
+
+                // 2. Monta a lista de itens
+                var items = checkout.CartItems.Select(item => new PreferenceItemRequest
                 {
-                    _logger.LogError("AccessToken do Mercado Pago não configurado corretamente no appsettings.json");
-                    throw new InvalidOperationException("AccessToken do Mercado Pago não configurado. Configure no appsettings.json");
+                    Id = item.ProdutoId.ToString(),
+                    Title = item.Nome,
+                    Quantity = item.Quantidade,
+                    CurrencyId = "BRL",
+                    UnitPrice = item.PrecoUnitario
+                }).ToList();
+
+                // Adiciona Frete se houver
+                if (checkout.ShippingCost > 0)
+                {
+                    items.Add(new PreferenceItemRequest
+                    {
+                        Id = "Frete",
+                        Title = "Custo de Envio",
+                        Quantity = 1,
+                        CurrencyId = "BRL",
+                        UnitPrice = checkout.ShippingCost
+                    });
                 }
 
-                _logger.LogInformation($"Criando preferência para pedido {pedidoId} com {checkout.CartItems.Count} itens");
-                
+                // 3. Monta a requisição completa
                 var request = new PreferenceRequest
                 {
-                    Items = checkout.CartItems.Select(item => new MercadoPago.Client.Preference.PreferenceItemRequest
+                    Items = items,
+                    Payer = new PreferencePayerRequest
                     {
-                        Title = item.Nome,
-                        Quantity = item.Quantidade,
-                        UnitPrice = item.PrecoUnitario,
-                        CurrencyId = "BRL"
-                    }).ToList(),
-                    Payer = new MercadoPago.Client.Preference.PreferencePayerRequest
-                    {
-                        Name = checkout.CheckoutName,
+                        Name = checkout.CheckoutName.Split(' ')[0],
+                        Surname = checkout.CheckoutName.Contains(" ") ? checkout.CheckoutName.Substring(checkout.CheckoutName.IndexOf(" ") + 1) : "",
                         Email = checkout.CheckoutEmail,
-                    Phone = !string.IsNullOrEmpty(checkout.CheckoutPhone) && checkout.CheckoutPhone.Length > 2
-                        ? new MercadoPago.Client.Common.PhoneRequest
-                        {
-                            AreaCode = checkout.CheckoutPhone.Substring(0, Math.Min(2, checkout.CheckoutPhone.Length)),
-                            Number = checkout.CheckoutPhone.Substring(Math.Min(2, checkout.CheckoutPhone.Length))
-                        }
-                        : null
+
+                        // Telefone é opcional, adicione apenas se tiver certeza do formato
+                        /* Phone = new PhoneRequest {
+                            AreaCode = "11",
+                            Number = "999999999"
+                        }, */
                     },
-                    BackUrls = new MercadoPago.Client.Preference.PreferenceBackUrlsRequest
+                    BackUrls = new PreferenceBackUrlsRequest
                     {
-                        Success = $"{_configuration["BaseUrl"] ?? "https://localhost:5001"}/Payment/Success?pedidoId={pedidoId}",
-                        Failure = $"{_configuration["BaseUrl"] ?? "https://localhost:5001"}/Payment/Failure?pedidoId={pedidoId}",
-                        Pending = $"{_configuration["BaseUrl"] ?? "https://localhost:5001"}/Payment/Pending?pedidoId={pedidoId}"
+                        Success = $"{GetBaseUrl()}/Checkout/Confirmation?id={pedidoId}",
+                        Failure = $"{GetBaseUrl()}/Checkout/Index",
+                        Pending = $"{GetBaseUrl()}/Checkout/Confirmation?id={pedidoId}"
                     },
                     AutoReturn = "approved",
-                    ExternalReference = pedidoId.ToString(),
-                    NotificationUrl = $"{_configuration["BaseUrl"] ?? "https://localhost:5001"}/api/Webhook/MercadoPago",
-                    StatementDescriptor = "Tough Service",
-                    AdditionalInfo = $"Pedido #{pedidoId} - {checkout.CheckoutName}"
+                    ExternalReference = pedidoId.ToString(), // VITAL para o Webhook saber qual pedido é
+                    StatementDescriptor = "TOUGH SERVICE",
+                    Expires = true,
+                    ExpirationDateFrom = DateTime.Now,
+                    ExpirationDateTo = DateTime.Now.AddDays(1)
                 };
 
+                // 4. Envia para o Mercado Pago
                 var client = new PreferenceClient();
                 Preference preference = await client.CreateAsync(request);
 
                 if (preference == null)
-                {
-                    _logger.LogError($"Resposta do Mercado Pago está vazia para pedido {pedidoId}");
-                    throw new InvalidOperationException("Não foi possível criar a preferência de pagamento");
-                }
+                    throw new Exception("MP retornou preferência nula.");
 
-                _logger.LogInformation($"Preferência criada com sucesso. ID: {preference.Id}, Pedido: {pedidoId}");
+                // Retorna o link (InitPoint)
+                // Use SandboxInitPoint se estiver usando credenciais de teste, ou InitPoint para produção
+                // O MP decide automático baseado no Token, mas o InitPoint geralmente serve para ambos
+                var link = preference.InitPoint;
 
-                // O InitPoint contém a URL para redirecionar o usuário ao checkout
-                // Em produção: preference.InitPoint
-                // Em sandbox: preference.SandboxInitPoint
-                var initPoint = preference.InitPoint ?? preference.SandboxInitPoint;
-                
-                if (string.IsNullOrEmpty(initPoint))
-                {
-                    _logger.LogError($"InitPoint não retornado pelo Mercado Pago. Preference ID: {preference.Id}");
-                    throw new InvalidOperationException("URL de checkout não foi gerada pelo Mercado Pago");
-                }
-
-                _logger.LogInformation($"InitPoint obtido: {initPoint}");
-                return initPoint;
+                return link;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao criar preferência do Mercado Pago para o pedido {pedidoId}");
+                _logger.LogError(ex, $"Erro ao criar preferência para pedido {pedidoId}");
                 throw;
             }
         }
@@ -112,22 +135,15 @@ namespace ToughService.Services
         {
             try
             {
-                var client = new MercadoPago.Client.Payment.PaymentClient();
+                ConfigurarSDK();
+                var client = new PaymentClient();
                 var payment = await client.GetAsync(long.Parse(paymentId));
 
-                if (payment == null)
-                {
-                    _logger.LogWarning($"Pagamento {paymentId} não encontrado");
-                    return false;
-                }
-
-                _logger.LogInformation($"Processando notificação de pagamento {paymentId}. Status: {payment.Status}");
-
-                return payment.Status == "approved";
+                return payment != null && payment.Status == "approved";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao processar notificação de pagamento {paymentId}");
+                _logger.LogError(ex, $"Erro ao processar notificação {paymentId}");
                 return false;
             }
         }
@@ -136,36 +152,32 @@ namespace ToughService.Services
         {
             try
             {
-                var client = new MercadoPago.Client.Payment.PaymentClient();
+                ConfigurarSDK();
+                var client = new PaymentClient();
                 var payment = await client.GetAsync(long.Parse(paymentId));
 
-                if (payment == null)
-                {
-                    return new MercadoPagoPaymentStatus
-                    {
-                        Status = "not_found",
-                        PaymentId = paymentId
-                    };
-                }
+                if (payment == null) return null;
 
                 return new MercadoPagoPaymentStatus
                 {
-                    Status = payment.Status ?? "unknown",
-                    PaymentId = paymentId,
-                    OrderId = payment.ExternalReference ?? string.Empty,
+                    Status = payment.Status,
+                    PaymentId = payment.Id.ToString(),
+                    OrderId = payment.ExternalReference,
                     Amount = payment.TransactionAmount ?? 0
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao obter status do pagamento {paymentId}");
-                return new MercadoPagoPaymentStatus
-                {
-                    Status = "error",
-                    PaymentId = paymentId
-                };
+                _logger.LogError(ex, $"Erro ao consultar pagamento {paymentId}");
+                return null;
             }
+        }
+
+        private string GetBaseUrl()
+        {
+            // Em produção, isso deve vir do appsettings. Em dev, usa localhost.
+            var url = _configuration["BaseUrl"];
+            return string.IsNullOrEmpty(url) ? "https://localhost:7004" : url;
         }
     }
 }
-

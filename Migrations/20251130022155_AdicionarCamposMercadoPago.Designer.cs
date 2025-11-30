@@ -12,8 +12,8 @@ using ToughService.Data;
 namespace ToughService.Migrations
 {
     [DbContext(typeof(BancoContext))]
-    [Migration("20251129173541_Add-Migration NewMigration")]
-    partial class AddMigrationNewMigration
+    [Migration("20251130022155_AdicionarCamposMercadoPago")]
+    partial class AdicionarCamposMercadoPago
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -420,6 +420,21 @@ namespace ToughService.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime?>("MercadoPagoPaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MercadoPagoPaymentId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("MercadoPagoPreferenceId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("MercadoPagoStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("MetodoEnvio")
                         .IsRequired()
