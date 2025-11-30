@@ -14,9 +14,6 @@ using System.Threading.Tasks;
 
 namespace ToughService.Services
 {
-    // A interface que você mandou fica aqui (ou em arquivo separado, mas o namespace deve bater)
-    // Se já estiver em outro arquivo, pode remover este bloco interface daqui.
-
     public class MercadoPagoService : IMercadoPagoService
     {
         private readonly IConfiguration _configuration;
@@ -175,7 +172,6 @@ namespace ToughService.Services
 
         private string GetBaseUrl()
         {
-            // Em produção, isso deve vir do appsettings. Em dev, usa localhost.
             var url = _configuration["BaseUrl"];
             return string.IsNullOrEmpty(url) ? "https://localhost:7004" : url;
         }

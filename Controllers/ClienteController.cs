@@ -5,6 +5,7 @@ using System.Security.Claims;
 using ToughService.Models;
 using ToughService.Extensions;
 using ToughService.Repository;
+using System.Dynamic; // Necessário para ExpandoObject
 
 namespace ToughService.Controllers
 {
@@ -14,73 +15,104 @@ namespace ToughService.Controllers
         private readonly IProdutoRepository _produtoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IChamadoRepository _chamadoRepository;
+        private readonly IPedidoRepository _pedidoRepository; // Repositório de Pedidos injetado
 
         public ClienteController(
             IProdutoRepository produtoRepository,
             UserManager<ApplicationUser> userManager,
-            IChamadoRepository chamadoRepository)
+            IChamadoRepository chamadoRepository,
+            IPedidoRepository pedidoRepository)
         {
             _produtoRepository = produtoRepository;
             _userManager = userManager;
             _chamadoRepository = chamadoRepository;
+            _pedidoRepository = pedidoRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> MeusPedidos()
         {
-            if (!User.Identity.IsAuthenticated)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
                 return RedirectToAction("Login", "Registro");
             }
 
-            var carrinho = HttpContext.Session.GetObject<List<ItemCarrinhoModel>>("Carrinho") ?? new List<ItemCarrinhoModel>();
+            // 1. Busca os pedidos reais do banco de dados (garanta que o repositório use .Include)
+            var pedidosDb = await _pedidoRepository.GetPedidosByUserIdAsync(user.Id);
 
-            var pedidosList = new System.Collections.Generic.List<dynamic>();
-            
-            for (int i = 0; i < carrinho.Count; i++)
+            // 2. Converte para o formato dynamic que a View espera
+            var pedidosList = new List<dynamic>();
+
+            foreach (var pedido in pedidosDb.OrderByDescending(p => p.DataPedido))
             {
-                var item = carrinho[i];
-                
-                if (item != null)
+                var dynPedido = new ExpandoObject() as IDictionary<string, object>;
+
+                dynPedido["PedidoId"] = pedido.Id;
+                dynPedido["Data"] = pedido.DataPedido;
+                dynPedido["Total"] = pedido.Total;
+
+                // Define o status amigável
+                dynPedido["Status"] = string.IsNullOrEmpty(pedido.MercadoPagoStatus)
+                                      ? pedido.Status.ToString()
+                                      : TraduzirStatusMP(pedido.MercadoPagoStatus, pedido.Status.ToString());
+
+                // Passa o link de pagamento para o botão "Pagar Agora" (se houver)
+                dynPedido["LinkPagamento"] = pedido.MercadoPagoPreferenceId;
+
+                // Pega o primeiro item para ilustrar o card
+                var primeiroItemDb = pedido.Itens.FirstOrDefault();
+
+                if (primeiroItemDb != null)
                 {
-                    var pedido = new System.Dynamic.ExpandoObject() as System.Collections.Generic.IDictionary<string, object>;
-                    pedido["PedidoId"] = $"PED-{item.Id:D6}-{i}";
-                    pedido["Item"] = item;
-                    pedido["Data"] = System.DateTime.Now.AddDays(-i);
-                    pedido["Total"] = item.Produto.Preco * item.Quantidade;
-                    
-                    if (i % 3 == 0)
-                        pedido["Status"] = "Entregue";
-                    else if (i % 3 == 1)
-                        pedido["Status"] = "Em Trânsito";
-                    else
-                        pedido["Status"] = "Pendente";
-                    
-                    pedidosList.Add(pedido);
+                    dynPedido["Item"] = new ItemCarrinhoModel
+                    {
+                        Produto = primeiroItemDb.Produto,
+                        Quantidade = pedido.Itens.Sum(i => i.Quantidade),
+                        PrecoUnitario = primeiroItemDb.PrecoUnitario,
+                        Total = primeiroItemDb.Subtotal
+                    };
                 }
+                else
+                {
+                    dynPedido["Item"] = null;
+                }
+
+                pedidosList.Add(dynPedido);
             }
 
             ViewBag.Pedidos = pedidosList;
-            ViewBag.User = await _userManager.GetUserAsync(User);
+            ViewBag.User = user;
 
-            return View(carrinho);
+            return View();
         }
 
+        // Função auxiliar para traduzir status do Mercado Pago
+        private string TraduzirStatusMP(string statusMp, string statusInterno)
+        {
+            return statusMp.ToLower() switch
+            {
+                "approved" => "Aprovado",
+                "pending" => "Pendente",
+                "in_process" => "Em Análise",
+                "rejected" => "Recusado",
+                "cancelled" => "Cancelado",
+                _ => statusInterno
+            };
+        }
 
         [HttpGet]
         public async Task<IActionResult> MeusServicos()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
             }
 
             var chamados = await _chamadoRepository.GetChamadosByUserIdAsync(userId);
             return View(chamados);
-
         }
-
 
         [HttpGet]
         public IActionResult Configuracoes()
@@ -89,4 +121,3 @@ namespace ToughService.Controllers
         }
     }
 }
-

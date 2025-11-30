@@ -13,22 +13,28 @@ namespace ToughService.Models
         [Required]
         public int Quantidade { get; set; }
 
-
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal PrecoUnitario { get; set; }
-
 
         [Required]
         public int ProdutoId { get; set; }
 
         [Required]
-        public string UserId { get; set; } 
+        public string UserId { get; set; }
 
-      
         [ForeignKey("ProdutoId")]
-        public virtual ProdutoBaseModel Produto { get; set; } 
+        public virtual ProdutoBaseModel Produto { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
-       
+
+
+        [NotMapped]
+        public decimal Total
+        {
+            get { return Quantidade * PrecoUnitario; }
+            set {  }
+        }
     }
 }

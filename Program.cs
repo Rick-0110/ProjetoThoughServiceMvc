@@ -45,6 +45,7 @@ builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 builder.Services.AddScoped<ICheckoutViewModelBuilder, CheckoutViewModelBuilder>();
 builder.Services.AddHttpClient<ICaptchaService, RecaptchaService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddHttpClient<IWhatsAppService, WhatsAppService>();
 
 // ------------------------------------
 // Serviços
