@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using ToughService.Models;
 using ToughService.Models.ModelCheckout;
 using ToughService.Repository;
@@ -20,7 +19,7 @@ namespace ToughService.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ILogger<CheckoutController> _logger;
-        private readonly IWhatsAppService _whatsAppService; // Serviço de WhatsApp adicionado
+        private readonly IWhatsAppService _whatsAppService;
 
         public CheckoutController(
             ICheckoutViewModelBuilder checkoutViewModelBuilder,
@@ -31,7 +30,7 @@ namespace ToughService.Controllers
             UserManager<ApplicationUser> userManager,
             IConfiguration configuration,
             ILogger<CheckoutController> logger,
-            IWhatsAppService whatsAppService) // Injeção do WhatsApp
+            IWhatsAppService whatsAppService)
         {
             _checkoutViewModelBuilder = checkoutViewModelBuilder;
             _emailService = emailService;
@@ -57,7 +56,6 @@ namespace ToughService.Controllers
                 return RedirectToAction("Index", "Carrinho");
             }
 
-            // Passar a PublicKey para o Front (caso use scripts do MP)
             ViewData["MercadoPagoPublicKey"] = _configuration["MercadoPagoSettings:PublicKey"] ?? string.Empty;
 
             return View("~/Views/Carrinho/Checkout.cshtml", model);
@@ -69,7 +67,6 @@ namespace ToughService.Controllers
         {
             _logger.LogInformation($"ConfirmOrder chamado. PaymentMethod: {model.PaymentMethod}");
 
-            // 1. Reconstrói o modelo com dados do banco (para segurança de preços)
             var hydratedModel = await _checkoutViewModelBuilder.BuildAsync(model);
 
             if (hydratedModel.CartItems == null || !hydratedModel.CartItems.Any())
@@ -78,7 +75,6 @@ namespace ToughService.Controllers
                 return RedirectToAction("Index", "Carrinho");
             }
 
-            // 2. Atualiza dados do formulário
             hydratedModel.CheckoutName = model.CheckoutName;
             hydratedModel.CheckoutEmail = model.CheckoutEmail;
             hydratedModel.CheckoutPhone = model.CheckoutPhone;
@@ -98,7 +94,6 @@ namespace ToughService.Controllers
                 return View("~/Views/Carrinho/Checkout.cshtml", hydratedModel);
             }
 
-            // Validação extra de segurança do total
             if (Math.Abs(hydratedModel.Total - model.Total) > 0.01m)
             {
                 ModelState.AddModelError(string.Empty, "Erro de cálculo no total. O pedido não pode ser processado.");
@@ -107,7 +102,6 @@ namespace ToughService.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            // 3. Cria o Objeto Pedido
             var novoPedido = new PedidoModel
             {
                 UserId = user.Id,
@@ -134,7 +128,6 @@ namespace ToughService.Controllers
                 MetodoPagamento = model.PaymentMethod
             };
 
-            // Adiciona itens
             foreach (var item in hydratedModel.CartItems)
             {
                 novoPedido.Itens.Add(new PedidoItemModel
@@ -146,39 +139,12 @@ namespace ToughService.Controllers
                 });
             }
 
-            // 4. Salva no Banco de Dados
             await _pedidoRepository.AddPedidoAsync(novoPedido);
 
-            // ==================================================================
-            // 5. NOTIFICAÇÃO WHATSAPP (Rodando em Background)
-            // ==================================================================
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var msg = $"🔔 *NOVO PEDIDO NO SITE!*\n\n" +
-                              $"🛒 Pedido: #{novoPedido.Id}\n" +
-                              $"👤 Cliente: {novoPedido.NomeCliente}\n" +
-                              $"📞 Tel: {novoPedido.TelefoneCliente}\n" +
-                              $"💰 Valor: R$ {novoPedido.Total:F2}\n" +
-                              $"📦 Pagamento: {novoPedido.MetodoPagamento}";
-
-                    await _whatsAppService.EnviarMensagemAsync(msg);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Erro ao enviar WhatsApp: {ex.Message}");
-                }
-            });
-
-            // ==================================================================
-            // 6. INTEGRAÇÃO MERCADO PAGO
-            // ==================================================================
             try
             {
                 _logger.LogInformation($"Criando preferência MP para pedido {novoPedido.Id}");
 
-                // Cria o link de pagamento
                 var initPoint = await _mercadoPagoService.CreatePreferenceAsync(hydratedModel, novoPedido.Id, user.Id);
 
                 if (string.IsNullOrEmpty(initPoint))
@@ -186,23 +152,42 @@ namespace ToughService.Controllers
                     throw new Exception("Link de pagamento não gerado (InitPoint vazio).");
                 }
 
-                // Atualiza o pedido com o link/ID da preferência
                 novoPedido.MercadoPagoPreferenceId = initPoint;
                 await _pedidoRepository.UpdatePedidoAsync(novoPedido);
 
-                // Limpa o carrinho do usuário
+                // Dispara notificação para a EMPRESA
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var msg = $"🔔 *NOVA VENDA NO SITE!*\n" +
+                                  $"--------------------------------\n" +
+                                  $"📄 Pedido: *#{novoPedido.Id}*\n" +
+                                  $"👤 Cliente: *{novoPedido.NomeCliente}*\n" +
+                                  $"📱 WhatsApp do Cliente: {novoPedido.TelefoneCliente}\n" +
+                                  $"💸 Valor Total: *R$ {novoPedido.Total:F2}*\n" +
+                                  $"--------------------------------\n" +
+                                  $"⚠️ Status: *Aguardando Pagamento*\n";
+
+
+                        await _whatsAppService.EnviarMensagemAsync(msg);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Erro ao enviar WhatsApp: {ex.Message}");
+                    }
+                });
+
                 await _carrinhoRepository.ClearCarrinhoAsync(user.Id);
 
                 _logger.LogInformation($"Redirecionando para MP: {initPoint}");
 
-                // Redireciona o usuário para a tela de pagamento
                 return Redirect(initPoint);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro Crítico no Mercado Pago para pedido {novoPedido.Id}");
 
-                // Se falhou o pagamento, cancela o pedido para não ficar pendente eternamente
                 if (novoPedido.Id > 0)
                 {
                     novoPedido.Status = StatusPedidoEnum.Cancelado;
