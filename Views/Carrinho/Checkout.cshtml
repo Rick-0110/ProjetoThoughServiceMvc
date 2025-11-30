@@ -422,3 +422,25 @@
 
 
     <script src="~/js/checkout.js" asp-append-version="true"></script>
+    
+    @section Scripts {
+        <script>
+            // Configuração do SDK do Mercado Pago
+            @{
+                var publicKey = ViewData["MercadoPagoPublicKey"]?.ToString() ?? "";
+            }
+            
+            @if (!string.IsNullOrEmpty(publicKey))
+            {
+                <text>
+                // Inicializar SDK do Mercado Pago (disponível globalmente)
+                window.MercadoPagoConfig = {
+                    publicKey: '@publicKey'
+                };
+                
+                // SDK já está carregado no _Layout.cshtml
+                // Você pode usar window.MercadoPago em qualquer lugar da página
+                </text>
+            }
+        </script>
+    }

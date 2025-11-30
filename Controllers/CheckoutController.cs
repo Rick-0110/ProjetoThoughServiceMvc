@@ -18,6 +18,7 @@ namespace ToughService.Controllers
         private readonly ICarrinhoRepository _carrinhoRepository;
         private readonly IMercadoPagoService _mercadoPagoService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<CheckoutController> _logger;
 
         public CheckoutController(
@@ -27,6 +28,7 @@ namespace ToughService.Controllers
             ICarrinhoRepository carrinhoRepository,
             IMercadoPagoService mercadoPagoService,
             UserManager<ApplicationUser> userManager,
+            IConfiguration configuration,
             ILogger<CheckoutController> logger)
         {
             _checkoutViewModelBuilder = checkoutViewModelBuilder;
@@ -35,6 +37,7 @@ namespace ToughService.Controllers
             _carrinhoRepository = carrinhoRepository;
             _mercadoPagoService = mercadoPagoService;
             _userManager = userManager;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -50,6 +53,9 @@ namespace ToughService.Controllers
                 TempData["ErroCarrinho"] = "Seu carrinho está vazio.";
                 return RedirectToAction("Index", "Carrinho");
             }
+
+            // Passar a PublicKey do Mercado Pago para a view
+            ViewData["MercadoPagoPublicKey"] = _configuration["MercadoPagoSettings:PublicKey"] ?? string.Empty;
 
             return View("~/Views/Carrinho/Checkout.cshtml", model);
         }

@@ -79,9 +79,27 @@ namespace ToughService.Services
                 var client = new PreferenceClient();
                 Preference preference = await client.CreateAsync(request);
 
+                if (preference == null)
+                {
+                    _logger.LogError($"Resposta do Mercado Pago está vazia para pedido {pedidoId}");
+                    throw new InvalidOperationException("Não foi possível criar a preferência de pagamento");
+                }
+
                 _logger.LogInformation($"Preferência criada com sucesso. ID: {preference.Id}, Pedido: {pedidoId}");
 
-                return preference.InitPoint ?? preference.SandboxInitPoint ?? string.Empty;
+                // O InitPoint contém a URL para redirecionar o usuário ao checkout
+                // Em produção: preference.InitPoint
+                // Em sandbox: preference.SandboxInitPoint
+                var initPoint = preference.InitPoint ?? preference.SandboxInitPoint;
+                
+                if (string.IsNullOrEmpty(initPoint))
+                {
+                    _logger.LogError($"InitPoint não retornado pelo Mercado Pago. Preference ID: {preference.Id}");
+                    throw new InvalidOperationException("URL de checkout não foi gerada pelo Mercado Pago");
+                }
+
+                _logger.LogInformation($"InitPoint obtido: {initPoint}");
+                return initPoint;
             }
             catch (Exception ex)
             {
