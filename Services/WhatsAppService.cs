@@ -1,45 +1,57 @@
-﻿using System.Net;
-
+﻿using Twilio;
+using Twilio.Types;
+using Twilio.Rest.Api.V2010.Account; 
 namespace ToughService.Services
 {
     public class WhatsAppService : IWhatsAppService
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<WhatsAppService> _logger;
-        private readonly HttpClient _httpClient;
 
-        public WhatsAppService(IConfiguration configuration, ILogger<WhatsAppService> logger, HttpClient httpClient)
+        public WhatsAppService(IConfiguration configuration, ILogger<WhatsAppService> logger)
         {
             _configuration = configuration;
             _logger = logger;
-            _httpClient = httpClient;
+
+            var accountSid = _configuration["Twilio:AccountSid"];
+            var authToken = _configuration["Twilio:AuthToken"];
+
+            if (!string.IsNullOrEmpty(accountSid) && !string.IsNullOrEmpty(authToken))
+            {
+                try
+                {
+                    TwilioClient.Init(accountSid, authToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Erro ao iniciar Twilio: {ex.Message}");
+                }
+            }
         }
 
         public async Task EnviarMensagemAsync(string mensagem)
         {
             try
             {
-                var phone = _configuration["WhatsAppSettings:PhoneNumber"];
-                var apikey = _configuration["WhatsAppSettings:ApiKey"];
+                var fromNumber = _configuration["Twilio:FromNumber"];
+                var toNumber = _configuration["Twilio:MyPhoneNumber"];
 
-                if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(apikey))
+                // Validação de segurança
+                if (string.IsNullOrEmpty(fromNumber) || string.IsNullOrEmpty(toNumber))
                 {
-                    _logger.LogWarning("WhatsApp não configurado no appsettings (PhoneNumber ou ApiKey vazios).");
+                    _logger.LogWarning("Números do Twilio não configurados.");
                     return;
                 }
-                string mensagemCodificada = WebUtility.UrlEncode(mensagem);
 
-                string url = $"https://api.callmebot.com/whatsapp.php?phone={phone}&text={mensagemCodificada}&apikey={apikey}";
+                var messageOptions = new CreateMessageOptions(new PhoneNumber($"whatsapp:{toNumber}"));
+                messageOptions.From = new PhoneNumber($"whatsapp:{fromNumber}");
+                messageOptions.Body = mensagem;
 
-                // Envia a requisição (Dispara a mensagem)
-                await _httpClient.GetAsync(url);
-
-                _logger.LogInformation("Notificação de WhatsApp enviada para a empresa com sucesso.");
+                await MessageResource.CreateAsync(messageOptions);
             }
             catch (Exception ex)
             {
-                // Apenas loga o erro, não trava o checkout do cliente se o zap falhar
-                _logger.LogError($"Erro ao enviar WhatsApp: {ex.Message}");
+                _logger.LogError($"Erro ao enviar WhatsApp Twilio: {ex.Message}");
             }
         }
     }
