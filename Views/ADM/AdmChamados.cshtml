@@ -207,19 +207,22 @@
                 </div>
             </div>
             <div class="modal-footer">
+                
                 <form id="formAtualizaStatus" asp-action="AtualizarStatusChamado" asp-controller="ADM" method="post" style="display: inline;">
                     @Html.AntiForgeryToken()
+                     
                     <input type="hidden" name="id" id="modalStatusFormId" value="0" />
                     <input type="hidden" name="novoStatus" id="modalStatusFormNovoStatus" value="" />
 
                     <button type="button" class="btn-secondary" onclick="closeModal()">Fechar</button>
-
+                   
                     <button type="button" class="btn-warning btn-status-action" data-next-status="@((int)StatusChamadoEnum.EmAndamento)" style="display: none;">
                         Marcar em Andamento
                     </button>
                     <button type="button" class="btn-success btn-status-action" data-next-status="@((int)StatusChamadoEnum.Finalizado)" style="display: none;">
                         Finalizar
                     </button>
+                   
                 </form>
             </div>
         </div>

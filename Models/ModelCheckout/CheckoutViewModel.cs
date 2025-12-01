@@ -47,7 +47,7 @@ namespace ToughService.Models.ModelCheckout
         [Required(ErrorMessage = "Selecione um método de envio.")]
         public string ShippingMethod { get; set; } = string.Empty;
 
-        public string CouponInput { get; set; } = string.Empty;
+        public string? CouponInput { get; set; } = string.Empty;
         public decimal Total { get; set; }
 
         [Required(ErrorMessage = "Selecione a forma de pagamento.")]

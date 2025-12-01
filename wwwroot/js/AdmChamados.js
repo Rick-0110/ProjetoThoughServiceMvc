@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+ï»¿document.addEventListener('DOMContentLoaded', function () {
     setupModalActionButtons();
     setupModalCloseListeners();
 });
@@ -14,7 +14,7 @@ function openDetailsModal(buttonElement) {
 
     if (!modal || !detailsContainer || !modalIdSpan || !statusFormIdInput) return;
 
-    const data = chamadoItem.dataset; // Lê todos os data-*
+    const data = chamadoItem.dataset; // LÃª todos os data-*
 
     modalIdSpan.textContent = data.id || 'N/A';
     detailsContainer.innerHTML = `
@@ -27,24 +27,24 @@ function openDetailsModal(buttonElement) {
             </div>
             <div class="detail-section">
                 <h3><i class="fas fa-calendar-alt"></i> Datas</h3>
-                <p><strong>Solicitação:</strong> ${data.datasolicitacao || 'N/A'}</p>
+                <p><strong>SolicitaÃ§Ã£o:</strong> ${data.datasolicitacao || 'N/A'}</p>
                 <p><strong>Desejada:</strong> ${data.datadesejada || 'N/A'}</p>
             </div>
              <div class="detail-section">
-                <h3><i class="fas fa-info-circle"></i> Serviço</h3>
-                <p><strong>Tipo Serviço:</strong> ${data.tiposervico || 'N/A'}</p>
+                <h3><i class="fas fa-info-circle"></i> ServiÃ§o</h3>
+                <p><strong>Tipo ServiÃ§o:</strong> ${data.tiposervico || 'N/A'}</p>
                 <p><strong>Equipamento:</strong> ${data.tipoextintor || 'N/A'}</p>
                 <p><strong>Quantidade:</strong> ${data.quantidade || 'N/A'}</p>
                 <p><strong>Status Atual:</strong> <span class="status-badge status-${data.statustexto || ''}">${data.statustexto || 'N/A'}</span></p>
             </div>
             <div class="detail-section">
-                <h3><i class="fas fa-map-marker-alt"></i> Endereço</h3>
+                <h3><i class="fas fa-map-marker-alt"></i> EndereÃ§o</h3>
                 <p>${data.logradouro || ''}, ${data.numero || ''} ${data.complemento ? '- ' + data.complemento : ''}</p>
                 <p>${data.bairro || ''} - ${data.cidade || ''}/${data.estado || ''}</p>
                 <p><strong>CEP:</strong> ${data.cep || 'N/A'}</p>
             </div>
             <div class="detail-section full-width">
-                 <h3><i class="fas fa-comment-dots"></i> Observações Cliente</h3>
+                 <h3><i class="fas fa-comment-dots"></i> ObservaÃ§Ãµes Cliente</h3>
                  <p>${data.observacoes || 'Nenhuma.'}</p>
             </div>
         </div>`;

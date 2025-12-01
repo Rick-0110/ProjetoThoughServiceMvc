@@ -45,6 +45,7 @@ public class PerfilController : Controller
         // Atualiza apenas os campos permitidos
         usuario.Nome = model.Nome;
         usuario.CpfCnpj = model.CpfCnpj;
+        usuario.PhoneNumber = model.PhoneNumber;
 
         var result = await _userManager.UpdateAsync(usuario);
 

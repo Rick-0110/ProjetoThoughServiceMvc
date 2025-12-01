@@ -5,13 +5,11 @@
     ViewData["Title"] = "Finalizar Compra";
     var culture = new CultureInfo("pt-BR");
 
-    // Lógica de seleção inicial
     var selectedPayment = string.IsNullOrWhiteSpace(Model?.PaymentMethod) ? "card" : Model.PaymentMethod;
     var selectedShippingMethod = string.IsNullOrWhiteSpace(Model?.ShippingMethod) ? string.Empty : Model.ShippingMethod;
     var isQualifiedForDelivery = Model?.TotalExtintores >= 5;
     var shippingOptions = Model?.ShippingOptions ?? Enumerable.Empty<ToughService.Models.ModelCheckout.CheckoutShippingOptionViewModel>();
 
-    // Regra de negócio: Frete vs Retirada
     if (!isQualifiedForDelivery)
     {
         shippingOptions = shippingOptions.Where(o => o.Value.Equals("pickup", StringComparison.OrdinalIgnoreCase));
@@ -33,7 +31,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
     <style>
-        /* Pequeno ajuste para os alertas de pagamento */
+  
         .payment-info-box {
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
@@ -47,7 +45,7 @@
             .payment-info-box i {
                 font-size: 2rem;
                 margin-bottom: 10px;
-                color: #009ee3; /* Azul Mercado Pago */
+                color: #009ee3; 
                 display: block;
             }
 
@@ -122,7 +120,7 @@
                         </div>
                         <div class="input-field">
                             <label asp-for="CheckoutPhone">Telefone</label>
-                            <input asp-for="CheckoutPhone" type="tel" placeholder="(11) 99999-0000" />
+                            <input asp-for="CheckoutPhone" type="tel" placeholder="(71) 99999-0000" />
                             <span asp-validation-for="CheckoutPhone" class="text-danger"></span>
                         </div>
                     </div>

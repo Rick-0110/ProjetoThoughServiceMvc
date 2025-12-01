@@ -1,8 +1,8 @@
-// ===== JAVASCRIPT AVANÇADO PARA ADMIN =====
+ï»¿// ===== JAVASCRIPT AVANÃ‡ADO PARA ADMIN =====
 
 
 
-// Estatísticas calculadas
+// EstatÃ­sticas calculadas
 let dashboardStats = {
     totalChamados: 0,
     chamadosNovos: 0,
@@ -14,12 +14,12 @@ let dashboardStats = {
     ticketMedio: 0
 };
 
-// Carregar dados quando a página abrir
+// Carregar dados quando a pÃ¡gina abrir
 document.addEventListener('DOMContentLoaded', function () {
     loadDashboardData();
 });
 
-// Navegar para outras páginas
+// Navegar para outras pÃ¡ginas
 function navigateTo(page) {
     if (page === 'chamados') {
         window.location.href = 'admin-chamados.html';
@@ -38,7 +38,7 @@ function loadDashboardData() {
     startRealTimeUpdates();
 }
 
-// Calcular estatísticas
+// Calcular estatÃ­sticas
 function calculateStats() {
     dashboardStats.totalChamados = chamadosData.length;
     dashboardStats.chamadosNovos = chamadosData.filter(c => c.status === 'novo').length;
@@ -48,11 +48,11 @@ function calculateStats() {
     dashboardStats.totalProdutos = produtosData.length;
     dashboardStats.produtosEstoqueBaixo = produtosData.filter(p => p.quantidade < 20).length;
 
-    // Calcular receita do mês (chamados finalizados)
+    // Calcular receita do mÃªs (chamados finalizados)
     const chamadosFinalizados = chamadosData.filter(c => c.status === 'finalizado');
     dashboardStats.receitaMes = chamadosFinalizados.reduce((total, c) => total + c.valor, 0);
 
-    // Calcular ticket médio
+    // Calcular ticket mÃ©dio
     dashboardStats.ticketMedio = chamadosFinalizados.length > 0
         ? dashboardStats.receitaMes / chamadosFinalizados.length
         : 0;
@@ -60,15 +60,15 @@ function calculateStats() {
 
 // Atualizar cards do dashboard
 function updateDashboardCards() {
-    // Atualizar números principais
+    // Atualizar nÃºmeros principais
     updateStatCard('totalChamados', dashboardStats.totalChamados);
     updateStatCard('totalProdutos', dashboardStats.totalProdutos);
 
-    // Adicionar novos cards se não existirem
+    // Adicionar novos cards se nÃ£o existirem
     addAdvancedStatsCards();
 }
 
-// Atualizar card de estatística
+// Atualizar card de estatÃ­stica
 function updateStatCard(elementId, value) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -76,7 +76,7 @@ function updateStatCard(elementId, value) {
     }
 }
 
-// Animação de números
+// AnimaÃ§Ã£o de nÃºmeros
 function animateNumber(element, start, end) {
     const duration = 1000;
     const startTime = performance.now();
@@ -96,12 +96,12 @@ function animateNumber(element, start, end) {
     requestAnimationFrame(updateNumber);
 }
 
-// Adicionar cards de estatísticas avançadas
+// Adicionar cards de estatÃ­sticas avanÃ§adas
 function addAdvancedStatsCards() {
     const dashboardGrid = document.querySelector('.dashboard-grid');
     if (!dashboardGrid) return;
 
-    // Verificar se os cards já existem
+    // Verificar se os cards jÃ¡ existem
     if (document.getElementById('receitaCard')) return;
 
     const advancedCards = `
@@ -110,11 +110,11 @@ function addAdvancedStatsCards() {
                 <i class="fas fa-dollar-sign"></i>
             </div>
             <div class="card-content">
-                <h3>Receita do Mês</h3>
-                <p>Total arrecadado com serviços finalizados</p>
+                <h3>Receita do MÃªs</h3>
+                <p>Total arrecadado com serviÃ§os finalizados</p>
                 <div class="card-stats">
                     <span class="stat-number" id="receitaMes">${formatCurrency(dashboardStats.receitaMes)}</span>
-                    <span class="stat-label">Este mês</span>
+                    <span class="stat-label">Este mÃªs</span>
                 </div>
             </div>
             <div class="card-action">
@@ -127,11 +127,11 @@ function addAdvancedStatsCards() {
                 <i class="fas fa-receipt"></i>
             </div>
             <div class="card-content">
-                <h3>Ticket Médio</h3>
-                <p>Valor médio por serviço finalizado</p>
+                <h3>Ticket MÃ©dio</h3>
+                <p>Valor mÃ©dio por serviÃ§o finalizado</p>
                 <div class="card-stats">
                     <span class="stat-number" id="ticketMedio">${formatCurrency(dashboardStats.ticketMedio)}</span>
-                    <span class="stat-label">Por serviço</span>
+                    <span class="stat-label">Por serviÃ§o</span>
                 </div>
             </div>
             <div class="card-action">
@@ -160,9 +160,9 @@ function addAdvancedStatsCards() {
     dashboardGrid.insertAdjacentHTML('beforeend', advancedCards);
 }
 
-// Atualizações em tempo real
+// AtualizaÃ§Ãµes em tempo real
 function startRealTimeUpdates() {
-    // Simular atualizações a cada 30 segundos
+    // Simular atualizaÃ§Ãµes a cada 30 segundos
     setInterval(() => {
         // Simular novos dados
         simulateNewData();
@@ -213,7 +213,7 @@ function updateRecentActivity() {
 function generateRecentActivities() {
     const activities = [];
 
-    // Últimos chamados
+    // Ãšltimos chamados
     const recentChamados = chamadosData
         .sort((a, b) => new Date(b.data) - new Date(a.data))
         .slice(0, 3);
@@ -260,7 +260,7 @@ function generateRecentActivities() {
         });
     }
 
-    return activities.slice(0, 5); // Máximo 5 atividades
+    return activities.slice(0, 5); // MÃ¡ximo 5 atividades
 }
 
 // Formatar tempo relativo
@@ -273,11 +273,11 @@ function formatRelativeTime(dateString) {
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
     if (diffDays > 0) {
-        return `Há ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
+        return `HÃ¡ ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
     } else if (diffHours > 0) {
-        return `Há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+        return `HÃ¡ ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
     } else if (diffMinutes > 0) {
-        return `Há ${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}`;
+        return `HÃ¡ ${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}`;
     } else {
         return 'Agora';
     }
@@ -294,9 +294,9 @@ function formatCurrency(value) {
 // Obter texto do tipo
 function getTipoText(tipo) {
     const tipoMap = {
-        'instalacao': 'Instalação',
+        'instalacao': 'InstalaÃ§Ã£o',
         'agendamento': 'Agendamento',
-        'manutencao': 'Manutenção',
+        'manutencao': 'ManutenÃ§Ã£o',
         'reparo': 'Reparo',
         'suporte': 'Suporte'
     };
@@ -322,7 +322,7 @@ function exportData() {
     showNotification('Dados exportados com sucesso!');
 }
 
-// Mostrar notificação
+// Mostrar notificaÃ§Ã£o
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
 
@@ -365,7 +365,7 @@ function showNotification(message, type = 'success') {
         word-wrap: break-word;
     `;
 
-    // Adicionar animação CSS se não existir
+    // Adicionar animaÃ§Ã£o CSS se nÃ£o existir
     if (!document.getElementById('notification-styles')) {
         const style = document.createElement('style');
         style.id = 'notification-styles';
@@ -386,7 +386,7 @@ function showNotification(message, type = 'success') {
 
     document.body.appendChild(notification);
 
-    // Auto-remover após 5 segundos
+    // Auto-remover apÃ³s 5 segundos
     setTimeout(() => {
         if (notification.parentNode) {
             notification.style.animation = 'slideInRight 0.3s ease-out reverse';
@@ -399,11 +399,11 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
-// Função para mostrar detalhes do chamado (será usada nas atividades)
+// FunÃ§Ã£o para mostrar detalhes do chamado (serÃ¡ usada nas atividades)
 function showChamadoDetails(id) {
     const chamado = chamadosData.find(c => c.id === id);
     if (!chamado) return;
 
     showNotification(`Visualizando chamado: ${chamado.nome}`, 'info');
-    // Aqui você pode abrir um modal ou navegar para a página de detalhes
+    // Aqui vocÃª pode abrir um modal ou navegar para a pÃ¡gina de detalhes
 }

@@ -115,9 +115,7 @@
                                 <a class="dropdown-item" asp-action="Perfil" asp-controller="Perfil">
                                     <i class="fas fa-user"></i> Perfil
                                 </a>
-                                <a class="dropdown-item" asp-action="Configuracoes" asp-controller="Cliente">
-                                    <i class="fas fa-cog"></i> Configurações
-                                </a>
+                               
                                 <div class="dropdown-divider"></div>
                                 <form asp-controller="Registro" asp-action="Logout" method="post">
                                     @Html.AntiForgeryToken() <button type="submit" class="dropdown-item logout-item">
