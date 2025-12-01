@@ -97,9 +97,6 @@ builder.Services.AddAuthentication()
 
 var app = builder.Build();
 
-// ------------------------------------
-// Corrigir valores NULL no banco de dados
-// ------------------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

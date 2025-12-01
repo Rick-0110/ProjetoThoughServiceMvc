@@ -783,6 +783,17 @@ body {
     outline-offset: 2px;
 }
 
+.profile-avatar {
+    width: 100px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    display: block;
+}
+
+
+
 /* ===== DROPDOWN PERFIL ===== */
 .profile-dropdown {
     position: relative;
