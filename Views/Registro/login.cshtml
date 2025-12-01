@@ -22,6 +22,24 @@
     <link rel="stylesheet" href="~/css/login.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="icon" href="~/IMG/LOGO (2).png" />
+
+    <style>
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .validation-summary-errors ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="voltarPG">
@@ -41,6 +59,15 @@
                 {
                     <div class="alert alert-success">@TempData["Mensagem"]</div>
                 }
+
+                @if (TempData["Erro"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["Erro"]
+                    </div>
+                }
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                 <form asp-action="Login" asp-controller="Registro" method="post">
                     <div class="grupo-entrada">
