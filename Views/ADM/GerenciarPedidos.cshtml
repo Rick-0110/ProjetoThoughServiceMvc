@@ -145,59 +145,62 @@
                     @if (Model != null && Model.Any())
                     {
                         @foreach (var pedido in Model)
-                        {
-                            <div class="chamado-item status-@pedido.Status"
-                                 data-id="@pedido.Id"
-                                 data-cliente="@pedido.NomeCliente"
-                                 data-email="@pedido.EmailCliente"
-                                 data-telefone="@pedido.TelefoneCliente"
-                                 data-datapedido="@FormatDateTime(pedido.DataPedido)"
-                                 data-status="@pedido.Status"
-                                 data-statusenum="@((int)pedido.Status)"
-                                 data-total="@pedido.Total.ToString("F2", culture)"
-                                 data-subtotal="@pedido.Subtotal.ToString("F2", culture)"
-                                 data-envio="@pedido.CustoEnvio.ToString("F2", culture)"
-                                 data-desconto="@pedido.Desconto.ToString("F2", culture)"
-                                 data-metodoenvio="@pedido.MetodoEnvio"
-                                 data-metodopagamento="@pedido.MetodoPagamento"
-                                 data-cep="@pedido.Cep"
-                                 data-logradouro="@pedido.Logradouro"
-                                 data-numero="@pedido.Numero"
-                                 data-complemento="@(pedido.Complemento ?? "")"
-                                 data-bairro="@pedido.Bairro"
-                                 data-cidade="@pedido.Cidade"
-                                 data-estado="@pedido.Estado"
-                                 data-observacoes="@(pedido.Observacoes ?? "Nenhuma")"
-                                 data-itens="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(pedido.Itens.Select(i => new { ProdutoNome = i.Produto?.Nome ?? "N/A", Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario, Subtotal = i.Subtotal })))">
-                                 
-                                <div class="chamado-header">
-                                    <div>
-                                        <div class="chamado-title">Pedido #@pedido.Id - @pedido.NomeCliente</div>
-                                        <div class="chamado-meta">
-                                            <span class="status-badge status-@pedido.Status">@pedido.Status</span>
-                                            <span class="chamado-tipo">@pedido.MetodoPagamento</span>
-                                        </div>
-                                    </div>
-                                    <div class="chamado-date">
-                                        <i class="fas fa-calendar-alt"></i> @FormatDateTime(pedido.DataPedido)
-                                        <br>
-                                        <strong style="color: #28a745; font-size: 1.1em;">@pedido.Total.ToString("C", culture)</strong>
-                                    </div>
-                                </div>
-                                <div class="chamado-info">
-                                    <div class="chamado-detail"><i class="fas fa-user"></i> @pedido.EmailCliente</div>
-                                    <div class="chamado-detail"><i class="fas fa-phone"></i> @pedido.TelefoneCliente</div>
-                                    <div class="chamado-detail"><i class="fas fa-map-marker-alt"></i> @pedido.Cidade/@pedido.Estado</div>
-                                    <div class="chamado-detail"><i class="fas fa-truck"></i> @pedido.MetodoEnvio</div>
-                                    <div class="chamado-detail"><i class="fas fa-box"></i> @pedido.Itens.Count item(ns)</div>
-                                </div>
-                                <div class="chamado-actions">
-                                    <button type="button" class="btn-view btn-sm" onclick="openDetailsModal(this)" title="Ver Detalhes">
-                                        <i class="fas fa-eye"></i> Detalhes
-                                    </button>
-                                </div>
-                            </div>
-                        }
+{
+    <div class="chamado-item status-@pedido.Status"
+         data-id="@pedido.Id"
+         data-cliente="@pedido.NomeCliente"
+         data-email="@pedido.EmailCliente"
+         data-telefone="@pedido.TelefoneCliente"
+         data-datapedido="@FormatDateTime(pedido.DataPedido)"
+         data-status="@pedido.Status"
+         data-statusenum="@((int)pedido.Status)"
+         data-statustexto="@pedido.Status"
+         data-total="@pedido.Total.ToString("F2", culture)"
+         data-subtotal="@pedido.Subtotal.ToString("F2", culture)"
+         data-envio="@pedido.CustoEnvio.ToString("F2", culture)"
+         data-desconto="@pedido.Desconto.ToString("F2", culture)"
+         data-metodoenvio="@pedido.MetodoEnvio"
+         data-metodopagamento="@pedido.MetodoPagamento"
+         data-cep="@pedido.Cep"
+         data-logradouro="@pedido.Logradouro"
+         data-numero="@pedido.Numero"
+         data-complemento="@(pedido.Complemento ?? "")"
+         data-bairro="@pedido.Bairro"
+         data-cidade="@pedido.Cidade"
+         data-estado="@pedido.Estado"
+         data-observacoes="@(pedido.Observacoes ?? "Nenhuma")"
+         data-itens='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(pedido.Itens.Select(i => new { 
+             ProdutoNome = i.Produto?.Nome ?? "N/A", 
+             Quantidade = i.Quantidade, 
+             PrecoUnitario = i.PrecoUnitario, 
+             Subtotal = i.Subtotal 
+         })))'>
+         
+        <div class="chamado-header">
+            <div>
+                <div class="chamado-title">Pedido #@pedido.Id - @pedido.NomeCliente</div>
+                <div class="chamado-meta">
+                    <span class="status-badge status-@pedido.Status">@pedido.Status</span>
+                    <span class="chamado-tipo">@pedido.MetodoPagamento</span>
+                </div>
+            </div>
+            <div class="chamado-date">
+                <i class="fas fa-calendar-alt"></i> @FormatDateTime(pedido.DataPedido)
+                <br>
+                <strong style="color: #28a745; font-size: 1.1em;">@pedido.Total.ToString("C", culture)</strong>
+            </div>
+        </div>
+        
+        <div class="chamado-info">
+             <div class="chamado-detail"><i class="fas fa-user"></i> @pedido.EmailCliente</div>
+             </div>
+        <div class="chamado-actions">
+            <button type="button" class="btn-view btn-sm" onclick="openDetailsModal(this)" title="Ver Detalhes">
+                <i class="fas fa-eye"></i> Detalhes
+            </button>
+        </div>
+    </div>
+}
                     }
                     else
                     {
