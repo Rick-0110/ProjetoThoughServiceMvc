@@ -167,42 +167,39 @@
                     <div class="block-grid three-cols" style="margin-top: 1.5rem;">
                         <div class="input-field">
                             <label asp-for="CheckoutCep">CEP</label>
-                            <input asp-for="CheckoutCep" type="text" placeholder="00000-000" inputmode="numeric" />
+                            <input asp-for="CheckoutCep" type="text" id="cep" placeholder="00000-000" maxlength="9" onblur="pesquisacep(this.value);" />
                             <span asp-validation-for="CheckoutCep" class="text-danger"></span>
                         </div>
+
                         <div class="input-field">
                             <label asp-for="CheckoutEstado">Estado</label>
-                            <select asp-for="CheckoutEstado">
-                                <option value="">UF</option>
-                                <option>SP</option>
-                                <option>RJ</option>
-                                <option>MG</option>
-                                <option>BA</option>
-                                <option>RS</option>
-                                <option>PR</option>
-                                <option>SC</option>
-                                <option>ES</option>
-                            </select>
+                            <input asp-for="CheckoutEstado" type="text" id="uf" readonly style="background-color: #e9ecef;" />
                             <span asp-validation-for="CheckoutEstado" class="text-danger"></span>
                         </div>
+
                         <div class="input-field">
                             <label asp-for="CheckoutCidade">Cidade</label>
-                            <input asp-for="CheckoutCidade" type="text" />
+                            <input asp-for="CheckoutCidade" type="text" id="cidade" readonly style="background-color: #e9ecef;" />
                             <span asp-validation-for="CheckoutCidade" class="text-danger"></span>
                         </div>
+
                         <div class="input-field">
-                            <label asp-for="CheckoutEndereco">Endereço</label>
-                            <input asp-for="CheckoutEndereco" type="text" />
+                            <label asp-for="CheckoutEndereco">Endereço (Rua)</label>
+                            <input asp-for="CheckoutEndereco" type="text" id="rua" readonly style="background-color: #e9ecef;" />
                             <span asp-validation-for="CheckoutEndereco" class="text-danger"></span>
                         </div>
+
+                        <input type="hidden" id="bairro" />
+
                         <div class="input-field">
                             <label asp-for="CheckoutNumero">Número</label>
-                            <input asp-for="CheckoutNumero" type="text" />
+                            <input asp-for="CheckoutNumero" type="text" id="numero" />
                             <span asp-validation-for="CheckoutNumero" class="text-danger"></span>
                         </div>
+
                         <div class="input-field">
                             <label asp-for="CheckoutComplemento">Complemento</label>
-                            <input asp-for="CheckoutComplemento" type="text" />
+                            <input asp-for="CheckoutComplemento" type="text" id="complemento" />
                         </div>
                     </div>
                 </section>

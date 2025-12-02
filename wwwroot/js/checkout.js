@@ -44,38 +44,65 @@ function setupAddressSelection() {
 // =========================================================================
 // 2. CEP (VIA CEP)
 // =========================================================================
-function setupCepLookup() {
-    const cepInput = document.getElementById('CheckoutCep');
-    if (!cepInput) return;
-
-    cepInput.addEventListener('blur', function () {
-        const cep = this.value.replace(/\D/g, '');
-        if (cep.length !== 8) return;
-
-        if (document.getElementById('CheckoutEndereco')) {
-            document.getElementById('CheckoutEndereco').placeholder = "Buscando...";
-        }
-
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(response => response.json())
-            .then(data => {
-                if (!data.erro) {
-                    if (document.getElementById('CheckoutEndereco')) document.getElementById('CheckoutEndereco').value = data.logradouro;
-                    if (document.getElementById('CheckoutCidade')) document.getElementById('CheckoutCidade').value = data.localidade;
-                    if (document.getElementById('CheckoutEstado')) document.getElementById('CheckoutEstado').value = data.uf;
-
-                    if (document.getElementById('CheckoutNumero')) document.getElementById('CheckoutNumero').focus();
-                    showCheckoutToast(`Endereço encontrado!`, 'success');
-                } else {
-                    showCheckoutToast('CEP não encontrado.', 'warning');
-                }
-            })
-            .catch(() => showCheckoutToast('Erro ao consultar CEP.', 'error'))
-            .finally(() => {
-                if (document.getElementById('CheckoutEndereco')) document.getElementById('CheckoutEndereco').placeholder = "Rua, avenida, etc.";
-            });
-    });
+function limpa_formulário_cep() {
+    // Limpa valores do formulário de cep.
+    document.getElementById('rua').value = ("");
+    document.getElementById('cidade').value = ("");
+    document.getElementById('uf').value = ("");
+    // document.getElementById('bairro').value = (""); // Se tiver campo bairro
 }
+
+function meu_callback(conteudo) {
+    if (!("erro" in conteudo)) {
+        //Atualiza os campos com os valores.
+        document.getElementById('rua').value = (conteudo.logradouro);
+        // document.getElementById('bairro').value=(conteudo.bairro);
+        document.getElementById('cidade').value = (conteudo.localidade);
+        document.getElementById('uf').value = (conteudo.uf);
+
+        // Foca no número para o usuário digitar
+        document.getElementById('numero').focus();
+    }
+    else {
+        //CEP não Encontrado.
+        limpa_formulário_cep();
+        alert("CEP não encontrado.");
+
+        // Habilita edição manual caso o CEP falhe
+        document.getElementById('rua').removeAttribute('readonly');
+        document.getElementById('cidade').removeAttribute('readonly');
+        document.getElementById('uf').removeAttribute('readonly');
+    }
+}
+
+function pesquisacep(valor) {
+    //Nova variável "cep" somente com dígitos.
+    var cep = valor.replace(/\D/g, '');
+
+    //Verifica se campo cep possui valor informado.
+    if (cep != "") {
+        //Expressão regular para validar o CEP.
+        var validacep = /^[0-9]{8}$/;
+
+        if (validacep.test(cep)) {
+            document.getElementById('rua').value = "...";
+            document.getElementById('cidade').value = "...";
+            document.getElementById('uf').value = "...";
+
+            var script = document.createElement('script');
+
+            script.src = 'https://viacep.com.br/ws/' + cep + '/json/?callback=meu_callback';
+
+            document.body.appendChild(script);
+
+        } else {
+            limpa_formulário_cep();
+            alert("Formato de CEP inválido.");
+        }
+    } else {
+        limpa_formulário_cep();
+    }
+};
 
 // =========================================================================
 // 3. ENTREGA (FRETE)
