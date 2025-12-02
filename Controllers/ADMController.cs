@@ -8,7 +8,7 @@ using ToughService.Services;
 
 namespace ToughService.Controllers
 {
-    
+
     [Authorize(Roles = "Admin")]
     public class ADMController : Controller
     {
@@ -17,7 +17,7 @@ namespace ToughService.Controllers
         private readonly IChamadoRepository _chamadoRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ISkuService _skuService; 
+        private readonly ISkuService _skuService;
 
         public ADMController(
             IProdutoRepository produtoRepository,
@@ -25,7 +25,7 @@ namespace ToughService.Controllers
             IChamadoRepository chamadoRepository,
             IPedidoRepository pedidoRepository,
             UserManager<ApplicationUser> userManager,
-            ISkuService skuService) 
+            ISkuService skuService)
         {
             _produtoRepository = produtoRepository;
             _webHostEnvironment = webHostEnvironment;
@@ -51,9 +51,7 @@ namespace ToughService.Controllers
                 int totalProdutos = produtos.Count();
                 int totalPedidos = pedidos.Count();
 
-
                 var atividades = new List<AdminActivityViewModel>();
-
 
                 atividades.AddRange(chamados.OrderByDescending(c => c.DataSolicitacao).Take(5).Select(c => new AdminActivityViewModel
                 {
@@ -64,7 +62,6 @@ namespace ToughService.Controllers
                     CorCss = "text-warning"
                 }));
 
-
                 atividades.AddRange(pedidos.OrderByDescending(p => p.DataPedido).Take(5).Select(p => new AdminActivityViewModel
                 {
                     Tipo = "Pedido",
@@ -74,16 +71,14 @@ namespace ToughService.Controllers
                     CorCss = "text-primary"
                 }));
 
-       
                 atividades.AddRange(produtos.OrderByDescending(p => p.Id).Take(5).Select(p => new AdminActivityViewModel
                 {
                     Tipo = "Produto",
                     Mensagem = $"Produto cadastrado: {p.Nome}",
-                    Data = DateTime.Now, 
+                    Data = DateTime.Now,
                     IconeCss = "fas fa-plus",
                     CorCss = "text-success"
                 }));
-
 
                 var atividadesFinais = atividades.OrderByDescending(a => a.Data).Take(10).ToList();
 
@@ -92,7 +87,7 @@ namespace ToughService.Controllers
                     TotalChamados = totalChamados,
                     TotalProdutosEmEstoque = totalProdutos,
                     TotalPedidos = totalPedidos,
-                    AtividadesRecentes = atividadesFinais 
+                    AtividadesRecentes = atividadesFinais
                 };
 
                 return View(viewModel);
@@ -103,6 +98,7 @@ namespace ToughService.Controllers
                 return View(new AdminDashboardViewModel());
             }
         }
+
         // ---------------------------------------------------------------------------------------------------
         // PEDIDOS
         // ---------------------------------------------------------------------------------------------------
@@ -289,15 +285,15 @@ namespace ToughService.Controllers
         public async Task<IActionResult> GerenciarProdutos()
         {
             var listaDeProdutos = await _produtoRepository.GetAllProdutosAsync();
-            
+
             // Agrupa produtos por categoria para exibição organizada
             var produtosPorCategoria = listaDeProdutos
                 .GroupBy(p => p.Categoria)
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.ToList());
-            
+
             ViewBag.ProdutosPorCategoria = produtosPorCategoria;
-            
+
             return View(listaDeProdutos);
         }
 
@@ -306,6 +302,7 @@ namespace ToughService.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarProdutoADM(ProdutoCreateViewModel model)
@@ -337,7 +334,6 @@ namespace ToughService.Controllers
             {
                 try
                 {
-                   
                     string pastaUploads = Path.Combine(_webHostEnvironment.WebRootPath, "IMG", "Produtos");
                     if (!Directory.Exists(pastaUploads)) Directory.CreateDirectory(pastaUploads);
 
@@ -355,7 +351,6 @@ namespace ToughService.Controllers
                 }
             }
 
-       
             var produtoTemporario = new ProdutoModel
             {
                 Nome = model.Nome ?? string.Empty,
@@ -408,6 +403,7 @@ namespace ToughService.Controllers
                 return View(model);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> AtualizarProduto(ProdutoBaseModel model)
         {
@@ -416,14 +412,11 @@ namespace ToughService.Controllers
                 var produtoParaAtualizar = await _produtoRepository.GetProdutoByIdAsync(model.Id);
                 if (produtoParaAtualizar != null)
                 {
-                    // Mapeia os dados do model para a entidade
                     produtoParaAtualizar.Nome = model.Nome;
                     produtoParaAtualizar.Descricao = model.Descricao;
                     produtoParaAtualizar.Preco = model.Preco;
                     produtoParaAtualizar.Quantidade = model.Quantidade;
                     produtoParaAtualizar.Categoria = model.Categoria;
-
-
 
                     await _produtoRepository.UpdateProdutoAsync(produtoParaAtualizar);
                 }
@@ -435,6 +428,49 @@ namespace ToughService.Controllers
             }
 
             return RedirectToAction("GerenciarProdutos");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AtualizarEstoque(int id, int quantidade, string operacao)
+        {
+            var produto = await _produtoRepository.GetProdutoByIdAsync(id);
+
+            if (produto == null)
+            {
+                TempData["ErroStatus"] = "Produto não encontrado.";
+                return RedirectToAction(nameof(GerenciarProdutos));
+            }
+
+            if (quantidade <= 0)
+            {
+                TempData["ErroStatus"] = "A quantidade deve ser maior que zero.";
+                return RedirectToAction(nameof(GerenciarProdutos));
+            }
+
+            if (operacao == "entrada")
+            {
+                produto.Quantidade += quantidade;
+                TempData["SucessoFormProduto"] = $"Sucesso! Adicionadas {quantidade} unidades ao produto '{produto.Nome}'.";
+            }
+            else if (operacao == "saida")
+            {
+                if (produto.Quantidade < quantidade)
+                {
+                    TempData["ErroStatus"] = $"Erro ao remover: Você tentou tirar {quantidade}, mas só existem {produto.Quantidade} unidades em estoque.";
+                    return RedirectToAction(nameof(GerenciarProdutos));
+                }
+                produto.Quantidade -= quantidade;
+                TempData["SucessoFormProduto"] = $"Sucesso! Removidas {quantidade} unidades do produto '{produto.Nome}'.";
+            }
+            else
+            {
+                TempData["ErroStatus"] = "Operação de estoque inválida.";
+                return RedirectToAction(nameof(GerenciarProdutos));
+            }
+
+            await _produtoRepository.UpdateProdutoAsync(produto);
+            return RedirectToAction(nameof(GerenciarProdutos));
         }
 
         [HttpGet]
@@ -475,10 +511,9 @@ namespace ToughService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExcluirProdutoHome(int id)
         {
-
             await _produtoRepository.RemoveProdutoAsync(id);
             TempData["SucessoFormProduto"] = "Produto excluído com sucesso.";
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
         }
     }
 }

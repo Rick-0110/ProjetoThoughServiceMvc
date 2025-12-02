@@ -6,9 +6,9 @@
 
 @{
     ViewData["Title"] = "Gerenciar Produtos - Área Administrativa";
-    
+
     var produtosPorCategoria = ViewBag.ProdutosPorCategoria as Dictionary<ToughService.Models.CategoriaEnum, List<ToughService.Models.Produtos.ProdutoBaseModel>>;
-    
+
     string GetCategoriaNome(ToughService.Models.CategoriaEnum cat)
     {
         return cat switch
@@ -37,8 +37,6 @@
     <title>Gerenciar Produtos - Área Administrativa</title>
     <link rel="stylesheet" href="~/css/ADM.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-   
 </head>
 <body>
     <header class="admin-header">
@@ -168,7 +166,6 @@
                             <small>Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
                         </div>
 
-                      
                         <div class="form-actions">
                             <button type="reset" class="btn-secondary">Limpar</button>
                             <button type="submit" class="btn-primary">
@@ -178,6 +175,7 @@
                     </form>
                 </div>
             </div>
+
             <div id="tab-listar" class="tab-content">
                 <div class="products-section">
                     <div class="section-header">
@@ -214,9 +212,9 @@
                                                             </button>
 
                                                             <button class="icon-btn stock-btn"
-                                                                    onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
-                                                                    title="Adicionar Estoque">
-                                                                <i class="fas fa-box"></i>
+                                                                    onclick="openManageStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
+                                                                    title="Gerenciar Estoque">
+                                                                <i class="fas fa-box-open"></i>
                                                             </button>
 
                                                         </div>
@@ -241,6 +239,9 @@
                                                         SKU: @produto.Sku
                                                     </div>
                                                 }
+                                                <div style="font-size: 0.8rem; margin-top: 5px;">
+                                                    Estoque: <strong>@produto.Quantidade</strong> un.
+                                                </div>
                                             </div>
                                         </div>
                                     }
@@ -267,9 +268,9 @@
                                                     </button>
 
                                                     <button class="icon-btn stock-btn"
-                                                            onclick="openAddStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
-                                                            title="Adicionar Estoque">
-                                                        <i class="fas fa-box"></i>
+                                                            onclick="openManageStockModal(@produto.Id, '@produto.Nome', @produto.Quantidade)"
+                                                            title="Gerenciar Estoque">
+                                                        <i class="fas fa-box-open"></i>
                                                     </button>
 
                                                 </div>
@@ -362,16 +363,16 @@
         </div>
     </div>
 
-    <div id="modalAdicionarEstoque" class="modal">
+    <div id="modalGerenciarEstoque" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Adicionar Estoque</h2>
-                <span class="close" onclick="closeAddStockModal()">&times;</span>
+                <h2>Gerenciar Estoque</h2>
+                <span class="close" onclick="closeManageStockModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="form-adicionar-estoque" asp-action="AdicionarEstoque" asp-controller="ADM" method="post">
+                <form id="form-gerenciar-estoque" asp-action="AtualizarEstoque" asp-controller="ADM" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" id="stockProdutoId" name="produtoId">
+                    <input type="hidden" id="stockProdutoId" name="id"> <input type="hidden" id="stockQuantidadeAtual">
 
                     <div class="form-group">
                         <label>Produto</label>
@@ -380,19 +381,26 @@
 
                     <div class="form-group">
                         <label>Estoque Atual</label>
-                        <input type="text" id="stockQuantidadeAtual" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        <input type="text" id="stockQuantidadeAtualTexto" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
                     </div>
 
                     <div class="form-group">
-                        <label for="stockQuantidade">Quantidade a Adicionar *</label>
+                        <label for="stockOperacao">Tipo de Movimentação *</label>
+                        <select id="stockOperacao" name="operacao" class="form-control" required style="border: 2px solid #ddd; padding: 10px; border-radius: 5px; width: 100%;">
+                            <option value="entrada" selected>Adicionar (+)</option>
+                            <option value="saida">Remover (-)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stockQuantidade">Quantidade *</label>
                         <input type="number" id="stockQuantidade" name="quantidade" min="1" required placeholder="Digite a quantidade">
-                        <small style="display: block; margin-top: 0.25rem; color: #6c757d; font-size: 0.875rem;">Digite a quantidade de unidades a adicionar ao estoque</small>
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn-secondary" onclick="closeAddStockModal()">Cancelar</button>
+                        <button type="button" class="btn-secondary" onclick="closeManageStockModal()">Cancelar</button>
                         <button type="submit" class="btn-primary">
-                            <i class="fas fa-plus"></i> Adicionar ao Estoque
+                            <i class="fas fa-save"></i> Atualizar Estoque
                         </button>
                     </div>
                 </form>
